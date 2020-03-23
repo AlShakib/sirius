@@ -33,11 +33,11 @@ org.gnome.desktop.interface clock-format '12h'
 # Enable all extensions
 org.gnome.shell enabled-extensions ['arc-menu@linxgem33.com', 'dash-to-panel@jderose9.github.com', 'Internet-Speed-Meter@TH3L0N3C0D3R', 'openweather-extension@jenslody.de', 'panel-osd@berend.de.schouwer.gmail.com', 'remove-dropdown-arrows@mpdeimos.com', 'status-area-horizontal-spacing@mathematical.coffee.gmail.com', 'TopIcons-git@phocean.net', 'user-theme@gnome-shell-extensions.gcampax.github.com', 'windowIsReady_Remover@nunofarruca@gmail.com', 'system-monitor@paradoxxx.zero.gmail.com', 'gsconnect@andyholmes.github.io']
 
-# Set application theme to 'Materia-light'
-org.gnome.desktop.interface gtk-theme 'Materia-light'
+# Set application theme to 'Plata-Lumine-Compact'
+org.gnome.desktop.interface gtk-theme 'Plata-Lumine-Compact'
 
-# Set user theme (shell) to 'Materia-light'
-org.gnome.shell.extensions.user-theme name 'Materia-light'
+# Set user theme (shell) to 'Plata-Compact'
+org.gnome.shell.extensions.user-theme name 'Plata-Compact'
 
 # Set icon theme to 'Papirus'
 org.gnome.desktop.interface icon-theme 'Papirus'
