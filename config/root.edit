@@ -1,0 +1,4 @@
+/etc/gdm/custom.conf
+/etc/fstab
+/etc/default/grub
+/root/.zshrc

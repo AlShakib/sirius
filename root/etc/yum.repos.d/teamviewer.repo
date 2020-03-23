@@ -1,0 +1,8 @@
+[teamviewer]
+name=TeamViewer - $basearch
+baseurl=http://linux.teamviewer.com/yum/stable/main/binary-$basearch/
+gpgkey=http://linux.teamviewer.com/pubkey/currentkey.asc
+gpgcheck=1
+enabled=1
+type=rpm-md
+failovermethod=priority

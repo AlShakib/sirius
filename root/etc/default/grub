@@ -1,0 +1,13 @@
+#
+# entry=value  : if entry already present in conf, override value in conf if different otherwise append entry to conf.
+# @entry|value : append value to entry's value if present in conf.
+# $entry=value : change value if and only if entry exists.
+# !entry       : remove entry from conf if present.
+# >entry       : forcefully append to conf.
+# ~entry       : uncomment an entry from conf. (Only # is supported)
+#
+# Hide grub menu
+GRUB_TIMEOUT=0
+GRUB_HIDDEN_TIMEOUT=0
+GRUB_HIDDEN_TIMEOUT_QUIET=true
+GRUB_DEFAULT=0

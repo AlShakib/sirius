@@ -1,0 +1,158 @@
+## SETTINGS ##
+
+# Disable search
+org.gnome.desktop.search-providers disable-external true
+
+# Set ibus-avro
+org.gnome.desktop.input-sources sources [('xkb', 'us'), ('ibus', 'ibus-avro')]
+org.gnome.desktop.interface gtk-im-module 'ibus'
+
+# Set input source options
+org.gnome.desktop.input-sources per-window true
+
+# Disable recently used
+org.gnome.desktop.privacy remember-recent-files false
+
+# Set blank screen to 'never'
+org.gnome.desktop.session idle-delay uint32 0
+
+# Set switch input source shortcut
+org.gnome.desktop.wm.keybindings switch-input-source ['<Primary>space']
+org.gnome.desktop.wm.keybindings switch-input-source-backward ['<Primary><Shift>space']
+
+# Set automatice timezone
+org.gnome.desktop.datetime automatic-timezone true
+
+# Set time format to 12h
+org.gtk.Settings.FileChooser clock-format '12h'
+org.gnome.desktop.interface clock-format '12h'
+
+
+## Gnome Tweak Tools ##
+
+# Enable all extensions
+org.gnome.shell enabled-extensions ['arc-menu@linxgem33.com', 'dash-to-panel@jderose9.github.com', 'Internet-Speed-Meter@TH3L0N3C0D3R', 'openweather-extension@jenslody.de', 'panel-osd@berend.de.schouwer.gmail.com', 'remove-dropdown-arrows@mpdeimos.com', 'status-area-horizontal-spacing@mathematical.coffee.gmail.com', 'TopIcons-git@phocean.net', 'user-theme@gnome-shell-extensions.gcampax.github.com', 'windowIsReady_Remover@nunofarruca@gmail.com', 'system-monitor@paradoxxx.zero.gmail.com', 'gsconnect@andyholmes.github.io']
+
+# Set application theme to 'Materia-light'
+org.gnome.desktop.interface gtk-theme 'Materia-light'
+
+# Set user theme (shell) to 'Materia-light'
+org.gnome.shell.extensions.user-theme name 'Materia-light'
+
+# Set icon theme to 'Papirus'
+org.gnome.desktop.interface icon-theme 'Papirus'
+
+# Set interface text font to 'Roboto 11'
+org.gnome.desktop.interface font-name 'Roboto 11'
+
+# Set document text font to 'Roboto 11'
+org.gnome.desktop.interface document-font-name 'Roboto 11'
+
+# Set legacy window titles font to 'Roboto Bold 11'
+org.gnome.desktop.wm.preferences titlebar-font 'Roboto Bold 11'
+
+# Show battery percentage
+org.gnome.desktop.interface show-battery-percentage true
+
+# Show weekday
+org.gnome.desktop.interface clock-show-weekday true
+
+# Show seconds
+org.gnome.desktop.interface clock-show-seconds true
+
+# Set minimize, maximize and close button
+org.gnome.desktop.wm.preferences button-layout 'appmenu:minimize,maximize,close'
+
+# Disable attach modal dialogs
+org.gnome.mutter attach-modal-dialogs false
+
+# Set center new window
+org.gnome.mutter center-new-windows true
+
+
+## Avro Phonetic Preferences ##
+
+# Disable preview window
+com.omicronlab.avro switch-dict false
+com.omicronlab.avro switch-preview false
+
+
+## Tilix ##
+
+# Set autohide the mouse pointer when typing
+com.gexperts.Tilix.Settings auto-hide-mouse true
+
+# Set require <Control> modifier to edit title on click
+com.gexperts.Tilix.Settings control-click-titlebar true
+
+# Set theme variant to 'dark'
+com.gexperts.Tilix.Settings theme-variant 'dark'
+
+# Hide the terminal title if it's the only terminal
+com.gexperts.Tilix.Settings terminal-title-show-when-single false
+
+
+## Files ##
+
+# Set default zoom level to 'small'
+org.gnome.nautilus.list-view default-zoom-level 'small'
+org.gnome.nautilus.icon-view default-zoom-level 'small'
+
+# Set sort folders before files
+org.gtk.Settings.FileChooser sort-directories-first true
+
+## Archive Manager ##
+
+# Turn sidebar on
+org.gnome.FileRoller.UI view-sidebar true
+
+
+## GEdit ##
+
+# Set display line numbers
+org.gnome.gedit.preferences.editor display-line-numbers true
+
+# Set display overview map
+org.gnome.gedit.preferences.editor display-overview-map true
+
+# Set highlight current line
+org.gnome.gedit.preferences.editor highlight-current-line true
+
+# Set highlight matching brackets
+org.gnome.gedit.preferences.editor bracket-matching true
+
+# Set tab size to 4
+org.gnome.gedit.preferences.editor tabs-size uint32 4
+
+# Set insert spaces instead of tabs
+org.gnome.gedit.preferences.editor insert-spaces true
+
+# Enable automatic indentaton
+org.gnome.gedit.preferences.editor auto-indent true
+
+# Set default color scheme to 'plata-light'
+org.gnome.gedit.preferences.editor scheme 'plata-light'
+
+
+## Weather ##
+
+# Set default temperature unit to 'centigrade'
+org.gnome.GWeather temperature-unit 'centigrade'
+
+# Set default location to 'Dhaka'
+org.gnome.Weather locations [<(uint32 2, <('Dhaka', 'VGHS', true, [(0.41626102660064762, 1.5777776438028739)], [(0.41404543583499592, 1.5779279341047632)])>)>]
+
+
+## Rhythmbox ##
+
+# Set watch my library for new files
+org.gnome.rhythmbox.rhythmdb monitor-library true
+
+
+## Software ##
+
+# Disable automatic update notifications
+org.gnome.software download-updates-notify false
+
+# Disable automatic updates
+org.gnome.software download-updates false

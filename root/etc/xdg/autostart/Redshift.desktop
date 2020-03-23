@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Redshift
+Comment=Make color temperature from warm to cool.
+Exec=/usr/bin/redshift -l 23.825551:90.417480 -t 7900:7900
+Terminal=false
+X-Desktop-File-Install-Version=0.22
+OnlyShowIn=GNOME;

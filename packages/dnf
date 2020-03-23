@@ -1,0 +1,228 @@
+# Remove: Application menu for GNOME Shell
+!gnome-shell-extension-apps-menu
+
+# Remove: Background logo extension for GNOME Shell
+!gnome-shell-extension-background-logo
+
+# Remove: vi
+!vi
+
+# Google Roboto fonts
+google-roboto-fonts google-roboto-condensed-fonts google-roboto-mono-fonts google-roboto-slab-fonts
+
+# Powerline packages
+powerline powerline-fonts powerline-docs powerline-go
+
+# Google Noto Sans fonts
+google-noto-sans-fonts google-noto-sans-mono-fonts google-noto-sans-bengali-fonts google-noto-serif-bengali-fonts google-noto-sans-bengali-ui-vf-fonts google-noto-sans-bengali-vf-fonts google-noto-sans-bengali-ui-fonts
+
+# Impallari Raleway fonts
+impallari-raleway-fonts
+
+# Various compilers (C, C++, Objective-C, ...) 
+gcc gcc-c++
+
+# A screen manager that supports multiple logins on one terminal
+screen
+
+# Android platform tools(adb, fastboot)
+android-tools
+
+# Vector-based drawing program using SVG
+inkscape
+
+# Count lines of code
+cloc
+
+# A GNU tool for automatically configuring source code
+autoconf
+
+# A GNU tool for automatically creating Makefiles
+automake
+
+# An image loading library and development files
+gdk-pixbuf2 gdk-pixbuf2-devel
+
+# A library of handy utility functions
+glib2-devel
+
+# Library providing XML and HTML support
+libxml2 libxml2-devel
+
+# Murrine GTK2 engine
+gtk-murrine-engine
+
+# Theme engines for GTK+ 2.0
+gtk2-engines
+
+# A Material Design-like theme for GNOME/GTK+ based desktop environments
+materia-gtk-theme
+
+# pkgconf shim to provide /usr/bin/pkg-config
+pkgconf-pkg-config
+
+# Wrapper around libsass to compile CSS stylesheet
+sassc
+
+# Shell tool for executing jobs in parallel
+parallel
+
+# Ncurses-Based Music Player
+cmus
+
+# DuckDuckGo from the terminal
+ddgr
+
+# Python bindings for Nautilus
+nautilus-python
+
+# Powerful and simple to use screenshot software
+flameshot
+
+# Free exFAT file system implementation
+fuse-exfat
+
+# FUSE-Filesystem to access remote filesystems via SSH
+fuse-sshfs
+
+# Subtitle editor for Gnome
+gnome-subtitles
+
+# Customize advanced GNOME 3 options
+gnome-tweaks
+
+# Gnome Partition Editor
+gparted
+
+# Latest OpenJDK Runtime Environment
+java-latest-openjdk java-latest-openjdk-devel
+
+# Efficient Qt ID3 tag editor
+kid3-qt
+
+# Hardware lister
+lshw
+
+# File change monitoring and synchronization daemon
+lsyncd
+
+# PHP FastCGI Process Manager
+php-fpm
+
+# A web interface for MySQL and MariaDB
+phpMyAdmin
+
+# The MariaDB server and related files
+mariadb-server
+
+# Fedora Media Writer
+mediawriter
+
+# Windows USB installation media creator
+WoeUSB
+
+# Movie player playing most video formats and DVDs
+mpv
+
+# The cross-platform open-source multimedia framework, player and server
+vlc
+
+# A general purpose sound file conversion tool
+sox
+
+# CLI system information tool written in Bash
+neofetch
+
+# A tool resembling top for network traffic
+nethogs
+
+# Network exploration tool and security scanner
+nmap
+
+# Lightweight image viewer
+nomacs
+
+# Node.js Package Manager
+npm
+
+# A Bittorrent Client
+qbittorrent
+
+# Adjusts the color temperature of your screen according to time of day
+redshift
+
+# Simple Screen Recorder is a screen recorder for Linux
+simplescreenrecorder
+
+# Joke command for when you type 'sl' instead of 'ls'
+sl
+
+# Tiling terminal emulator
+tilix
+
+# A version of the VIM editor which includes recent enhancements
+vim-enhanced
+
+# Console-based network traffic monitor
+vnstat
+
+# A compatibility layer for windows applications
+wine
+
+# Work around common problems in Wine
+winetricks
+
+# Command line clipboard grabber
+xclip
+
+# Powerful interactive shell
+zsh
+
+# libuser based util-linux utilities
+util-linux-user
+
+# Sublime Text is a sophisticated text editor for code, markup and prose
+sublime-text
+
+# Sublime Merge is a most excellent git client
+sublime-merge
+
+# Papirus icon theme
+papirus-icon-theme
+
+
+# Personal task manager for GNOME
+gnome-todo
+
+# Development package for building kernel modules to match the kernel
+kernel-devel
+
+# Development support for libelf
+elfutils-libelf elfutils-libelf-devel
+
+# High productivity build system
+meson
+
+# Download manager using GTK+ and libcurl
+uget
+
+# Plymouth "Charge" plugin
+plymouth-theme-charge
+
+# Digital VCR and streaming server
+ffmpeg
+
+# Supplies technical and tag information about a video or audio file (CLI)
+mediainfo
+
+# Command line utilities for inotify
+inotify-tools
+
+# Remote control and meeting solution.
+teamviewer
+
+# Google Chrome
+google-chrome-stable
+
+# Microsoft .NET Core SDK
+dotnet-sdk-3.1 aspnetcore-runtime-3.1 dotnet-runtime-3.1

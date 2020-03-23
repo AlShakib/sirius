@@ -1,0 +1,10 @@
+[bd-mirror-updates]
+name=Fedora - BD - $releasever - $basearch - Updates
+baseurl=http://mirror.amberit.com.bd/fedora/linux/updates/$releasever/Everything/$basearch/
+enabled=1
+repo_gpgcheck=0
+type=rpm
+gpgcheck=1
+metadata_expire=6h
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$releasever-$basearch
+skip_if_unavailable=False
