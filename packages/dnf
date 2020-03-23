@@ -226,3 +226,6 @@ google-chrome-stable
 
 # Microsoft .NET Core SDK
 dotnet-sdk-3.1 aspnetcore-runtime-3.1 dotnet-runtime-3.1
+
+# Installer for the Steam software distribution service
+steam
