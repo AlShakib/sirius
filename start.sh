@@ -436,10 +436,14 @@ install_youtube_dl() {
   else
     print "Downloading youtube-dl"
     wget "https://yt-dl.org/downloads/latest/youtube-dl" -O "/usr/local/bin/youtube-dl" &>> "${LOG_FILE}"
-    is_failed "Done" "Skipping: Downloading youtube-dl binary is failed"
-    print "Installing"
-    chmod a+rx "/usr/local/bin/youtube-dl"
-    is_failed "Done" "Skipping: youtube-dl installation did not complete successfully. See log for more info."
+    if [[ "$?" -eq 0 ]]; then
+      print_success "Done"
+      print "Installing binary"
+      chmod a+rx "/usr/local/bin/youtube-dl"
+      is_failed "Done" "Skipping: youtube-dl installation did not complete successfully. See log for more info."
+    else
+      print_failed "Skipping: Downloading youtube-dl binary is failed. See log for more info."
+    fi
   fi
 }
 
