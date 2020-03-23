@@ -3,6 +3,7 @@
 HOSTNAME="sirius"
 OS_ID="fedora"
 RELEASE_VER="31"
+RELEASE_VAR="workstation"
 CPU_ARCH="x86_64"
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -74,8 +75,9 @@ check_root_access() {
     HAS_ACCESS=0
   fi
   if [[ "$(grep "^ID=" /etc/os-release | cut -d '=' -f2)" != "${OS_ID}" ||\
-         "$(grep "^VERSION_ID=" /etc/os-release | cut -d '=' -f2)" != "${RELEASE_VER}" ]]; then
-    print_failed "This script is for Fedora ${RELEASE_VER} ${CPU_ARCH}"
+        "$(grep "^VERSION_ID=" /etc/os-release | cut -d '=' -f2)" != "${RELEASE_VER}" ||\
+        "$(grep "^VARIANT_ID=" /etc/os-release | cut -d '=' -f2)" != "${RELEASE_VAR}" ]]; then
+    print_failed "This script is for Fedora Workstation ${RELEASE_VER} ${CPU_ARCH}"
     HAS_ACCESS=0
   fi
   if [[ "$HAS_ACCESS" -eq 1 ]]; then
