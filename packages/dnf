@@ -232,3 +232,6 @@ steam
 
 # A free, open source, cross-platform video editor
 shotcut
+
+# Configuration editor for dconf
+dconf-editor
