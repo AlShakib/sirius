@@ -151,6 +151,9 @@ org.gnome.Weather locations [<(uint32 2, <('Dhaka', 'VGHS', true, [(0.4162610266
 # Set Rhythmbox window maximized by default
 org.gnome.rhythmbox maximized true
 
+# Set position of main window pane
+org.gnome.rhythmbox paned-position 165
+
 # Set watch my library for new files
 org.gnome.rhythmbox.rhythmdb monitor-library true
 
