@@ -547,29 +547,37 @@ install_oh_my_zsh() {
 
 edit_root_configurations() {
   while read line; do
-    print "Editing ${line}"
-    if [[ "${line}" == "/etc/default/grub" ]]; then
-      edit "${SRC_DIR}/root/etc/default/grub" "${line}" &>> "${LOG_FILE}"
-      is_failed "${line} modified successfully" "Skipping: ${line} modification is failed. See log for more info."
-      print "Updating grub"
-      if [[ -e "/sys/firmware/efi" ]]; then
-        grub2-mkconfig -o /boot/efi/EFI/fedora/grub.cfg &>> "${LOG_FILE}"
+    if [[ -f "${line}" ]]; then
+      print "Editing ${line}"
+      if [[ "${line}" == "/etc/default/grub" ]]; then
+        edit "${SRC_DIR}/root/etc/default/grub" "${line}" &>> "${LOG_FILE}"
+        is_failed "${line} modified successfully" "Skipping: ${line} modification is failed. See log for more info."
+        print "Updating grub"
+        if [[ -e "/sys/firmware/efi" ]]; then
+          grub2-mkconfig -o /boot/efi/EFI/fedora/grub.cfg &>> "${LOG_FILE}"
+        else
+          grub2-mkconfig -o /boot/grub2/grub.cfg &>> "${LOG_FILE}"
+        fi
+        is_failed "Done" "Skipping: Updating grub is failed"
       else
-        grub2-mkconfig -o /boot/grub2/grub.cfg &>> "${LOG_FILE}"
+        edit "${SRC_DIR}/root${line}" "${line}" &>> "${LOG_FILE}"
+        is_failed "${line} modified successfully" "Skipping: ${line} modification is failed. See log for more info."
       fi
-      is_failed "Done" "Skipping: Updating grub is failed"
     else
-      edit "${SRC_DIR}/root${line}" "${line}" &>> "${LOG_FILE}"
-      is_failed "${line} modified successfully" "Skipping: ${line} modification is failed. See log for more info."
+      print_warning "Skipping: ${line} is not found"
     fi
   done <<< "$(sed -r '/(^#|^ *$)/d;' "${SRC_DIR}/config/root.edit")"
 }
 
 edit_home_configurations() {
   while read line; do
-    print "Editing ${line}"
-    edit "${SRC_DIR}/home${line}" "${SUDO_HOME}${line}" &>> "${LOG_FILE}"
-    is_failed "${line} modified successfully" "Skipping: ${line} modification is failed. See log for more info."
+    if [[ -f "${SUDO_HOME}${line}" ]]; then
+      print "Editing ${line}"
+      edit "${SRC_DIR}/home${line}" "${SUDO_HOME}${line}" &>> "${LOG_FILE}"
+      is_failed "${line} modified successfully" "Skipping: ${line} modification is failed. See log for more info."
+    else
+      print_warning "Skipping: ${line} is not found"
+    fi
   done <<< "$(sed -r '/(^#|^ *$)/d;' "${SRC_DIR}/config/home.edit")"
 }
 
