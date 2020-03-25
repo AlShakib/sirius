@@ -157,9 +157,6 @@ org.gnome.rhythmbox.rhythmdb monitor-library true
 # Set check for new podcast episodes to manual
 org.gnome.rhythmbox.podcast download-interval 'manual'
 
-# Set podcast download location to /home/shakib/.podcast
-org.gnome.rhythmbox.podcast download-location 'file:///home/shakib/.podcast'
-
 
 ## Software ##
 
