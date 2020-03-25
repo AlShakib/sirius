@@ -148,6 +148,9 @@ org.gnome.Weather locations [<(uint32 2, <('Dhaka', 'VGHS', true, [(0.4162610266
 
 ## Rhythmbox ##
 
+# Set Rhythmbox window maximized by default
+org.gnome.rhythmbox maximized true
+
 # Set watch my library for new files
 org.gnome.rhythmbox.rhythmdb monitor-library true
 
