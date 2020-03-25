@@ -16,6 +16,9 @@ org.gnome.desktop.privacy remember-recent-files false
 # Set blank screen to 'never'
 org.gnome.desktop.session idle-delay uint32 0
 
+# Set power button action to Power Off
+org.gnome.settings-daemon.plugins.power power-button-action 'interactive'
+
 # Set switch input source shortcut
 org.gnome.desktop.wm.keybindings switch-input-source ['<Primary>space']
 org.gnome.desktop.wm.keybindings switch-input-source-backward ['<Primary><Shift>space']
