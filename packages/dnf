@@ -235,3 +235,6 @@ shotcut
 
 # Configuration editor for dconf
 dconf-editor
+
+# On-screen display library for X
+xosd
