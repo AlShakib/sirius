@@ -441,7 +441,7 @@ StScrollBar StButton#vhandle:active, StScrollBar StButton#hhandle:active { backg
 
 #panel .panel-button StIcon { margin-top: 1px; }
 
-#panel .panel-button.clock-display > StBoxLayout > StIcon { padding-bottom: 1px; icon-size: 16px; color: #7986cb; }
+#panel .panel-button.clock-display > StBoxLayout > StIcon { padding-bottom: 1px; icon-size: 16px; color: #673ab7; }
 
 #panel StLabel { text-shadow: none; }
 
@@ -869,7 +869,7 @@ StScrollBar StButton#vhandle:active, StScrollBar StButton#hhandle:active { backg
 
 .system-action-icon { icon-size: 48px; border-radius: 999px; background-color: rgba(8, 8, 8, 0.93); color: #f5f5f5; box-shadow: 0 2.5px 4.5px rgba(0, 0, 0, 0.34); }
 
-.app-view-controls { width: 340px; margin-bottom: 18px; border-radius: 999px; background-color: rgba(0, 0, 0, 0.01) !important; box-shadow: 0 0 transparent; }
+.app-view-controls { width: 340px; margin-bottom: 9px; border-radius: 999px; background-color: rgba(0, 0, 0, 0.01) !important; box-shadow: 0 0 transparent; }
 
 .app-view-control { padding: 5px 32px 6px; border-radius: 999px; color: rgba(255, 255, 255, 0.87); background-color: rgba(0, 0, 0, 0.01) !important; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2); font-weight: 500; }
 
@@ -931,7 +931,7 @@ StScrollBar StButton#vhandle:active, StScrollBar StButton#hhandle:active { backg
 
 .app-folder-popup-bin .app-well-app:active .overview-icon { background-color: rgba(245, 245, 245, 0.25); color: #f5f5f5; }
 
-.page-indicator { padding: 16px 24px; }
+.page-indicator { padding: 16px; }
 
 .page-indicator .page-indicator-icon { width: 14px; height: 14px; margin: 2px; padding: 0; border-radius: 999px; border: 0 none transparent; background-image: none; background-color: rgba(0, 0, 0, 0.01); box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.54); }
 
@@ -1343,7 +1343,7 @@ StScrollBar StButton#vhandle:active, StScrollBar StButton#hhandle:active { backg
 
 #LookingGlassDialog { spacing: 4px; padding: 8px; border: none; border-radius: 8.5px; background-color: rgba(8, 8, 8, 0.93); color: #f5f5f5; box-shadow: 0 10px 14px rgba(0, 0, 0, 0.44); }
 
-#LookingGlassDialog.lg-dialog { padding: 0; border-radius: 0 0 8.5px 8.5px; }
+#LookingGlassDialog.lg-dialog { padding: 0 0 8.5px; border-radius: 0 0 8.5px 8.5px; }
 
 #LookingGlassDialog > #Toolbar { padding: 0 6px; border: none; border-radius: 0; background-color: rgba(0, 0, 0, 0.01); box-shadow: inset 0 -1px #1b1b1b; }
 
@@ -1416,14 +1416,6 @@ StBoxLayout#Windows:rtl { padding: 15px 18px 12px 0; }
 .popup-menu StScrollView.apps-menu:ltr { padding: 0 0 0 8px; border-left-width: 1px; }
 
 .popup-menu StScrollView.apps-menu:rtl { padding: 0 8px 0 0; border-right-width: 1px; }
-
-.main-box { background-color: #e7e7e7; }
-
-.main-box .popup-menu:ltr { padding-right: 4px; }
-
-.main-box .popup-menu:rtl { padding-left: 4px; }
-
-.main-box StScrollView.apps-menu { margin-bottom: 4px; padding: 0; border-width: 1px; border-style: solid; border-color: rgba(0, 0, 0, 0.15); background-color: white; }
 
 .openweather-provider { padding: 0 12px; font-weight: 500; border: none; background-color: rgba(0, 0, 0, 0.01); color: rgba(17, 17, 17, 0.87); box-shadow: inset 0 0 0 2px transparent; }
 
@@ -1523,6 +1515,8 @@ StBoxLayout#Windows:rtl { padding: 15px 18px 12px 0; }
 
 #panel.dashtopanelMainPanel.dashtopanelTop #panelLeft:active, #panel.dashtopanelMainPanel.dashtopanelTop #panelLeft:focus, #panel.dashtopanelMainPanel.dashtopanelTop #panelLeft:checked, #panel.dashtopanelMainPanel.dashtopanelTop #panelLeft:overview, #panel.dashtopanelMainPanel.dashtopanelTop #panelCenter:active, #panel.dashtopanelMainPanel.dashtopanelTop #panelCenter:focus, #panel.dashtopanelMainPanel.dashtopanelTop #panelCenter:checked, #panel.dashtopanelMainPanel.dashtopanelTop #panelCenter:overview, #panel.dashtopanelMainPanel.dashtopanelTop .panel-corner:active, #panel.dashtopanelMainPanel.dashtopanelTop .panel-corner:focus, #panel.dashtopanelMainPanel.dashtopanelTop .panel-corner:checked, #panel.dashtopanelMainPanel.dashtopanelTop .panel-corner:overview, #panel.dashtopanelMainPanel.dashtopanelTop .panel-button:active, #panel.dashtopanelMainPanel.dashtopanelTop .panel-button:focus, #panel.dashtopanelMainPanel.dashtopanelTop .panel-button:checked, #panel.dashtopanelMainPanel.dashtopanelTop .panel-button:overview { box-shadow: inset 0 2px #3f51b5; }
 
+#panel.dashtopanelMainPanel.dashtopanelTop #panelLeft StLabel, #panel.dashtopanelMainPanel.dashtopanelTop #panelCenter StLabel, #panel.dashtopanelMainPanel.dashtopanelTop .panel-corner StLabel, #panel.dashtopanelMainPanel.dashtopanelTop .panel-button StLabel { padding-bottom: 0; }
+
 #panel.dashtopanelMainPanel.dashtopanelTop .app-well-app:focus .overview-icon, #panel.dashtopanelMainPanel.dashtopanelTop .app-well-app:hover .overview-icon, #panel.dashtopanelMainPanel.dashtopanelTop .app-well-app:active .overview-icon, #panel.dashtopanelMainPanel.dashtopanelTop .app-well-app:checked .overview-icon, #panel.dashtopanelMainPanel.dashtopanelTop .show-apps:focus .overview-icon, #panel.dashtopanelMainPanel.dashtopanelTop .show-apps:hover .overview-icon, #panel.dashtopanelMainPanel.dashtopanelTop .show-apps:active .overview-icon, #panel.dashtopanelMainPanel.dashtopanelTop .show-apps:checked .overview-icon { border-radius: 0; background-color: rgba(0, 0, 0, 0.01); box-shadow: 0 0 transparent; }
 
 #panel.dashtopanelMainPanel.dashtopanelTop #dashtopanelScrollview { padding: 0; }
@@ -1548,6 +1542,8 @@ StBoxLayout#Windows:rtl { padding: 15px 18px 12px 0; }
 #panel.dashtopanelMainPanel.dashtopanelBottom #panelLeft:hover, #panel.dashtopanelMainPanel.dashtopanelBottom #panelCenter:hover, #panel.dashtopanelMainPanel.dashtopanelBottom .panel-corner:hover, #panel.dashtopanelMainPanel.dashtopanelBottom .panel-button:hover { box-shadow: inset 0 -2px rgba(245, 245, 245, 0.2); }
 
 #panel.dashtopanelMainPanel.dashtopanelBottom #panelLeft:active, #panel.dashtopanelMainPanel.dashtopanelBottom #panelLeft:focus, #panel.dashtopanelMainPanel.dashtopanelBottom #panelLeft:checked, #panel.dashtopanelMainPanel.dashtopanelBottom #panelLeft:overview, #panel.dashtopanelMainPanel.dashtopanelBottom #panelCenter:active, #panel.dashtopanelMainPanel.dashtopanelBottom #panelCenter:focus, #panel.dashtopanelMainPanel.dashtopanelBottom #panelCenter:checked, #panel.dashtopanelMainPanel.dashtopanelBottom #panelCenter:overview, #panel.dashtopanelMainPanel.dashtopanelBottom .panel-corner:active, #panel.dashtopanelMainPanel.dashtopanelBottom .panel-corner:focus, #panel.dashtopanelMainPanel.dashtopanelBottom .panel-corner:checked, #panel.dashtopanelMainPanel.dashtopanelBottom .panel-corner:overview, #panel.dashtopanelMainPanel.dashtopanelBottom .panel-button:active, #panel.dashtopanelMainPanel.dashtopanelBottom .panel-button:focus, #panel.dashtopanelMainPanel.dashtopanelBottom .panel-button:checked, #panel.dashtopanelMainPanel.dashtopanelBottom .panel-button:overview { box-shadow: inset 0 -2px #3f51b5; }
+
+#panel.dashtopanelMainPanel.dashtopanelBottom #panelLeft StLabel, #panel.dashtopanelMainPanel.dashtopanelBottom #panelCenter StLabel, #panel.dashtopanelMainPanel.dashtopanelBottom .panel-corner StLabel, #panel.dashtopanelMainPanel.dashtopanelBottom .panel-button StLabel { padding-bottom: 0; }
 
 #panel.dashtopanelMainPanel.dashtopanelBottom .app-well-app:focus .overview-icon, #panel.dashtopanelMainPanel.dashtopanelBottom .app-well-app:hover .overview-icon, #panel.dashtopanelMainPanel.dashtopanelBottom .app-well-app:active .overview-icon, #panel.dashtopanelMainPanel.dashtopanelBottom .app-well-app:checked .overview-icon, #panel.dashtopanelMainPanel.dashtopanelBottom .show-apps:focus .overview-icon, #panel.dashtopanelMainPanel.dashtopanelBottom .show-apps:hover .overview-icon, #panel.dashtopanelMainPanel.dashtopanelBottom .show-apps:active .overview-icon, #panel.dashtopanelMainPanel.dashtopanelBottom .show-apps:checked .overview-icon { border-radius: 0; background-color: rgba(0, 0, 0, 0.01); box-shadow: 0 0 transparent; }
 
