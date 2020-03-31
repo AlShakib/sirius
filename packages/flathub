@@ -3,6 +3,3 @@ com.spotify.Client
 
 # GNU Image Manipulation Program - Create images and edit photographs
 org.gimp.GIMP
-
-# Telegram Desktop - Telegram Desktop messenger
-org.telegram.desktop
