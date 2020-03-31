@@ -500,35 +500,6 @@ install_ibus_avro() {
   fi
 }
 
-install_telegram_desktop() {
-  print "Installing Telegram Desktop"
-  if [[ -d "${SUDO_HOME}/.opt/Telegram" ]]; then
-    print_warning "Skipping: Telegram Desktop is already installed"
-  else
-    print "Downloading binary"
-    mkdir -p "${TMP_DIR}/telegram" &>> "${LOG_FILE}"
-    wget "https://telegram.org/dl/desktop/linux" -O "${TMP_DIR}/telegram/tsetup.tar.xz" &>> "${LOG_FILE}"
-    if [[ "$?" -eq 0 ]]; then
-      print_success "Done"
-      print "Extracting to temporary directory"
-      cd "${TMP_DIR}/telegram" &>> "${LOG_FILE}"
-      tar xf "tsetup.tar.xz" &>> "${LOG_FILE}"
-      if [[ "$?" -eq 0 ]]; then
-        print "Done"
-        mkdir -p "${SUDO_HOME}/.opt/" &>> "${LOG_FILE}"
-        print "Copying Telegram binary to ${SUDO_HOME}/.opt"
-        rsync -av --chown="${SUDO_USER}":"${SUDO_USER}" "${TMP_DIR}/telegram/Telegram" "${SUDO_HOME}/.opt" &>> "${LOG_FILE}"
-        is_failed "Done" "Skipping: Copying binary is failed"
-      else
-        print_failed "Skipping: Could not extract telegram.tar.xz"
-      fi
-    else
-      print_failed "Skipping: Telegram binary download did not completed successfully. See log for more info."
-    fi
-    print_success "Telegram Desktop successfully installed"
-  fi
-}
-
 install_oh_my_zsh() {
   print "Installing oh-my-zsh for user ${SUDO_USER}"
   usermod --shell "$(which zsh)" "${SUDO_USER}" &>> "${LOG_FILE}"
@@ -692,7 +663,6 @@ setup_operating_system() {
   restore_rclone_config
   restore_csync_config
   restore_vnstat_database
-  install_telegram_desktop
   install_oh_my_zsh
 }
 
