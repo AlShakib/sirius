@@ -5,9 +5,10 @@
   "name": "OpenWeather",
   "shell-version": [
     "3.34",
-    "3.32"
+    "3.32",
+    "3.36"
   ],
   "url": "https://gitlab.com/jenslody/gnome-shell-extension-openweather",
   "uuid": "openweather-extension@jenslody.de",
-  "version": 99
+  "version": 100
 }
