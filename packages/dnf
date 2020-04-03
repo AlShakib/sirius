@@ -240,3 +240,12 @@ dconf-editor
 
 # On-screen display library for X
 xosd
+
+# Command line tool for updating bootloader configs
+grubby
+
+# The open-source application container engine
+docker-ce docker-ce-cli
+
+# An industry-standard container runtime
+containerd.io
