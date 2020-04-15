@@ -238,19 +238,33 @@ let extensionShowNotification = function() {
             this._updateState();
         }));
 
-        this._bannerBin.add_actor(this._banner.actor);
+        if (versionAtLeast('3.36', Config.PACKAGE_VERSION)) {
+            this._bannerBin.add_actor(this._banner);
+        } else
+        {
+            this._bannerBin.add_actor(this._banner.actor);
+        }
 
         if (!versionAtLeast('3.34', Config.PACKAGE_VERSION)) {
             this._bannerBin._opacity = 0;
         }
         this._bannerBin.opacity = 0;
 
-        if (getY_position() < 50)
-            this._bannerBin.y = Main.layoutManager.monitors[0].height;
-        else
-            this._bannerBin.y = -this._banner.actor.height;
+        if (versionAtLeast('3.36', Config.PACKAGE_VERSION)) {
+            if (getY_position() < 50)
+                this._bannerBin.y = Main.layoutManager.monitors[0].height;
+            else
+                this._bannerBin.y = -this._banner.height;
 
-        this.actor.show();
+            this.show();
+        } else
+        {
+            if (getY_position() < 50)
+                this._bannerBin.y = Main.layoutManager.monitors[0].height;
+            else
+                this._bannerBin.y = -this._banner.actor.height;
+            this.actor.show();
+        }
     } else
     {
         this._notificationClickedId = this._notification.connect('done-displaying',
@@ -278,7 +292,13 @@ let extensionShowNotification = function() {
     }
     this._updateShowingNotification();
 
-    let [x, y, mods] = global.get_pointer();
+    let x, y, mods;
+    if (versionAtLeast('3.36', Config.PACKAGE_VERSION)) {
+        [x, y] = global.get_pointer();
+    } else
+    {
+        [x, y, mods] = global.get_pointer();
+    }
     // We save the position of the mouse at the time when we started showing the notification
     // in order to determine if the notification popped up under it. We make that check if
     // the user starts moving the mouse and _onTrayHoverChanged() gets called. We don't
@@ -382,7 +402,7 @@ let extensionHideNotification = function(animate) {
             });
         } else {
             // JRL changes begin
-            y: yPos,
+            this._bannerBin.y = yPos;
             // JRL changes end
             this._bannerBin.opacity = 0;
             this._notificationState = State.HIDDEN;
