@@ -540,13 +540,11 @@ install_oh_my_zsh() {
   sudo -u "${SUDO_USER}" sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)" "" --unattended &>> "${LOG_FILE}"
   sudo -u "${SUDO_USER}" git clone "https://github.com/zsh-users/zsh-autosuggestions" "${SUDO_HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions" &>> "${LOG_FILE}"
   chown "${SUDO_USER}":"${SUDO_USER}" "${SUDO_HOME}/.zshrc.pre-oh-my-zsh" &>> "${LOG_FILE}"
-  edit "${SRC_DIR}/home/.zshrc" "${SUDO_HOME}/.zshrc" &>> "${LOG_FILE}"
   is_failed "Done" "Skipping: oh-my-zsh installation did not complete successfully for user ${SUDO_USER}. See log for more info."
   print "Installing oh-my-zsh for user root"
   usermod --shell "$(which zsh)" root &>> "${LOG_FILE}"
   sudo -u root sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)" "" --unattended &>> "${LOG_FILE}"
   git clone "https://github.com/zsh-users/zsh-autosuggestions" "/root/.oh-my-zsh/custom/plugins/zsh-autosuggestions" &>> "${LOG_FILE}"
-  edit "${SRC_DIR}/root/root/.zshrc" "/root/.zshrc" &>> "${LOG_FILE}"
   is_failed "Done" "Skipping: oh-my-zsh installation did not complete successfully for user root. See log for more info."
 }
 
@@ -717,13 +715,13 @@ setup_operating_system() {
   remove_pip_packages
   install_ibus_avro
   set_misc_flags
-  edit_root_configurations
-  edit_home_configurations
   restore_rclone_config
   restore_csync_config
   restore_vnstat_database
   install_telegram_desktop
   install_oh_my_zsh
+  edit_root_configurations
+  edit_home_configurations
 }
 
 start() {
