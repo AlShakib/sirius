@@ -688,11 +688,17 @@ set_misc_flags() {
   is_failed "Done" "Skipping: Setting default plymouth theme to charge is failed. See log for more info."
   
   # add non root user to adbusers
+  print "Creating the adbusers group"
+  if [ $(getent group adbusers) ]; then
+    print_success "Skipping: The adbusers group already exists"
+  else
+    groupadd adbusers &>> "${LOG_FILE}"
+    is_failed "Done" "Skipping: Can not create the adbusers group. See log for more info."
+  fi
   print "Add non root user to group adbusers"
-  groupadd adbusers "${SUDO_USER}" &>> "${LOG_FILE}"
   usermod -a -G adbusers "${SUDO_USER}" &>> "${LOG_FILE}"
-  systemctl restart systemd-udevd.service &>> "${LOG_FILE}"
   is_failed "Done" "Skipping: Adding non root user to group adbusers is failed. See log for more info."
+  systemctl restart systemd-udevd.service &>> "${LOG_FILE}"
 }
 
 setup_operating_system() {
