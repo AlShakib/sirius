@@ -534,6 +534,28 @@ install_telegram_desktop() {
   fi
 }
 
+install_heroku_cli() {
+  print "Installing Heroku CLI"
+  if [[ -x "$(command -v heroku)" ]]; then
+    print_success "Skipping: Heroku CLI is already installed"
+  else
+    mkdir -p "${TMP_DIR}/heroku"
+    print "Downloading Heroku CLI installer script"
+    wget "https://cli-assets.heroku.com/install.sh" -O "${TMP_DIR}/heroku/install.sh" &>> "${LOG_FILE}"
+    if [[ "$?" -ne 0 ]]; then
+      print_failed "Skipping: Heroku CLI installer downloading did not complete successfully. See log for more info."
+    else
+      print_success "Done"
+      cd "${TMP_DIR}/heroku"
+      print "Installing now"
+      chmod +x "install.sh"
+      sh -c "install.sh" &>> "${LOG_FILE}"
+      is_failed "Done" "Skipping: Heroku CLI installation did not complete successfully. See log for more info."
+      cd "${OLDPWD}"
+    fi
+  fi
+}
+
 install_oh_my_zsh() {
   print "Installing oh-my-zsh for user ${SUDO_USER}"
   usermod --shell "$(which zsh)" "${SUDO_USER}" &>> "${LOG_FILE}"
@@ -719,6 +741,7 @@ setup_operating_system() {
   restore_csync_config
   restore_vnstat_database
   install_telegram_desktop
+  install_heroku_cli
   install_oh_my_zsh
   edit_root_configurations
   edit_home_configurations
