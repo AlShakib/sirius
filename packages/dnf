@@ -249,3 +249,9 @@ containerd.io
 
 # A time management utility for GNOME
 gnome-shell-extension-pomodoro
+
+# QEMU is a FAST! processor emulator
+qemu
+
+# Desktop tool for managing virtual machines via libvirt
+virt-manager

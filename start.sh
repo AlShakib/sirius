@@ -718,7 +718,18 @@ set_misc_flags() {
   print "Add non root user to group adbusers"
   usermod -a -G adbusers "${SUDO_USER}" &>> "${LOG_FILE}"
   is_failed "Done" "Skipping: Adding non root user to group adbusers is failed. See log for more info."
+  print "Add non root user to group qemu"
+  usermod -a -G qemu "${SUDO_USER}" &>> "${LOG_FILE}"
+  is_failed "Done" "Skipping: Adding non root user to group qemu is failed. See log for more info."
+  print "Add non root user to group libvirt"
+  usermod -a -G libvirt "${SUDO_USER}" &>> "${LOG_FILE}"
+  is_failed "Done" "Skipping: Adding non root user to group libvirt is failed. See log for more info."
+  print "Add non root user to group kvm"
+  usermod -a -G kvm "${SUDO_USER}" &>> "${LOG_FILE}"
+  is_failed "Done" "Skipping: Adding non root user to group kvm is failed. See log for more info."
+  print "Restarting systemd-udevd.service"
   systemctl restart systemd-udevd.service &>> "${LOG_FILE}"
+  is_failed "Done" "Skipping: Restarting systemd-udevd.service is failed. See log for more info."
 }
 
 setup_operating_system() {
