@@ -706,6 +706,15 @@ set_misc_flags() {
   print "Set default plymouth theme to charge"
   plymouth-set-default-theme charge -R &>> "${LOG_FILE}"
   is_failed "Done" "Skipping: Setting default plymouth theme to charge is failed. See log for more info."
+
+  print "Setting owner of some directory and files to ${SUDO_USER}"
+  if [[ -d "${SUDO_HOME}/.opt" ]]; then
+    chown "${SUDO_USER}":"${SUDO_USER}" -R "${SUDO_HOME}/.opt" &>> "${LOG_FILE}"
+  fi
+  if [[ -d "${SUDO_HOME}/.bin" ]]; then
+    chown "${SUDO_USER}":"${SUDO_USER}" -R "${SUDO_HOME}/.bin" &>> "${LOG_FILE}"
+  fi
+  is_failed "Done" "Skipping: Setting owner of some directory and files to ${SUDO_USER} is failed. See log for more info."
   
   # add non root user to adbusers
   print "Creating the adbusers group"
