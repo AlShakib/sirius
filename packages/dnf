@@ -97,6 +97,9 @@ gparted
 # Latest OpenJDK Runtime Environment
 java-latest-openjdk java-latest-openjdk-devel
 
+# Java 8
+java-1.8.0-openjdk java-1.8.0-openjdk-devel
+
 # Efficient Qt ID3 tag editor
 kid3-qt
 
