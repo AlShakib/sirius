@@ -1,9 +1,8 @@
 /*
 * Name: Internet Speed Meter
-* Version: 1.3
-* Description: A simple and minimal internet speed meter for Gnome Shell.
-* Author: @TH3L0N3C0D3R
-* GitLab: https://gitlab.com/TH3L0N3C0D3R/Internet-Speed-Meter
+* Description: A simple and minimal internet speed meter extension for Gnome Shell.
+* Author: Al Shakib
+* GitLab: https://gitlab.com/AlShakib/InternetSpeedMeter
 * License: GPLv3.0
 */
 
@@ -14,6 +13,7 @@ const Mainloop = imports.mainloop;
 const refreshTime = 1.0; // Set refresh time to one second.
 
 let prevBytes = 0.0, prevSpeed = 0.0;
+let button, timeout, netSpeed;
 
 function getNetSpeed() {
   try {
@@ -38,6 +38,7 @@ function getNetSpeed() {
       }
     }
     fileStream.close(null);
+    dataStream.close(null);
     if (prevBytes === 0.0) {
       prevBytes = bytes;
     }
@@ -64,7 +65,6 @@ function netSpeedFormat(speed) {
   return String("⇅ " + speed.toFixed(2) + " " + units[i]);
 }
 
-let button, timeout, netSpeed;
 function init() {
   button = new St.Bin({
     style_class: 'panel-button',
