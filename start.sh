@@ -782,7 +782,7 @@ start() {
   echo "|                                                                            |"
   echo "+----------------------------------------------------------------------------+"
   echo "|                                                                            |"
-  echo "|  1. Setup Operating System                                                 |"
+  echo "|  1. Start Installation                                                     |"
   echo "|  2. Install Scripts                                                        |"
   echo "|  3. Restore Backup                                                         |"
   echo "|  4. Backup                                                                 |"
