@@ -54,6 +54,9 @@ org.gnome.desktop.interface document-font-name 'Roboto 11'
 # Set legacy window titles font to 'Roboto Bold 11'
 org.gnome.desktop.wm.preferences titlebar-font 'Roboto Bold 11'
 
+# Set monospace text font to 'JetBrains Mono Medium 10'
+org.gnome.desktop.interface monospace-font-name 'JetBrains Mono Medium 10'
+
 # Show battery percentage
 org.gnome.desktop.interface show-battery-percentage true
 
