@@ -486,6 +486,33 @@ install_rclone() {
   fi
 }
 
+install_hugo_extended_cli() {
+  print "Installing hugo extended cli"
+  if [[ -x "$(command -v hugo)" ]]; then
+    print_success "Skipping: hugo is already installed"
+  else
+    mkdir -p "${TMP_DIR}/hugo"
+    print "Downloading hugo extended pre compiled binary"
+    curl --silent "https://api.github.com/repos/gohugoio/hugo/releases/latest" \
+        | grep "browser_download_url.*hugo_extended_.*Linux.*64bit.*tar.gz" \
+        | cut -d '"' -f 4 | wget -i - -O "${TMP_DIR}/hugo/hugo.tar.gz" &>> "${LOG_FILE}"
+    if [[ "$?" -ne 0 ]]; then
+      print_failed "Skipping: hugo downloading did not complete successfully. See log for more info."
+    else
+      print_success "Done"
+      cd "${TMP_DIR}/hugo"
+      print "Extracting hugo bundle"
+      tar xf "hugo.tar.gz" &>> "${LOG_FILE}"
+      is_failed "Done" "Skipping. Extracting hugo bundle is failed. See log for more info."
+      print "Installing hugo extended binary"
+      rsync -av --chown=root:root "${TMP_DIR}/hugo/hugo" "/usr/local/bin" &>> "${LOG_FILE}"
+      chmod +x "/usr/local/bin/hugo" &>> "${LOG_FILE}"
+      is_failed "Done" "Skipping: hugo installation did not complete successfully. See log for more info."
+      cd "${OLDPWD}"
+    fi
+  fi
+}
+
 install_ibus_avro() {
   print "Installing ibus-avro"
   if [[ -d "${SRC_DIR}/apps/ibus-avro" ]]; then
@@ -765,6 +792,7 @@ setup_operating_system() {
   install_oh_my_zsh
   edit_root_configurations
   edit_home_configurations
+  install_hugo_extended_cli
 }
 
 start() {
