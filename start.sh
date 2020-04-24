@@ -513,6 +513,32 @@ install_hugo_extended_cli() {
   fi
 }
 
+install_typora() {
+  print "Installing typora"
+  if [[ -x "$(command -v typora)" ]]; then
+    print_success "Skipping: typora is already installed"
+  else
+    mkdir -p "${TMP_DIR}/typora"
+    print "Downloading typora pre compiled binary"
+    wget "https://typora.io/linux/Typora-linux-x64.tar.gz" -O "${TMP_DIR}/typora/typora.tar.gz" &>> "${LOG_FILE}"
+    if [[ "$?" -ne 0 ]]; then
+      print_failed "Skipping: typora downloading did not complete successfully. See log for more info."
+    else
+      print_success "Done"
+      cd "${TMP_DIR}/typora"
+      print "Extracting typora bundle"
+      tar xf "typora.tar.gz" &>> "${LOG_FILE}"
+      is_failed "Done" "Skipping. Extracting typora bundle is failed. See log for more info."
+      print "Installing typora binary"
+      mkdir -p "/opt/typora"
+      rsync -av --chown=root:root "${TMP_DIR}/typora/bin/Typora-linux-x64/" "/opt/typora" &>> "${LOG_FILE}"
+      ln -s "/opt/typora/Typora" "/usr/local/bin/typora" &>> "${LOG_FILE}"
+      is_failed "Done" "Skipping: typora installation did not complete successfully. See log for more info."
+      cd "${OLDPWD}"
+    fi
+  fi
+}
+
 install_ibus_avro() {
   print "Installing ibus-avro"
   if [[ -d "${SRC_DIR}/apps/ibus-avro" ]]; then
@@ -772,6 +798,8 @@ setup_operating_system() {
   copy_to_system
   install_youtube_dl
   install_rclone
+  install_hugo_extended_cli
+  install_typora
   install_bash_scripts
   add_repos
   install_flathub_packages
@@ -792,7 +820,6 @@ setup_operating_system() {
   install_oh_my_zsh
   edit_root_configurations
   edit_home_configurations
-  install_hugo_extended_cli
 }
 
 start() {

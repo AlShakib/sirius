@@ -19,6 +19,7 @@
    - [youtube-dl](https://youtube-dl.org)
    - [rclone](https://rclone.org)
    - [hugo extended](https://gohugo.io)
+   - [Typora](https://typora.io)
    - RPM Packages ([List Here](packages/dnf))
    - Flathub Packages ([List Here](packages/flathub))
    - NPM Packages ([List Here](packages/npm))
