@@ -258,3 +258,6 @@ qemu
 
 # Desktop tool for managing virtual machines via libvirt
 virt-manager
+
+# A lightweight email program designed around conversations
+geary
