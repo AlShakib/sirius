@@ -66,6 +66,7 @@
    - Mukti
    - Nikosh
    - Nirmala
+   - Nunito
    - Pacifico
    - Poppins
    - Sagar
