@@ -101,8 +101,8 @@ com.gexperts.Tilix.Settings terminal-title-show-when-single false
 ## Files ##
 
 # Set default zoom level to 'small'
-org.gnome.nautilus.list-view default-zoom-level 'small'
-org.gnome.nautilus.icon-view default-zoom-level 'small'
+org.gnome.nautilus.list-view default-zoom-level 'standard'
+org.gnome.nautilus.icon-view default-zoom-level 'standard'
 
 # Set sort folders before files
 org.gtk.Settings.FileChooser sort-directories-first true
