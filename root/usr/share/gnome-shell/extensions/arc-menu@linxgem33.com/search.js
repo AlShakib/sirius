@@ -43,7 +43,6 @@ var MAX_APPS_SEARCH_RESULTS_ROWS = 6;
 var LARGE_ICON_SIZE = 36;
 var MEDIUM_ICON_SIZE = 25;
 var SMALL_ICON_SIZE = 16;
-const gnome36 = imports.misc.config.PACKAGE_VERSION >= '3.35.0';
 
 var ListSearchResult = class ArcMenu_ListSearchResult {
     constructor(provider, metaInfo, resultsView) {
@@ -179,10 +178,10 @@ var AppSearchResult = class  ArcMenu_AppSearchResult {
             this.icon = this.metaInfo['createIcon'](largeIcons ? MEDIUM_ICON_SIZE : SMALL_ICON_SIZE);
             if (this.icon){
                 this.icon.icon_size = largeIcons ? MEDIUM_ICON_SIZE : SMALL_ICON_SIZE;
+                this.icon.y_align = Clutter.ActorAlign.CENTER;
+                this.icon.x_align = Clutter.ActorAlign.CENTER;
                 this.menuItem.actor.add_child(this.icon);   
             }
-                  
-
             this.menuItem.actor.add_child(this.label);
         }
         this.menuItem.connect('activate', this.activate.bind(this)); 
@@ -208,13 +207,12 @@ var SearchResultsBase = class ArcMenu_SearchResultsBase{
 
         this._resultDisplayBin = new St.Bin({ 
             x_fill: true,
-            y_fill: true 
+            y_fill: true,
+            x_expand: true,
+            y_expand: true
         });
 
-        this.actor.add(this._resultDisplayBin, { 
-            expand: true,
-            x_fill:true 
-        });
+        this.actor.add(this._resultDisplayBin);
 
         this._resultDisplays = {};
 
@@ -351,8 +349,13 @@ var ListSearchResults = class ArcMenu_ListSearchResults extends SearchResultsBas
     constructor(provider, resultsView) {
         super(provider, resultsView);
         this._button= resultsView._button;
-        this._container = new St.BoxLayout({vertical: true,x_align: St.Align.START });
-        this.providerInfo = new ArcSearchProviderInfo(provider,this._button);
+        this._container = new St.BoxLayout({
+            vertical: true,
+            x_align: Clutter.ActorAlign.FILL,
+            x_expand: true,
+            y_expand: true 
+        });
+        this.providerInfo = new ArcSearchProviderInfo(provider, this._button);
         this.providerInfo.connect('key-focus-in', this._keyFocusIn.bind(this));
         this.providerInfo.connect('activate', () => {
             this.providerInfo.animateLaunch();
@@ -360,20 +363,13 @@ var ListSearchResults = class ArcMenu_ListSearchResults extends SearchResultsBas
             this._button.leftClickMenu.toggle();
         });
 
-        this._container.add(this.providerInfo.actor, { 
-            x_fill: true,
-            y_fill: false,
-            x_align: St.Align.START,
-            y_align: St.Align.START,
-            x_expand:true 
-        });
+        this._container.add(this.providerInfo.actor);
 
         this._content = new St.BoxLayout({ 
             vertical: true 
         });
-        this._container.add(this._content, { 
-            expand: true
-        });
+
+        this._container.add(this._content);
 
         this._resultDisplayBin.set_child(this._container);
     }
@@ -462,8 +458,10 @@ var SearchResults = class ArcMenu_SearchResults {
        
         this._statusText = new St.Label();
         this._statusBin = new St.Bin({ 
-            x_align: gnome36 ? Clutter.ActorAlign.CENTER : St.Align.MIDDLE,
-            y_align: gnome36 ? Clutter.ActorAlign.CENTER : St.Align.MIDDLE
+            x_align: Clutter.ActorAlign.CENTER,
+            y_align: Clutter.ActorAlign.CENTER,
+            x_expand: true,
+            y_expand: true  
         });
 
         if(button._settings.get_boolean('enable-custom-arc-menu'))
@@ -471,9 +469,7 @@ var SearchResults = class ArcMenu_SearchResults {
         else
             this._statusText.style_class = '';
         
-        this.actor.add(this._statusBin, { 
-            expand: true 
-        });
+        this.actor.add(this._statusBin);
         this._statusBin.add_actor(this._statusText);
 
         this._highlightDefault = false;
@@ -782,7 +778,11 @@ var ArcSearchProviderInfo = GObject.registerClass(class ArcMenu_ArcSearchProvide
              x_align: Clutter.ActorAlign.START,
              x_expand: true
         });
-
+        this.actor.x_fill = true;
+        this.actor.y_fill = false;
+        this.actor.x_align = Clutter.ActorAlign.FILL;
+        this.actor.y_align = Clutter.ActorAlign.START;
+        this.actor.x_expand = true; 
         this._moreText="";
         if(this._settings.get_boolean('krunner-show-details') && this._settings.get_enum('menu-layout')==Constants.MENU_LAYOUT.Runner){
             this.actor.style = "height:40px";

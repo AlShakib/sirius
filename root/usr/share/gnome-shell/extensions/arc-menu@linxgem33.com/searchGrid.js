@@ -39,7 +39,6 @@ const SEARCH_PROVIDERS_SCHEMA = 'org.gnome.desktop.search-providers';
 
 var MAX_LIST_SEARCH_RESULTS_ROWS = 6;
 var MAX_APPS_SEARCH_RESULTS_ROWS = 6;
-const gnome36 = imports.misc.config.PACKAGE_VERSION >= '3.35.0';
 
 var ListSearchResult = class ArcMenu_ListSearchResultGrid {
     constructor(provider, metaInfo, resultsView) {
@@ -54,28 +53,24 @@ var ListSearchResult = class ArcMenu_ListSearchResultGrid {
         else if(this._app)
             this.menuItem = new MW.SearchResultItem(this._button,this._app); 
         else
-            this.menuItem =  new MW.SearchResultItem(this._button); 
+            this.menuItem = new MW.SearchResultItem(this._button); 
 
         this.menuItem.connect('activate', this.activate.bind(this));
 
         this._termsChangedId = 0;
-        this.menuItem.actor.style =  "border-radius:4px;";
         this.layout = this._settings.get_enum('menu-layout');
+
         let ICON_SIZE = 32;
-        if(this.layout == Constants.MENU_LAYOUT.Elementary || this.layout == Constants.MENU_LAYOUT.UbuntuDash){
-            ICON_SIZE = 32;
-        }
-        else {
+        if(this.layout !== Constants.MENU_LAYOUT.Elementary && this.layout !== Constants.MENU_LAYOUT.UbuntuDash){
             ICON_SIZE = 24;
-        } 
-        
+        }
+        this.menuItem.actor.style = "border-radius:4px;";
         // An icon for, or thumbnail of, content
         let icon = this.metaInfo['createIcon'](ICON_SIZE);
-        if (icon){
-            this.menuItem.actor.add_child(icon);   
-        }
+        if (icon)
+            this.menuItem.actor.add_child(icon); 
         else
-            this.menuItem.actor.style = (ICON_SIZE==32) ?  "border-radius:4px; padding: 12px 0px;":  "padding: 9px 0px;";
+            this.menuItem.actor.style = (ICON_SIZE == 32) ?  "border-radius:4px; padding: 12px 0px;":  "border-radius:4px; padding: 9px 0px;";
 
         this.label = new St.Label({ 
             text: this.metaInfo['name'],
@@ -133,7 +128,7 @@ var ListSearchResult = class ArcMenu_ListSearchResultGrid {
 
 var AppSearchResult = class ArcMenu_AppSearchResultGrid {
     constructor(provider, metaInfo, resultsView) {
-               this.provider = provider;
+        this.provider = provider;
         this._button= resultsView._button;
         this.metaInfo = metaInfo;
         this._resultsView = resultsView;
@@ -141,7 +136,8 @@ var AppSearchResult = class ArcMenu_AppSearchResultGrid {
         this.layout = this._settings.get_enum('menu-layout');
         this._app = appSys.lookup_app(this.metaInfo['id']);
         if(this._app){
-            this.menuItem = new MW.ApplicationMenuIcon(this._button, this._app);
+            let isIconGrid = true;
+            this.menuItem = new MW.ApplicationMenuItem(this._button, this._app, isIconGrid);
         }
         else{
             let ICON_SIZE = 16;
@@ -155,10 +151,11 @@ var AppSearchResult = class ArcMenu_AppSearchResultGrid {
                 this.menuItem.actor.style ='border-radius:4px; padding: 5px; spacing: 0px; width:80px;height:80px;';
                 ICON_SIZE = 36;
             } 
-
             this.icon = this.metaInfo['createIcon'](ICON_SIZE);         
             if(this.icon){
                 this.icon.icon_size = ICON_SIZE;
+                this.icon.y_align = Clutter.ActorAlign.CENTER;
+                this.icon.x_align = Clutter.ActorAlign.CENTER;
                 this.menuItem.actor.add_child(this.icon);   
             }
             else{
@@ -173,8 +170,8 @@ var AppSearchResult = class ArcMenu_AppSearchResultGrid {
             this.label = new St.Label({
                 text: this.metaInfo['name'],
                 y_expand: false,
-                y_align: St.Align.END,
-                x_align: St.Align.END
+                y_align: Clutter.ActorAlign.END,
+                x_align: Clutter.ActorAlign.CENTER
             });
             this.menuItem.actor.add_child(this.label);
             this.menuItem.label = this.label;
@@ -339,15 +336,15 @@ var ListSearchResults = class ArcMenu_ListSearchResultsGrid extends SearchResult
         this.layout = this._settings.get_enum('menu-layout');
         this._container = new St.BoxLayout({
             vertical: false,
-            x_align: St.Align.START 
+            x_align: Clutter.ActorAlign.FILL
         });
-
+        
         if(this.layout == Constants.MENU_LAYOUT.Raven){
             this._container.vertical = true;
-            this._container.style = null;
+            this._container.style = null;  
         }
         else{
-            this._container.style = "padding: 10px;";
+            this._container.style = "padding: 10px; spacing: 6px;";
         }
         
         this.providerInfo = new ArcSearchProviderInfo(provider,this._button);
@@ -357,25 +354,20 @@ var ListSearchResults = class ArcMenu_ListSearchResultsGrid extends SearchResult
             provider.launchSearch(this._terms);
             this._button.leftClickMenu.toggle();
         });
-        this._container.add(this.providerInfo.actor, { 
-            x_fill: true,
-            y_fill: false,
-            x_align: St.Align.START,
-            y_align: St.Align.START,
-            x_expand:true 
-        });
+        this._container.add(this.providerInfo.actor);
 
         this._content = new St.BoxLayout({
-            vertical: true 
+            vertical: true,
+            x_expand: true,
+            y_expand: true,
+            x_align: Clutter.ActorAlign.FILL
         });
 
-        this._container.add(this._content, { 
-            expand: true
-        });
+        this._container.add(this._content);
   
         this._resultDisplayBin.set_child(this._container);
-        this._resultDisplayBin.x_expand = true;
-        this._resultDisplayBin.x_fill = true;
+        //this._resultDisplayBin.x_expand = true;
+        this._resultDisplayBin.x_align = Clutter.ActorAlign.FILL;
     }
 
     _setMoreCount(count) {
@@ -417,7 +409,7 @@ var AppSearchResults = class ArcMenu_AppSearchResultsGrid extends SearchResultsB
         this._grid = new St.BoxLayout({vertical: false});
         this._grid.style = "padding: 10px; spacing:10px;";        
         this._resultDisplayBin.set_child(this._grid);
-        this._resultDisplayBin.x_align =  gnome36 ? Clutter.ActorAlign.CENTER : St.Align.MIDDLE
+        this._resultDisplayBin.x_align = Clutter.ActorAlign.CENTER;
     }
 
     _getMaxDisplayedResults() {
@@ -455,11 +447,15 @@ var SearchResults = class ArcMenu_SearchResultsGrid {
         this.layout = button._settings.get_enum('menu-layout');
 
         this.actor = new St.BoxLayout({
+            x_expand: true,
+            y_expand: false,
+            x_align: Clutter.ActorAlign.FILL,
             vertical: true 
         });
         this.actor._delegate = this.actor;
         this._content = new St.BoxLayout({
-            vertical: true 
+            vertical: true,
+            x_align: Clutter.ActorAlign.FILL 
         });
 
         this.actor.add(this._content);
@@ -474,8 +470,8 @@ var SearchResults = class ArcMenu_SearchResultsGrid {
         this._statusText = new St.Label();
 
         this._statusBin = new St.Bin({ 
-            x_align: gnome36 ? Clutter.ActorAlign.CENTER : St.Align.MIDDLE,
-            y_align: gnome36 ? Clutter.ActorAlign.CENTER : St.Align.MIDDLE
+            x_align: Clutter.ActorAlign.CENTER,
+            y_align: Clutter.ActorAlign.CENTER
         });
 
         if(button._settings.get_boolean('enable-custom-arc-menu'))
@@ -674,7 +670,6 @@ var SearchResults = class ArcMenu_SearchResultsGrid {
 
         let providerDisplay;
         if (provider.appInfo)
-      
             providerDisplay = new ListSearchResults(provider, this);
         else
             providerDisplay = new AppSearchResults(provider, this);
@@ -788,9 +783,15 @@ var ArcSearchProviderInfo = GObject.registerClass(class ArcMenu_ArcSearchProvide
         this._button = button;
         this._settings = button._settings;
         this.layout = button._settings.get_enum('menu-layout');
-
+        this.actor.x_align = Clutter.ActorAlign.FILL;
+        this.actor.y_align = Clutter.ActorAlign.START;
+        this.actor.x_expand = false; 
         this._content = new St.BoxLayout({ 
-            vertical: false 
+            vertical: false,
+            vertical: false,
+            x_align: Clutter.ActorAlign.FILL,
+            y_align: Clutter.ActorAlign.START,
+            x_expand: true
         });
         this._content.style = "spacing: 5px;";
 
@@ -804,7 +805,7 @@ var ArcSearchProviderInfo = GObject.registerClass(class ArcMenu_ArcSearchProvide
             this.actor.style = "border-radius:4px; spacing: 0px; width: 190px;";
             icon.icon_size = 32;
         }
-        if(this.layout == Constants.MENU_LAYOUT.Raven){
+        else if(this.layout == Constants.MENU_LAYOUT.Raven){
             icon.icon_size = 24;
             this._content.style = "spacing: 12px;";
         }

@@ -25,13 +25,28 @@ const Me = imports.misc.extensionUtils.getCurrentExtension();
 const Gettext = imports.gettext.domain(Me.metadata['gettext-domain']);
 const _ = Gettext.gettext;
 
-var VERSION = "42.7";
+var SearchbarLocation = {
+    BOTTOM: 0,
+    TOP: 1
+}
+
+var SearchType = {
+    LIST_VIEW: 0,
+    GRID_VIEW: 1
+}
 
 var CURRENT_MENU = {
     FAVORITES: 0,
     CATEGORIES: 1,
     CATEGORY_APPLIST: 2,
     SEARCH_RESULTS: 3
+};
+
+var CategoryType = {
+    FREQUENT_APPS: 0,
+    FAVORITES: 1,
+    ALL_PROGRAMS: 2,
+    HOME_SCREEN: 3
 };
 
 var ARC_MENU_PLACEMENT = {
@@ -57,10 +72,12 @@ var DIRECTION = {
     UP: 0,
     DOWN: 1
 };
+
 var SEPARATOR_ALIGNMENT = {
     VERTICAL: 0,
     HORIZONTAL: 1
 };
+
 var SEPARATOR_STYLE = {
     NORMAL: 0,
     LONG: 1,
@@ -106,25 +123,6 @@ var DIALOG_TYPE = {
     Mint_Pinned_Apps: 1,
     Application_Shortcuts: 2,
     Directories_Shortcuts: 3
-};
-
-var MENU_LAYOUT = { // See: org.gnome.shell.extensions.arc-menu.menu-position
-    Default: 0,
-    Brisk: 1,
-    Whisker: 2,
-    GnomeMenu: 3,
-    Mint: 4,
-    Elementary: 5,
-    GnomeDash: 6,
-    Simple: 7,
-    Simple2: 8,
-    Redmond: 9,
-    UbuntuDash: 10,
-    Budgie: 11,
-    Windows: 12,
-    Runner: 13,
-    Chromebook: 14,
-    Raven: 15
 };
 
 var MENU_APPEARANCE = {
@@ -176,29 +174,73 @@ var MENU_ICONS = [
     { name: _("Search"), path: '/media/icons/search-symbolic.svg'}
 ]
 
-var MENU_STYLE_CHOOSER = {
-    ThumbnailHeight: 200,
+var MENU_LAYOUT = {
+    Default: 0,
+    Brisk: 1,
+    Whisker: 2,
+    GnomeMenu: 3,
+    Mint: 4,
+    Elementary: 5,
+    GnomeDash: 6,
+    Simple: 7,
+    Simple2: 8,
+    Redmond: 9,
+    UbuntuDash: 10,
+    Budgie: 11,
+    Windows: 12,
+    Runner: 13,
+    Chromebook: 14,
+    Raven: 15
+};
+
+var TRADITIONAL_MENU_STYLE = [   
+    { thumbnail: '/media/layouts/arc-menu.svg', name: _('Arc Menu'), layout: MENU_LAYOUT.Default},
+    { thumbnail: '/media/layouts/brisk-menu.svg', name: _('Brisk Menu Style'), layout: MENU_LAYOUT.Brisk},
+    { thumbnail: '/media/layouts/whisker-menu.svg', name: _('Whisker Menu Style'), layout: MENU_LAYOUT.Whisker},
+    { thumbnail: '/media/layouts/gnome-menu.svg', name: _('GNOME Menu Style'), layout: MENU_LAYOUT.GnomeMenu},
+    { thumbnail: '/media/layouts/mint-menu.svg', name: _('Mint Menu Style'), layout: MENU_LAYOUT.Mint},
+    { thumbnail: '/media/layouts/budgie-menu.svg', name: _('Budgie Style'), layout: MENU_LAYOUT.Budgie}];
+
+var MODERN_MENU_STYLE = [   
+    { thumbnail: '/media/layouts/windows-10.svg', name: _('Windows 10 Style'), layout: MENU_LAYOUT.Windows},
+    { thumbnail: '/media/layouts/ubuntu-dash-menu.svg', name: _('Ubuntu Dash Style'), layout: MENU_LAYOUT.UbuntuDash},
+    { thumbnail: '/media/layouts/redmond-style-menu.svg', name: _('Redmond Menu Style'), layout: MENU_LAYOUT.Redmond}];
+
+var TOUCH_MENU_STYLE = [   
+    { thumbnail: '/media/layouts/elementary-menu.svg', name: _('Elementary Menu Style'), layout: MENU_LAYOUT.Elementary},
+    { thumbnail: '/media/layouts/chromebook-menu.svg', name: _('Chromebook Style'), layout: MENU_LAYOUT.Chromebook}];
+
+var LAUNCHER_MENU_STYLE = [   
+    { thumbnail: '/media/layouts/krunner-menu.svg', name: _('KRunner Style'), layout: MENU_LAYOUT.Runner},
+    { thumbnail: '/media/layouts/gnome-dash-menu.svg', name: _('GNOME Dash Style'), layout: MENU_LAYOUT.GnomeDash}];
+
+var SIMPLE_MENU_STYLE = [   
+    { thumbnail: '/media/layouts/simple-menu.svg', name: _('Simple Menu Style'), layout: MENU_LAYOUT.Simple},
+    { thumbnail: '/media/layouts/simple-menu-2.svg', name: _('Simple Menu 2 Style'), layout: MENU_LAYOUT.Simple2}];
+
+var ALTERNATIVE_MENU_STYLE = [   
+    { thumbnail: '/media/layouts/raven-menu.svg', name: _('Raven Menu Style'), layout: MENU_LAYOUT.Raven}];
+
+var MENU_STYLES = {
+    ThumbnailHeight: 160,
     ThumbnailWidth: 200,
     MaxColumns: 6,
     Styles: [ 
-        { thumbnail: '/media/layouts/arc-menu.svg', name: 'Arc Menu'},
-        { thumbnail: '/media/layouts/brisk-menu.svg', name: 'Brisk Menu Style'},
-        { thumbnail: '/media/layouts/whisker-menu.svg', name: 'Whisker Menu Style'},
-        { thumbnail: '/media/layouts/gnome-menu.svg', name: 'GNOME Menu Style'},
-        { thumbnail: '/media/layouts/mint-menu.svg', name: 'Mint Menu Style'},
-        { thumbnail: '/media/layouts/elementary-menu.svg', name: 'Elementary Menu Style'},
-        { thumbnail: '/media/layouts/gnome-dash-menu.svg', name: 'GNOME Dash Style'},
-        { thumbnail: '/media/layouts/simple-menu.svg', name: 'Simple Menu Style'},
-        { thumbnail: '/media/layouts/simple-menu-2.svg', name: 'Simple Menu 2 Style'},
-        { thumbnail: '/media/layouts/redmond-style-menu.svg', name: 'Redmond Menu Style'},
-        { thumbnail: '/media/layouts/ubuntu-dash-menu.svg', name: 'Ubuntu Dash Style'},
-        { thumbnail: '/media/layouts/budgie-menu.svg', name: 'Budgie Style'},
-        { thumbnail: '/media/layouts/windows-10.svg', name: 'Windows 10 Style'},
-        { thumbnail: '/media/layouts/krunner-menu.svg', name: 'KRunner Style'},
-        { thumbnail: '/media/layouts/chromebook-menu.svg', name: 'Chromebook Style'},
-        { thumbnail: '/media/layouts/raven-menu.svg', name: 'Raven Menu Style'}
+        { thumbnail: '/media/layouts/categories/traditional-symbolic.svg', name: _('Traditional Layouts'), layoutStyle: TRADITIONAL_MENU_STYLE, 
+                description: _("Traditional layouts use a familiar style and have a traditional user experience.")},
+        { thumbnail: '/media/layouts/categories/modern-symbolic.svg', name: _('Modern Layouts'), layoutStyle: MODERN_MENU_STYLE, 
+                description: _("Modern layouts use a style and UX based approach with a focus on design and functionality.")},
+        { thumbnail: '/media/layouts/categories/touch-symbolic.svg', name: _('Touch Layouts'), layoutStyle: TOUCH_MENU_STYLE, 
+                description: _("Touch layouts contain large menu elements that are well suited for touch based devices.")},
+        { thumbnail: '/media/layouts/categories/simple-symbolic.svg', name: _('Simple Layouts'), layoutStyle: SIMPLE_MENU_STYLE, 
+                description: _("Simple layouts are designed for mouse based devices and contain simplistic menu elements.")},
+        { thumbnail: '/media/layouts/categories/launcher-symbolic.svg', name: _('Launcher Layouts'), layoutStyle: LAUNCHER_MENU_STYLE, 
+                description: _("Launcher layouts are well suited for keyboard driven devices and provide the user with quick and simple menu elements.")},
+        { thumbnail: '/media/layouts/categories/alternative-symbolic.svg', name: _('Alternative Layouts'), layoutStyle: ALTERNATIVE_MENU_STYLE, 
+                description: _("Alternative layouts have an unconventional style that provide a unique user experience.")}
     ]
 };
+
 var ARCMENU_MANUAL_URL = "https://gitlab.com/LinxGem33/Neon/-/raw/master/arc-menu-manual/arcmenu-user-manual.pdf"
 
 //Path to some files

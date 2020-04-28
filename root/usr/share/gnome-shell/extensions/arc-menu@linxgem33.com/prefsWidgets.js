@@ -20,17 +20,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-// Import Libraries
+const Me = imports.misc.extensionUtils.getCurrentExtension();
 const {GdkPixbuf, Gio, GLib, GObject, Gtk} = imports.gi;
-const Params = imports.misc.params;
+const Gettext = imports.gettext.domain(Me.metadata['gettext-domain']);
+const _ = Gettext.gettext;
 
-
-
-//Arc Menu Notebook
-var Notebook = GObject.registerClass(
-    class ArcMenu_Notebook extends Gtk.Notebook{
-
+var Notebook = GObject.registerClass(class ArcMenu_Notebook extends Gtk.Notebook{
     _init() {
         super._init({
             margin_left: 6,
@@ -47,11 +42,7 @@ var Notebook = GObject.registerClass(
     }
 });
 
-
-// Arc Menu Notebook Page
-var NotebookPage =GObject.registerClass(
-    class ArcMenu_NotebookPage extends Gtk.Box {
-
+var NotebookPage =GObject.registerClass(class ArcMenu_NotebookPage extends Gtk.Box {
     _init(title) {
         super._init({
             orientation: Gtk.Orientation.VERTICAL,
@@ -71,17 +62,10 @@ var NotebookPage =GObject.registerClass(
     }
 });
 
-//Icon Button
-var IconButton = GObject.registerClass(
-    class ArcMenu_IconButton extends Gtk.Button {
-
+var IconButton = GObject.registerClass(class ArcMenu_IconButton extends Gtk.Button {
     _init(params) {
         super._init();
-        this._params = Params.parse(params, {
-            circular: true,
-            icon_name: '',
-            tooltip_text: ''
-        });
+        this._params = params;
         if (this._params.circular) {
             let context = this.get_style_context();
             context.add_class('circular');
@@ -99,122 +83,111 @@ var IconButton = GObject.registerClass(
     }
 });
 
-//Arc Menu Dialog Window
-var DialogWindow = GObject.registerClass(
-    class ArcMenu_DialogWindow extends Gtk.Dialog {
-        _init(title, parent) {
-            super._init({
-                title: title,
-                transient_for: parent.get_toplevel(),
-                use_header_bar: true,
-                modal: true
-            });
-            let vbox = new Gtk.Box({
-                orientation: Gtk.Orientation.VERTICAL,
-                spacing: 20,
-                homogeneous: false,
-                margin: 5
-            });
+var DialogWindow = GObject.registerClass(class ArcMenu_DialogWindow extends Gtk.Dialog {
+    _init(title, parent) {
+        super._init({
+            title: title,
+            transient_for: parent.get_toplevel(),
+            use_header_bar: true,
+            modal: true
+        });
+        let vbox = new Gtk.Box({
+            orientation: Gtk.Orientation.VERTICAL,
+            spacing: 20,
+            homogeneous: false,
+            margin: 5
+        });
 
-            this._createLayout(vbox);
-            this.get_content_area().add(vbox);
-        }
+        this._createLayout(vbox);
+        this.get_content_area().add(vbox);
+    }
 
-        _createLayout(vbox) {
-            throw "Not implemented!";
-        }
-    });
+    _createLayout(vbox) {
+        throw "Not implemented!";
+    }
+});
 
-//Arc Menu Frame Box
-var FrameBox = GObject.registerClass(
-    class ArcMenu_FrameBox extends Gtk.Frame {
-        _init() {
-            super._init({ label_yalign: 0.50 });
-            this._listBox = new Gtk.ListBox();
-            this._listBox.set_selection_mode(Gtk.SelectionMode.NONE);
-            this.count=0;
-            Gtk.Frame.prototype.add.call(this, this._listBox);
-        }
+var FrameBox = GObject.registerClass(class ArcMenu_FrameBox extends Gtk.Frame {
+    _init() {
+        super._init({ label_yalign: 0.50 });
+        this._listBox = new Gtk.ListBox();
+        this._listBox.set_selection_mode(Gtk.SelectionMode.NONE);
+        this.count=0;
+        Gtk.Frame.prototype.add.call(this, this._listBox);
+    }
 
-        add(boxRow) {
-            this._listBox.add(boxRow);
-            this.count++;
+    add(boxRow) {
+        this._listBox.add(boxRow);
+        this.count++;
+    }
+    show() {
+        this._listBox.show_all();
+    }
+    length() {
+        return this._listBox.length;
+    }
+    remove(boxRow) {
+        this._listBox.remove(boxRow);
+        this.count = this.count -1;
+    }
+    remove_all_children() {
+        let children = this._listBox.get_children();
+        for(let i = 0; i < children.length; i++){
+            let child = children[i];
+            this._listBox.remove(child);
         }
-        show() {
-            this._listBox.show_all();
-        }
-        length() {
-            return this._listBox.length;
-        }
-        remove(boxRow) {
-            this._listBox.remove(boxRow);
-            this.count = this.count -1;
-        }
-        remove_all_children() {
-            let children = this._listBox.get_children();
-            for(let i = 0; i < children.length; i++){
-                let child = children[i];
-                this._listBox.remove(child);
-            }
-            this.count = 0;
-            this._listBox.show_all();
-        }
-        get_index(index){
-            return this._listBox.get_row_at_index(index);
-        }
-        insert(row,pos){
-            this._listBox.insert(row,pos);
-            this.count++;
-        }
-    });
+        this.count = 0;
+        this._listBox.show_all();
+    }
+    get_index(index){
+        return this._listBox.get_row_at_index(index);
+    }
+    insert(row,pos){
+        this._listBox.insert(row,pos);
+        this.count++;
+    }
+});
 
+var FrameBoxRow = GObject.registerClass(class ArcMenu_FrameBoxRow extends Gtk.ListBoxRow {
+    _init() {
+        super._init({});
+        this._grid = new Gtk.Grid({
+            margin: 5,
+            column_spacing: 20,
+            row_spacing: 20
+        });
+        Gtk.ListBoxRow.prototype.add.call(this, this._grid);
+    }
 
-//Arc Menu Frame Box Row
-var FrameBoxRow = GObject.registerClass(
-    class ArcMenu_FrameBoxRow extends Gtk.ListBoxRow {
-        _init() {
-            super._init({});
-            this._grid = new Gtk.Grid({
-                margin: 5,
-                column_spacing: 20,
-                row_spacing: 20
-            });
-            Gtk.ListBoxRow.prototype.add.call(this, this._grid);
-        }
+    add(widget) {
+        this._grid.add(widget);
+    }
+});
 
-        add(widget) {
-            this._grid.add(widget);
-        }
-    });
-
-
-
-//Arc Menu Tile Grid
-var TileGrid = GObject.registerClass(
-    class ArcMenu_TileGrid extends Gtk.FlowBox{
-
+var TileGrid = GObject.registerClass(class ArcMenu_TileGrid extends Gtk.FlowBox{
     _init(maxColumns) {
         super._init({
             row_spacing: 5,
             column_spacing: 5,
             max_children_per_line: maxColumns,
             vexpand: true,
+            hexpand: true,
             valign: Gtk.Align.START,
+            halign: Gtk.Align.CENTER,
+            homogeneous: true,
             selection_mode: Gtk.SelectionMode.NONE
         });
     }
 });
 
-
-//Arc Menu Tile Grid
-var Tile =  GObject.registerClass(
-    class ArcMenu_Tile extends Gtk.Button{
-
-     _init(label, file, width, height) {
+var Tile = GObject.registerClass(class ArcMenu_Tile extends Gtk.Button{
+    _init(name, file, width, height, layout) {
         super._init();
         let pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(file, width, height);
         this._image = new Gtk.Image({ pixbuf: pixbuf });
-        this._label = new Gtk.Label({ label: label });
+        this.name = name;
+        this._label = new Gtk.Label({ label: this.name });
+        this.layout = layout;
 
         this._vbox = new Gtk.Box({ orientation: Gtk.Orientation.VERTICAL });
         this._vbox.add(this._image);
@@ -223,3 +196,50 @@ var Tile =  GObject.registerClass(
         this.margin=1;
     }
 });
+
+var LayoutTile = GObject.registerClass(class ArcMenu_LayoutTile extends Gtk.Box{
+    _init(name, file, width, height, layout) {
+        super._init({orientation: Gtk.Orientation.VERTICAL});
+        this.name = name;
+        this.layout = layout.layoutStyle;
+        this.info = "<b>"+ this.name + "</b>\n\n" +layout.description + "\n\n" + _("Included Layouts") + ":";
+        
+        this.layoutList = "";
+        this.layout.forEach((style) => {
+            this.layoutList += "•   " + style.name + "\n";
+        });
+
+        let pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(file, width, height, false);
+        this._image = new Gtk.Image({ pixbuf: pixbuf });
+        this.add(this._image);
+
+        this._hbox = new Gtk.Box({ 
+            orientation: Gtk.Orientation.HORIZONTAL,
+            spacing: 10,
+            homogeneous: false,
+            margin: 5 
+        });
+        this.layoutButton = new Gtk.Button({
+            label: this.name,
+            halign: Gtk.Align.FILL,
+            hexpand: true,
+            tooltip_text: _("Browse all") + " " + this.name
+        });
+        this._hbox.add(this.layoutButton);
+
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(Me.path + '/media/misc/info-circle.svg', 20, 20);
+        let infoImage = new Gtk.Image({ pixbuf: pixbuf });
+        this.infoButton = new Gtk.Button({
+            image: infoImage,
+            halign: Gtk.Align.END,
+            tooltip_text: this.name + " " + _("Information")
+        });
+        this._hbox.add(this.infoButton);
+
+        this.add(this._hbox);
+        
+        this.margin = 1;
+        this.spacing = 10;
+   }
+});
+

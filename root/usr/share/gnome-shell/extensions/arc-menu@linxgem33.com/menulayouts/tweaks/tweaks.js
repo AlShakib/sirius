@@ -29,6 +29,7 @@ const Convenience = Me.imports.convenience;
 const Gettext = imports.gettext.domain(Me.metadata['gettext-domain']);
 const Prefs = Me.imports.prefs;
 const PW = Me.imports.prefsWidgets;
+const Utils = Me.imports.utils;
 const _ = Gettext.gettext;
 
 
@@ -119,12 +120,28 @@ var TweaksDialog = GObject.registerClass(
             avatarStyleCombo.set_active(this._settings.get_enum('avatar-style'));
             avatarStyleCombo.connect('changed', (widget) => {
                 this._settings.set_enum('avatar-style', widget.get_active());
-                Prefs.saveCSS(this._settings);
-                this._settings.set_boolean('reload-theme',true);
+                this._settings.set_boolean('reload-theme', false);
+                this._settings.set_boolean('reload-theme', true);
             });
             avatarStyleRow.add(avatarStyleLabel);
             avatarStyleRow.add(avatarStyleCombo);
-            return avatarStyleRow 
+            return avatarStyleRow;
+        }
+        _disableAvatarRow(){
+            let disableAvatarRow = new PW.FrameBoxRow();
+            let disableAvatarLabel = new Gtk.Label({
+                label: _('Disable User Avatar'),
+                xalign:0,
+                hexpand: true,
+            });   
+            let disableAvatarSwitch = new Gtk.Switch({ halign: Gtk.Align.END });
+            disableAvatarSwitch.set_active(this._settings.get_boolean('disable-user-avatar'));
+            disableAvatarSwitch.connect('notify::active', (widget) => {
+                this._settings.set_boolean('disable-user-avatar', widget.get_active());
+            });
+            disableAvatarRow.add(disableAvatarLabel);
+            disableAvatarRow.add(disableAvatarSwitch);
+            return disableAvatarRow;
         }
         _loadBriskMenuTweaks(vbox){
             let briskMenuTweaksFrame = new PW.FrameBox();
@@ -427,7 +444,7 @@ var TweaksDialog = GObject.registerClass(
                     gicon: Gio.icon_new_for_string(frameRow._icon),
                     pixel_size: 22
                 });
-
+                
                 let arcMenuImageBox = new Gtk.VBox({
                     margin_left:5,
                     expand: false
@@ -436,13 +453,16 @@ var TweaksDialog = GObject.registerClass(
                 frameRow.add(arcMenuImageBox);
 
                 let frameLabel = new Gtk.Label({
-                    use_markup: false,
+                    use_markup: true,
                     xalign: 0,
                     hexpand: true
                 });
 
                 frameLabel.label = _(frameRow._name);
                 frameRow.add(frameLabel);
+
+                Prefs.checkIfValidShortcut(frameRow, frameLabel, arcMenuImage);
+
                 let buttonBox = new Gtk.Grid({
                     margin_top:0,
                     margin_bottom: 0,
@@ -554,8 +574,42 @@ var TweaksDialog = GObject.registerClass(
         }
         _loadRedmondMenuTweaks(vbox){
             let redmondMenuTweaksFrame = new PW.FrameBox();
+            let searchbarLocationRow = new PW.FrameBoxRow();
+            let searchbarLocationLabel = new Gtk.Label({
+                label: _("Searchbar Location"),
+                use_markup: true,
+                xalign: 0,
+                hexpand: true
+            });
+            let searchbarLocationCombo = new Gtk.ComboBoxText({ halign: Gtk.Align.END });
+            searchbarLocationCombo.append_text(_("Bottom"));
+            searchbarLocationCombo.append_text(_("Top"));
+            searchbarLocationCombo.set_active(this._settings.get_enum('searchbar-location-redmond'));
+            searchbarLocationCombo.connect('changed', (widget) => {
+                    this._settings.set_enum('searchbar-location-redmond', widget.get_active());
+            });
 
+            searchbarLocationRow.add(searchbarLocationLabel);
+            searchbarLocationRow.add(searchbarLocationCombo);
+            redmondMenuTweaksFrame.add(searchbarLocationRow);
+
+            let horizontalFlipRow = new PW.FrameBoxRow();
+            let horizontalFlipLabel = new Gtk.Label({
+                label: _("Flip Horizontally"),
+                use_markup: true,
+                xalign: 0,
+                hexpand: true
+            });
+            let horizontalFlipSwitch = new Gtk.Switch({ halign: Gtk.Align.END });
+            horizontalFlipSwitch.set_active(this._settings.get_boolean('enable-horizontal-flip'));
+            horizontalFlipSwitch.connect('notify::active', (widget) => {
+                this._settings.set_boolean('enable-horizontal-flip', widget.get_active());
+            });
+            horizontalFlipRow.add(horizontalFlipLabel);
+            horizontalFlipRow.add(horizontalFlipSwitch);
+            redmondMenuTweaksFrame.add(horizontalFlipRow);
             redmondMenuTweaksFrame.add(this._createAvatarShapeRow());
+            redmondMenuTweaksFrame.add(this._disableAvatarRow());
 
             vbox.add(redmondMenuTweaksFrame);
         }
@@ -605,19 +659,55 @@ var TweaksDialog = GObject.registerClass(
             if(this._settings.get_boolean('enable-pinned-apps'))
                 defaultLeftBoxCombo.set_active(0);
             else 
-            defaultLeftBoxCombo.set_active(1);
+                defaultLeftBoxCombo.set_active(1);
             defaultLeftBoxCombo.connect('changed', (widget) => {
                 if(widget.get_active()==0)
                     this._settings.set_boolean('enable-pinned-apps',true);
                 if(widget.get_active()==1)
                     this._settings.set_boolean('enable-pinned-apps',false);
             });
-            
+
             defaultLeftBoxRow.add(defaultLeftBoxLabel);
             defaultLeftBoxRow.add(defaultLeftBoxCombo);
             arcMenuTweaksFrame.add(defaultLeftBoxRow);
 
+            let searchbarLocationRow = new PW.FrameBoxRow();
+            let searchbarLocationLabel = new Gtk.Label({
+                label: _("Searchbar Location"),
+                use_markup: true,
+                xalign: 0,
+                hexpand: true
+            });
+            let searchbarLocationCombo = new Gtk.ComboBoxText({ halign: Gtk.Align.END });
+            searchbarLocationCombo.append_text(_("Bottom"));
+            searchbarLocationCombo.append_text(_("Top"));
+            searchbarLocationCombo.set_active(this._settings.get_enum('searchbar-location'));
+            searchbarLocationCombo.connect('changed', (widget) => {
+                    this._settings.set_enum('searchbar-location', widget.get_active());
+            });
+
+            searchbarLocationRow.add(searchbarLocationLabel);
+            searchbarLocationRow.add(searchbarLocationCombo);
+            arcMenuTweaksFrame.add(searchbarLocationRow);
+
+            let horizontalFlipRow = new PW.FrameBoxRow();
+            let horizontalFlipLabel = new Gtk.Label({
+                label: _("Flip Horizontally"),
+                use_markup: true,
+                xalign: 0,
+                hexpand: true
+            });
+            let horizontalFlipSwitch = new Gtk.Switch({ halign: Gtk.Align.END });
+            horizontalFlipSwitch.set_active(this._settings.get_boolean('enable-horizontal-flip'));
+            horizontalFlipSwitch.connect('notify::active', (widget) => {
+                this._settings.set_boolean('enable-horizontal-flip', widget.get_active());
+            });
+            horizontalFlipRow.add(horizontalFlipLabel);
+            horizontalFlipRow.add(horizontalFlipSwitch);
+            arcMenuTweaksFrame.add(horizontalFlipRow);
+
             arcMenuTweaksFrame.add(this._createAvatarShapeRow());
+            arcMenuTweaksFrame.add(this._disableAvatarRow());
             vbox.add(arcMenuTweaksFrame);
         }
         _createWidgetsRows(layout){

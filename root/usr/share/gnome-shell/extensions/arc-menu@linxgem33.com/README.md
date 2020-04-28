@@ -104,7 +104,7 @@ All ArcMenu's Image assets including wiki images and application Image assets ar
 ### Credits
 
 
-Additional credits: This extension also leverages the work from [Giovanni Campagna ](https://git.gnome.org//browse/gnome-shell-extensions) gnome Application Menu used in [Gnome 3](https://www.gnome.org/) to allow the menu to be embedded in the Gnome main panel This extension also leverages some of the work from [Zorin OS menu](https://zorinos.com/).
+Additional credits: This extension also leverages the work from [Giovanni Campagna ](https://git.gnome.org//browse/gnome-shell-extensions) gnome Application Menu used in [Gnome 3](https://www.gnome.org/) to allow the menu to be embedded in the Gnome main panel This extension also leverages some of the work from Zorin OS.
 This extension also leverages some code from the gnome-shell adapted to be used for ArcMenu and also uses adapted code from Dash to Panel's Utils.js to allow the ArcMenu to be used for different Gnome-shell versions.
 
 -----
@@ -169,12 +169,16 @@ Hi, I’m Andrew. My role on the project is to design, create, and implement fea
 
 -----
 
- **- @[AlexWayfer](https://gitlab.com/AlexWayfer) - Russian** | **- @[gkkulik](https://gitlab.com/gkkulik) - Silesian** | **- @[vikaig](https://gitlab.com/vikaig) - Ukrainian** | **- @[jordim](https://gitlab.com/jordim) - Catalan** | **- @[libreajans](https://gitlab.com/libreajans) - Turkish** | **- @[Vombato](https://gitlab.com/Vombato) - Italian** |
+ **- @[AlexWayfer](https://gitlab.com/AlexWayfer) - Russian** | **- @[gkkulik](https://gitlab.com/gkkulik) - Silesian** | **- @[vikaig](https://gitlab.com/vikaig) - Ukrainian** | **- @[jordim](https://gitlab.com/jordim) - Catalan** | **- @[libreajans](https://gitlab.com/libreajans) - Turkish** |
  
 -----
 
- **- @[MorganAntonsson](https://gitlab.com/MorganAntonsson) - Swedish** | **- @[jiri.doubravsky](https://gitlab.com/jiri.doubravsky) - czech** | **- @[juanlucer](https://gitlab.com/juanlucer) - Spanish** | **- @[plesry](https://gitlab.com/plesry) - Chinese (Taiwan)** | **- @[rimasx](https://gitlab.com/rimasx) - Estonian** |
+ **- @[MorganAntonsson](https://gitlab.com/MorganAntonsson) - Swedish** | **- @[jiri.doubravsky](https://gitlab.com/jiri.doubravsky) - czech** | **- @[juanlucer](https://gitlab.com/juanlucer) - Spanish** | **- @[plesry](https://gitlab.com/plesry) - Chinese (Taiwan)** |
 
 -----
 
-**- @[skygmin](https://gitlab.com/skygmin) - Simplified Chinese** | **- @[vinno97](https://gitlab.com/vinno97) - Dutch**
+ **- @[Vombato](https://gitlab.com/Vombato) - Italian** | **- @[skygmin](https://gitlab.com/skygmin) - Simplified Chinese** | **- @[vinno97](https://gitlab.com/vinno97) - Dutch** | **- @[artnay](https://gitlab.com/artnay) - Finnish** |  **- @[rimasx](https://gitlab.com/rimasx) - Estonian** |
+ 
+-----
+
+ **- @[stevendobay](https://gitlab.com/stevendobay) - Hungarian** |

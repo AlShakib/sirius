@@ -29,6 +29,7 @@ const Gettext = imports.gettext.domain(Me.metadata['gettext-domain']);
 const Helper = Me.imports.helper;
 const Main = imports.ui.main;
 const PanelMenu = Me.imports.menuButtonPanel;
+const Utils = Me.imports.utils;
 const _ = Gettext.gettext;
 
 var MenuSettingsController = class {
@@ -38,7 +39,7 @@ var MenuSettingsController = class {
         this.dashOrPanel = dashOrPanel;
 
         this.updateThemeID = GLib.timeout_add(0, 100, () => {
-            Me.imports.prefs.saveCSS(this._settings);
+            Utils.createStylesheet(this._settings);
             Main.loadTheme();
             this.updateThemeID = null;
             return GLib.SOURCE_REMOVE;
@@ -90,20 +91,28 @@ var MenuSettingsController = class {
             this._settings.connect('changed::custom-menu-button-icon-size', this._setButtonIconSize.bind(this)),
             this._settings.connect('changed::button-icon-padding', this._setButtonIconPadding.bind(this)),
             this._settings.connect('changed::enable-menu-button-arrow', this._setMenuButtonArrow.bind(this)),
-            this._settings.connect('changed::enable-custom-arc-menu', this._enableCustomArcMenu.bind(this)),
-            this._settings.connect('changed::remove-menu-arrow', this._enableCustomArcMenu.bind(this)),
+            this._settings.connect('changed::enable-custom-arc-menu', this._updateStyle.bind(this)),
+            this._settings.connect('changed::remove-menu-arrow', this._updateStyle.bind(this)),
+            this._settings.connect('changed::disable-searchbox-border', this._updateStyle.bind(this)),
+            this._settings.connect('changed::indicator-color', this._updateStyle.bind(this)),
+            this._settings.connect('changed::indicator-text-color', this._updateStyle.bind(this)),
             this._settings.connect('changed::krunner-show-details', this._updateKRunnerSearchLayout.bind(this)),
-            this._settings.connect('changed::directory-shortcuts-list', this._redisplayRightSide.bind(this)),
-            this._settings.connect('changed::application-shortcuts-list', this._redisplayRightSide.bind(this)),
-            this._settings.connect('changed::show-power-button', this._redisplayRightSide.bind(this)),
-            this._settings.connect('changed::show-logout-button', this._redisplayRightSide.bind(this)),
-            this._settings.connect('changed::show-lock-button', this._redisplayRightSide.bind(this)),
-            this._settings.connect('changed::show-external-devices', this._redisplayRightSide.bind(this)),
-            this._settings.connect('changed::show-bookmarks', this._redisplayRightSide.bind(this)),
-            this._settings.connect('changed::show-suspend-button', this._redisplayRightSide.bind(this)),
+            this._settings.connect('changed::directory-shortcuts-list', this._reload.bind(this)),
+            this._settings.connect('changed::application-shortcuts-list', this._reload.bind(this)),
+            this._settings.connect('changed::disable-recently-installed-apps', this._reload.bind(this)),
+            this._settings.connect('changed::show-power-button', this._reload.bind(this)),
+            this._settings.connect('changed::show-logout-button', this._reload.bind(this)),
+            this._settings.connect('changed::show-lock-button', this._reload.bind(this)),
+            this._settings.connect('changed::show-external-devices', this._reload.bind(this)),
+            this._settings.connect('changed::show-bookmarks', this._reload.bind(this)),
+            this._settings.connect('changed::show-suspend-button', this._reload.bind(this)),
+            this._settings.connect('changed::disable-user-avatar', this._reload.bind(this)),
+            this._settings.connect('changed::enable-horizontal-flip', this._reload.bind(this)),
+            this._settings.connect('changed::searchbar-location', this._reload.bind(this)),
+            this._settings.connect('changed::searchbar-location-redmond', this._reload.bind(this)),
             this._settings.connect('changed::menu-height', this._updateMenuHeight.bind(this)),
             this._settings.connect('changed::right-panel-width', this._updateMenuHeight.bind(this)),
-            this._settings.connect('changed::reload-theme',this._reloadExtension.bind(this)),
+            this._settings.connect('changed::reload-theme', this._reloadExtension.bind(this)),
             this._settings.connect('changed::pinned-app-list',this._updateFavorites.bind(this)),
             this._settings.connect('changed::enable-weather-widget-ubuntu',this._updateFavorites.bind(this)),
             this._settings.connect('changed::enable-clock-widget-ubuntu',this._updateFavorites.bind(this)),
@@ -124,22 +133,27 @@ var MenuSettingsController = class {
             this._settings.connect('changed::restore-activities-button', this._removeActivitiesButtonFromMainPanel.bind(this)),
         ];
     }
+
     _reload(){
-        this._menuButton._reload();
+        this._menuButton.reload();
     }
 
     updateRunnerLocation(){
         this._menuButton.updateRunnerLocation();
     }
+
     updateIcons(){
         this._menuButton.updateIcons();
     }
+
     _updateMenuLayout(){
         this._menuButton._updateMenuLayout();
     }
+
     _setDefaultMenuView(){
         this._menuButton.setDefaultMenuView();
     }
+
     toggleMenus(){
         if(Main.overview.visible)
             Main.overview.hide();
@@ -173,37 +187,39 @@ var MenuSettingsController = class {
             }
         }
     }
+
     _reloadExtension(){
-        if(this._settings.get_boolean('reload-theme') == true){
+        if(this._settings.get_boolean('reload-theme')){
+            Utils.createStylesheet(this._settings);
             Main.loadTheme();
-            this._settings.set_boolean('reload-theme',false);
+            this._settings.set_boolean('reload-theme', false);
         }
     }
-    _enableCustomArcMenu() {
+
+    _updateStyle() {
         this._menuButton.updateStyle();
     }
+
     _updateKRunnerSearchLayout(){
         if(this._settings.get_enum('menu-layout') == Constants.MENU_LAYOUT.Runner || this._settings.get_enum('menu-layout') == Constants.MENU_LAYOUT.Raven)
             this._menuButton.updateSearch();
     }
+
     _updateMenuHeight(){
         this._menuButton.updateHeight();
     }
+
     _updateFavorites(){
         let layout = this._settings.get_enum('menu-layout');
         if(layout == Constants.MENU_LAYOUT.Default || layout == Constants.MENU_LAYOUT.UbuntuDash ||
             layout == Constants.MENU_LAYOUT.Windows || layout == Constants.MENU_LAYOUT.Raven){
             if(this._menuButton.getShouldLoadFavorites())
                 this._menuButton._loadFavorites();
-            if(this._menuButton.getCurrentMenu() == Constants.CURRENT_MENU.FAVORITES)
+            if(this._menuButton.getCurrentMenu() == Constants.CURRENT_MENU.FAVORITES || layout == Constants.MENU_LAYOUT.Windows)
                this._menuButton._displayFavorites();
         }
-        if(layout == Constants.MENU_LAYOUT.Mint){
-            if(this._menuButton.getShouldLoadFavorites())
-                this._menuButton._loadFavorites();
-        }
-
     }
+
     _updateButtonFavorites(){
         let layout = this._settings.get_enum('menu-layout');
         if(layout == Constants.MENU_LAYOUT.UbuntuDash){
@@ -216,15 +232,17 @@ var MenuSettingsController = class {
         }
 
     }
+
     _updateMenuDefaultView(){
-        if(this._settings.get_boolean('enable-pinned-apps'))
-            this._menuButton._displayFavorites();
-        else
-            this._menuButton._displayCategories();
+        let layout = this._settings.get_enum('menu-layout');
+        if(layout == Constants.MENU_LAYOUT.Default){
+            if(this._settings.get_boolean('enable-pinned-apps'))
+                this._menuButton._displayFavorites();
+            else
+                this._menuButton._displayCategories();
+        }
     }
-    _redisplayRightSide(){
-        this._menuButton._redisplayRightSide();
-    }
+
     _updateHotCornerManager() {
         let hotCornerAction = this._settings.get_enum('hot-corners');
         if (hotCornerAction == Constants.HOT_CORNERS_ACTION.Default) {

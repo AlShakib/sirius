@@ -40,7 +40,6 @@ const Hostname1Iface = '<node> \
 </interface> \
 </node>';
 const Hostname1 = Gio.DBusProxy.makeProxyWrapper(Hostname1Iface);
-const gnome36 = imports.misc.config.PACKAGE_VERSION >= '3.35.0';
 
 var PlaceMenuItem = GObject.registerClass(class ArcMenu_PlaceMenuItem2 extends MW.ArcMenuPopupBaseMenuItem{
     _init(info,button) {
