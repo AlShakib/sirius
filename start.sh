@@ -193,11 +193,6 @@ add_repos() {
   yes | flatpak remote-add --if-not-exists flathub "https://flathub.org/repo/flathub.flatpakrepo" &>> "${LOG_FILE}"
   is_failed "Done" "Skipping: FlatHub repo did not install successfully. See log for more info."
 
-  # add docker-ce repo
-  print "Installing Docker repo"
-  dnf config-manager -y --add-repo "https://download.docker.com/linux/fedora/docker-ce.repo" &>> "${LOG_FILE}"
-  is_failed "Done" "Skipping: Docker repo did not install successfully. See log for more info."
-
   # add sublime text repo
   print "Importing Sublime HQ gpg key"
   rpm --import "https://download.sublimetext.com/sublimehq-rpm-pub.gpg" &>> "${LOG_FILE}"
