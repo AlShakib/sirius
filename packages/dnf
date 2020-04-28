@@ -40,6 +40,9 @@ autoconf
 # A GNU tool for automatically creating Makefiles
 automake
 
+# A GNU tool which simplifies the build process for users
+make
+
 # An image loading library and development files
 gdk-pixbuf2 gdk-pixbuf2-devel
 
