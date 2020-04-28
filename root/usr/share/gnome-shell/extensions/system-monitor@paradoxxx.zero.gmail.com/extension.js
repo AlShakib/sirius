@@ -29,11 +29,14 @@ var smDepsNM = true;
 var Config = imports.misc.config;
 var Clutter = imports.gi.Clutter;
 var GLib = imports.gi.GLib;
+var GObject = imports.gi.GObject;
+var Lang = imports.lang;
 
 var Gio = imports.gi.Gio;
 var Shell = imports.gi.Shell;
 var St = imports.gi.St;
-var Power = imports.ui.status.power;
+const UPower = imports.gi.UPowerGlib;
+
 // const System = imports.system;
 var ModalDialog = imports.ui.modalDialog;
 
@@ -88,6 +91,21 @@ let extension = imports.misc.extensionUtils.getCurrentExtension();
 let metadata = extension.metadata;
 let shell_Version = Config.PACKAGE_VERSION;
 
+Clutter.Actor.prototype.raise_top = function raise_top() {
+    const parent = this.get_parent();
+    if (!parent) {
+        return;
+    }
+    parent.set_child_above_sibling(this, null);
+}
+Clutter.Actor.prototype.reparent = function reparent(newParent) {
+    const parent = this.get_parent();
+    if (parent) {
+        parent.remove_child(this);
+    }
+    newParent.add_child(this);
+}
+
 function l_limit(t) {
     return (t > 0) ? t : 1000;
 }
@@ -118,7 +136,7 @@ function build_menu_info() {
 
     let menu_info_box_table = new St.Widget({
         style: 'padding: 10px 0px 10px 0px; spacing-rows: 10px; spacing-columns: 15px;',
-        layout_manager: new Clutter.TableLayout()
+        layout_manager: new Clutter.GridLayout({orientation: Clutter.Orientation.VERTICAL})
     });
     let menu_info_box_table_layout = menu_info_box_table.layout_manager;
 
@@ -130,23 +148,30 @@ function build_menu_info() {
         }
 
         // Add item name to table
-        menu_info_box_table_layout.pack(
+        menu_info_box_table_layout.attach(
             new St.Label({
                 text: elts[elt].item_name,
-                style_class: Style.get('sm-title')}), 0, row_index);
+                style_class: Style.get('sm-title'),
+                x_align: Clutter.ActorAlign.START,
+                y_align: Clutter.ActorAlign.CENTER
+            }), 0, row_index, 1, 1);
 
         // Add item data to table
         let col_index = 1;
         for (let item in elts[elt].menu_items) {
-            menu_info_box_table_layout.pack(
-                elts[elt].menu_items[item], col_index, row_index);
+            menu_info_box_table_layout.attach(
+                elts[elt].menu_items[item], col_index, row_index, 1, 1);
 
             col_index++;
         }
 
         row_index++;
     }
-    tray_menu._getMenuItems()[0].actor.get_last_child().add(menu_info_box_table, {expand: true});
+    if (shell_Version < '3.36') {
+        tray_menu._getMenuItems()[0].actor.get_last_child().add(menu_info_box_table, {expand: true});
+    } else {
+        tray_menu._getMenuItems()[0].actor.get_last_child().add_child(menu_info_box_table);
+    }
 }
 
 function change_menu() {
@@ -353,15 +378,16 @@ const Chart = class SystemMonitor_Chart {
             Clutter.cairo_set_source_color(cr, this.parentC.colors[i]);
             cr.fill();
         }
-        if (Compat.versionCompare(shell_Version, '3.7.4')) {
-            cr.$dispose();
-        }
+        cr.$dispose();
     }
     resize(schema, key) {
         let old_width = this.width;
         this.width = Schema.get_int(key);
         if (old_width === this.width) {
             return;
+        }
+        if (Style.get('') === '-compact') {
+            this.width = Math.round(this.width / 1.5);
         }
         this.actor.set_width(this.width);
         if (this.width < this.data[0].length) {
@@ -518,7 +544,11 @@ const Graph = class SystemMonitor_Graph {
     }
     create_menu_item() {
         this.menu_item = new PopupMenu.PopupBaseMenuItem({reactive: false});
-        this.menu_item.actor.add(this.actor, {span: -1, expand: true});
+        if (shell_Version < '3.36') {
+            this.menu_item.actor.add(this.actor, {span: -1, expand: true});
+        } else {
+            this.menu_item.actor.add_child(this.actor);
+        }
         // tray.menu.addMenuItem(this.menu_item);
     }
     show(visible) {
@@ -567,9 +597,7 @@ const Bar = class SystemMonitor_Bar extends Graph {
             cr.stroke();
             y0 += (7 * this.thickness) / 4;
         }
-        if (Compat.versionCompare(shell_Version, '3.7.4')) {
-            cr.$dispose();
-        }
+        cr.$dispose();
     }
     update_mounts(mounts) {
         this.mounts = mounts;
@@ -624,9 +652,7 @@ const Pie = class SystemMonitor_Pie extends Graph {
             cr.stroke();
             r -= (3 * thickness) / 2;
         }
-        if (Compat.versionCompare(shell_Version, '3.7.4')) {
-            cr.$dispose();
-        }
+        cr.$dispose();
     }
 
     update_mounts(mounts) {
@@ -635,15 +661,32 @@ const Pie = class SystemMonitor_Pie extends Graph {
     }
 }
 
-const TipItem = class SystemMonitor_TipItem extends PopupMenu.PopupBaseMenuItem {
-    constructor() {
-        super();
-        // PopupMenu.PopupBaseMenuItem.prototype._init.call(this);
-        this.actor.remove_style_class_name('popup-menu-item');
-        this.actor.add_style_class_name('sm-tooltip-item');
-    }
-}
+var TipItem = null;
 
+if (shell_Version < '3.36') {
+    TipItem = class SystemMonitor_TipItem extends PopupMenu.PopupBaseMenuItem {
+        constructor() {
+            super();
+            // PopupMenu.PopupBaseMenuItem.prototype._init.call(this);
+            this.actor.remove_style_class_name('popup-menu-item');
+            this.actor.add_style_class_name('sm-tooltip-item');
+        }
+    }
+} else {
+    TipItem = GObject.registerClass(
+        {
+            GTypeName: 'TipItem'
+        },
+        class TipItem extends PopupMenu.PopupBaseMenuItem {
+            _init() {
+                super._init();
+                // PopupMenu.PopupBaseMenuItem.prototype._init.call(this);
+                this.actor.remove_style_class_name('popup-menu-item');
+                this.actor.add_style_class_name('sm-tooltip-item');
+            }
+        }
+    );
+}
 const TipMenu = class SystemMonitor_TipMenu extends PopupMenu.PopupMenuBase {
     constructor(sourceActor) {
         // PopupMenu.PopupMenuBase.prototype._init.call(this, sourceActor, 'sm-tooltip-box');
@@ -823,7 +866,12 @@ const ElementBase = class SystemMonitor_ElementBase extends TipBox {
             this.colors.push(clutterColor);
         }
 
-        this.chart = new Chart(Schema.get_int(this.elt + '-graph-width'), IconSize, this);
+        let element_width = Schema.get_int(this.elt + '-graph-width');
+        if (Style.get('') === '-compact') {
+            element_width = Math.round(element_width / 1.5);
+        }
+        this.chart = new Chart(element_width, IconSize, this);
+
         Schema.connect('changed::background', () => {
             this.chart.actor.queue_repaint();
         });
@@ -922,7 +970,9 @@ const ElementBase = class SystemMonitor_ElementBase extends TipBox {
         }
         this.chart.update();
         for (let i = 0; i < this.tip_vals.length; i++) {
-            this.tip_labels[i].text = this.tip_vals[i].toString();
+            if (this.tip_labels[i]) {
+                this.tip_labels[i].text = this.tip_vals[i].toString();
+            }
         }
         return true;
     }
@@ -988,7 +1038,7 @@ const Battery = class SystemMonitor_Battery extends ElementBase {
         let isBattery = false;
         if (typeof (this._proxy.GetDevicesRemote) === 'undefined') {
             let device_type = this._proxy.Type;
-            isBattery = (device_type === Power.UPower.DeviceKind.BATTERY);
+            isBattery = (device_type === UPower.DeviceKind.BATTERY);
             if (isBattery) {
                 battery_found = true;
                 let icon = this._proxy.IconName;
@@ -1015,12 +1065,7 @@ const Battery = class SystemMonitor_Battery extends ElementBase {
                 for (let i = 0; i < result.length; i++) {
                     let [device_id, device_type, icon, percentage, state, seconds] = result[i];
 
-                    if (Compat.versionCompare(shell_Version, '3.9')) {
-                        isBattery = (device_type === Power.UPower.DeviceKind.BATTERY);
-                    } else {
-                        isBattery = (device_type === Power.UPDeviceType.BATTERY);
-                    }
-
+                    isBattery = (device_type === UPower.DeviceKind.BATTERY);
                     if (isBattery) {
                         battery_found = true;
                         this.update_battery_value(seconds, percentage, icon);
@@ -1386,27 +1431,32 @@ const Disk = class SystemMonitor_Disk extends ElementBase {
     }
     refresh() {
         let accum = [0, 0];
-        let lines = Shell.get_file_contents_utf8_sync('/proc/diskstats').split('\n');
 
-        for (let i = 0; i < lines.length; i++) {
-            let line = lines[i];
-            let entry = line.trim().split(/[\s]+/);
-            if (typeof (entry[1]) === 'undefined') {
-                break;
-            }
-            accum[0] += parseInt(entry[5]);
-            accum[1] += parseInt(entry[9]);
-        }
+        let file = Gio.file_new_for_path('/proc/diskstats');
+        file.load_contents_async(null, (source, result) => {
+            let as_r = source.load_contents_finish(result);
+            let lines = ByteArray.toString(as_r[1]).split('\n');
 
-        let time = GLib.get_monotonic_time() / 1000;
-        let delta = (time - this.last_time) / 1000;
-        if (delta > 0) {
-            for (let i = 0; i < 2; i++) {
-                this.usage[i] = ((accum[i] - this.last[i]) / delta / 1024 / 8);
-                this.last[i] = accum[i];
+            for (let i = 0; i < lines.length; i++) {
+                let line = lines[i];
+                let entry = line.trim().split(/[\s]+/);
+                if (typeof (entry[1]) === 'undefined') {
+                    break;
+                }
+                accum[0] += parseInt(entry[5]);
+                accum[1] += parseInt(entry[9]);
             }
-        }
-        this.last_time = time;
+
+            let time = GLib.get_monotonic_time() / 1000;
+            let delta = (time - this.last_time) / 1000;
+            if (delta > 0) {
+                for (let i = 0; i < 2; i++) {
+                    this.usage[i] = ((accum[i] - this.last[i]) / delta / 1024 / 8);
+                    this.last[i] = accum[i];
+                }
+            }
+            this.last_time = time;
+        });
     }
     _apply() {
         this.vals = this.usage.slice();
@@ -1488,9 +1538,9 @@ const Freq = class SystemMonitor_Freq extends ElementBase {
         let i = 0;
         let file = Gio.file_new_for_path(`/sys/devices/system/cpu/cpu${i}/cpufreq/scaling_cur_freq`);
         var that = this;
-        file.load_contents_async(null, function cb (source, result) {
+        file.load_contents_async(null, function cb(source, result) {
             let as_r = source.load_contents_finish(result);
-            total_frequency += parseInt(ByteArray.toString(as_r[1]));
+            total_frequency += parseInt(as_r[1]);
 
             if (++i >= num_cpus) {
                 that.freq = Math.round(total_frequency / num_cpus / 1000);
@@ -1963,7 +2013,7 @@ const Thermal = class SystemMonitor_Thermal extends ElementBase {
     }
     refresh() {
         let sfile = Schema.get_string(this.elt + '-sensor-file');
-        if (GLib.file_test(sfile, 1 << 4)) {
+        if (GLib.file_test(sfile, GLib.FileTest.EXISTS)) {
             let file = Gio.file_new_for_path(sfile);
             file.load_contents_async(null, (source, result) => {
                 let as_r = source.load_contents_finish(result)
@@ -2034,7 +2084,7 @@ const Fan = class SystemMonitor_Fan extends ElementBase {
     }
     refresh() {
         let sfile = Schema.get_string(this.elt + '-sensor-file');
-        if (GLib.file_test(sfile, 1 << 4)) {
+        if (GLib.file_test(sfile, GLib.FileTest.EXISTS)) {
             let file = Gio.file_new_for_path(sfile);
             file.load_contents_async(null, (source, result) => {
                 let as_r = source.load_contents_finish(result)
@@ -2106,55 +2156,31 @@ const Gpu = class SystemMonitor_Gpu extends ElementBase {
             let path = Me.dir.get_path();
             let script = ['/bin/bash', path + '/gpu_usage.sh'];
 
-            let [, pid, in_fd, out_fd, err_fd] = GLib.spawn_async_with_pipes(
-                null,
-                script,
-                null,
-                GLib.SpawnFlags.DO_NOT_REAP_CHILD,
-                null);
-
-            let _tmp_stream = new Gio.DataInputStream({
-                base_stream: new Gio.UnixInputStream({fd: in_fd})
-            });
-            _tmp_stream.close(null);
-            _tmp_stream = new Gio.DataInputStream({
-                base_stream: new Gio.UnixInputStream({fd: err_fd})
-            });
-            _tmp_stream.close(null);
-
-            // Let's buffer the command's output - that's an input for us !
-            this._process_stream = new Gio.DataInputStream({
-                base_stream: new Gio.UnixInputStream({fd: out_fd})
-            });
-
-            // We will process the output at once when it's done
-            this._process_sourceId = GLib.child_watch_add(
-                0,
-                pid,
-                this._readTemperature.bind(this)
-            );
+            // Create subprocess and capture STDOUT
+            let proc = new Gio.Subprocess({argv: script, flags: Gio.SubprocessFlags.STDOUT_PIPE});
+            proc.init(null);
+            // Asynchronously call the output handler when script output is ready
+            proc.communicate_utf8_async(null, null, Lang.bind(this, this._handleOutput));
         } catch (err) {
-            // Deal with the error
+            global.logError(err.message);
         }
     }
-    _readTemperature() {
-        let usage = [];
-        let out, size;
-        if (this._process_stream) {
-            do {
-                [out, size] = this._process_stream.read_line_utf8(null);
-                if (out) {
-                    usage.push(out);
-                }
-            } while (out);
+    _handleOutput(proc, result) {
+        let [ok, output, ] = proc.communicate_utf8_finish(result);
+        if (ok) {
+            this._readTemperature(output);
+        } else {
+            global.logError('gpu_usage.sh invocation failed');
         }
-
+    }
+    _readTemperature(procOutput) {
+        let usage = procOutput.split('\n');
         let memTotal = parseInt(usage[0]);
         let memUsed = parseInt(usage[1]);
         this.percentage = parseInt(usage[2]);
-
         if (typeof this.useGiB === 'undefined') {
             this._unit(memTotal);
+            this._update_unit();
         }
 
         if (this.useGiB) {
@@ -2165,14 +2191,6 @@ const Gpu = class SystemMonitor_Gpu extends ElementBase {
         } else {
             this.mem = Math.round(memUsed / this._unitConversion);
             this.total = Math.round(memTotal / this._unitConversion);
-        }
-
-        this._endProcess();
-    }
-    _endProcess() {
-        if (this._process_stream) {
-            this._process_stream.close(null);
-            this._process_stream = null;
         }
     }
     _pad(number) {
@@ -2186,6 +2204,13 @@ const Gpu = class SystemMonitor_Gpu extends ElementBase {
         }
 
         return number;
+    }
+    _update_unit() {
+        let unit = _('MiB');
+        if (this.useGiB) {
+            unit = _('GiB');
+        }
+        this.menu_items[4].text = unit;
     }
     _apply() {
         if (this.total === 0) {
@@ -2328,34 +2353,25 @@ function enable() {
         let elts = Main.__sm.elts;
 
         if (Schema.get_boolean('move-clock')) {
-            let dateMenu;
-            if (Compat.versionCompare(shell_Version, '3.5.90')) {
-                dateMenu = Main.panel.statusArea.dateMenu;
-                Main.panel._centerBox.remove_actor(dateMenu.container);
-                Main.panel._addToPanelBox('dateMenu', dateMenu, -1, Main.panel._rightBox);
-            } else {
-                dateMenu = Main.panel._dateMenu;
-                Main.panel._centerBox.remove_actor(dateMenu.actor);
-                Main.panel._rightBox.insert_child_at_index(dateMenu.actor, -1);
-            }
+            let dateMenu = Main.panel.statusArea.dateMenu;
+            Main.panel._centerBox.remove_actor(dateMenu.container);
+            Main.panel._addToPanelBox('dateMenu', dateMenu, -1, Main.panel._rightBox);
             tray.clockMoved = true;
         }
 
         Schema.connect('changed::background', (schema, key) => {
             Background = color_from_string(Schema.get_string(key));
         });
-        if (!Compat.versionCompare(shell_Version, '3.5.5')) {
-            StatusArea.systemMonitor = tray;
-            panel.insert_child_at_index(tray.actor, 1);
-            panel.child_set(tray.actor, {y_fill: true});
-        } else {
-            Main.panel._addToPanelBox('system-monitor', tray, 1, panel);
-        }
+        Main.panel._addToPanelBox('system-monitor', tray, 1, panel);
 
         // The spacing adds a distance between the graphs/text on the top bar
         let spacing = Schema.get_boolean('compact-display') ? '1' : '4';
         let box = new St.BoxLayout({style: 'spacing: ' + spacing + 'px;'});
-        tray.actor.add_actor(box);
+        if (shell_Version < '3.36') {
+            tray.actor.add_actor(box);
+        } else {
+            tray.add_actor(box);
+        }
         box.add_actor(Main.__sm.icon.actor);
         // Add items to panel box
         for (let elt in elts) {
@@ -2406,6 +2422,9 @@ function enable() {
         let _appSys = Shell.AppSystem.get_default();
         let _gsmApp = _appSys.lookup_app('gnome-system-monitor.desktop');
         let _gsmPrefs = _appSys.lookup_app('gnome-shell-extension-prefs.desktop');
+        if (_gsmPrefs === null) {
+            _gsmPrefs = _appSys.lookup_app('org.gnome.Extensions.desktop');
+        }
         let item;
         item = new PopupMenu.PopupMenuItem(_('System Monitor...'));
         item.connect('activate', () => {
@@ -2415,7 +2434,9 @@ function enable() {
 
         item = new PopupMenu.PopupMenuItem(_('Preferences...'));
         item.connect('activate', () => {
-            if (_gsmPrefs.get_state() === _gsmPrefs.SHELL_APP_STATE_RUNNING) {
+            if (typeof ExtensionUtils.openPrefs === 'function') {
+                ExtensionUtils.openPrefs();
+            } else if (_gsmPrefs.get_state() === _gsmPrefs.SHELL_APP_STATE_RUNNING) {
                 _gsmPrefs.activate();
             } else {
                 let info = _gsmPrefs.get_app_info();
@@ -2424,11 +2445,7 @@ function enable() {
             }
         });
         tray.menu.addMenuItem(item);
-        if (Compat.versionCompare(shell_Version, '3.5.5')) {
-            Main.panel.menuManager.addMenu(tray.menu);
-        } else {
-            Main.panel._menus.addMenu(tray.menu);
-        }
+        Main.panel.menuManager.addMenu(tray.menu);
     }
     log('[System monitor] applet enabling done');
 }
@@ -2436,16 +2453,9 @@ function enable() {
 function disable() {
     // restore clock
     if (Main.__sm.tray.clockMoved) {
-        let dateMenu;
-        if (Compat.versionCompare(shell_Version, '3.5.90')) {
-            dateMenu = Main.panel.statusArea.dateMenu;
-            Main.panel._rightBox.remove_actor(dateMenu.container);
-            Main.panel._addToPanelBox('dateMenu', dateMenu, Main.sessionMode.panel.center.indexOf('dateMenu'), Main.panel._centerBox);
-        } else {
-            dateMenu = Main.panel._dateMenu;
-            Main.panel._rightBox.remove_actor(dateMenu.actor);
-            Main.panel._centerBox.insert_child_at_index(dateMenu.actor, 0);
-        }
+        let dateMenu = Main.panel.statusArea.dateMenu;
+        Main.panel._rightBox.remove_actor(dateMenu.container);
+        Main.panel._addToPanelBox('dateMenu', dateMenu, Main.sessionMode.panel.center.indexOf('dateMenu'), Main.panel._centerBox);
     }
     // restore system power icon if necessary
     // workaround bug introduced by multiple cpus init :
@@ -2470,12 +2480,10 @@ function disable() {
     for (let eltName in Main.__sm.elts) {
         Main.__sm.elts[eltName].destroy();
     }
-
-    if (!Compat.versionCompare(shell_Version, '3.5')) {
-        Main.__sm.tray.destroy();
-        StatusArea.systemMonitor = null;
-    } else {
+    if (shell_Version < '3.36') {
         Main.__sm.tray.actor.destroy();
+    } else {
+        Main.__sm.tray.destroy();
     }
     Main.__sm = null;
 
