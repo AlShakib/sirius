@@ -216,14 +216,6 @@ add_repos() {
   rpm --import "http://linux.teamviewer.com/pubkey/currentkey.asc" &>> "${LOG_FILE}"
   is_failed "Done" "Skipping: TeamViewer asc key did not import successfully. See log for more info."
 
-  # add microsoft dot net repo
-  print "Importing Microsoft asc key"
-  rpm --import "https://packages.microsoft.com/keys/microsoft.asc" &>> "${LOG_FILE}"
-  is_failed "Done" "Skipping: Microsoft asc key did not import successfully. See log for more info."
-  print "Installing Microsoft repo"
-  wget "https://packages.microsoft.com/config/fedora/${RELEASE_VER}/prod.repo" -O "/etc/yum.repos.d/microsoft-prod.repo" &>> "${LOG_FILE}"
-  is_failed "Done" "Skipping: Microsoft repo did not install successfully. See log for more info."
-
   # enable papirus icon repo
   print "Enabling dirkdavidis/papirus-icon-theme copr repo"
   dnf copr -y enable "dirkdavidis/papirus-icon-theme" &>> "${LOG_FILE}"
