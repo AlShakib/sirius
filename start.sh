@@ -705,7 +705,7 @@ set_misc_flags() {
   # add cgroups exception
   print "Add cgroups exception"
   grubby --update-kernel=ALL --args="systemd.unified_cgroup_hierarchy=0" &>> "${LOG_FILE}"
-  is_failed "Done" "Skipping: Adding cgroups exception for Fedora 31 is failed. See log for more info."
+  is_failed "Done" "Skipping: Adding cgroups exception for Fedora ${RELEASE_VER} is failed. See log for more info."
 
   # enable some apps to run on boot
   print "Enabling httpd, mariadb, php-fpm and vnstat to run on boot"
