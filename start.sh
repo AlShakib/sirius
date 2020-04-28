@@ -786,7 +786,9 @@ setup_operating_system() {
   install_youtube_dl
   install_rclone
   install_hugo_extended_cli
+  install_heroku_cli
   install_typora
+  install_telegram_desktop
   install_bash_scripts
   add_repos
   install_flathub_packages
@@ -801,8 +803,6 @@ setup_operating_system() {
   restore_rclone_config
   restore_csync_config
   restore_vnstat_database
-  install_telegram_desktop
-  install_heroku_cli
   install_oh_my_zsh
   edit_root_configurations
   edit_home_configurations
