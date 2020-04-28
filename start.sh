@@ -2,7 +2,7 @@
 
 HOSTNAME="sirius"
 OS_ID="fedora"
-RELEASE_VER="31"
+RELEASE_VER="32"
 RELEASE_VAR="workstation"
 CPU_ARCH="x86_64"
 RED='\033[0;31m'
