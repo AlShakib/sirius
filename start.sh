@@ -586,12 +586,10 @@ install_heroku_cli() {
       print_failed "Skipping: Heroku CLI installer downloading did not complete successfully. See log for more info."
     else
       print_success "Done"
-      cd "${TMP_DIR}/heroku"
       print "Installing now"
-      chmod +x "install.sh"
-      sh -c "install.sh" &>> "${LOG_FILE}"
+      chmod +x "${TMP_DIR}/heroku/install.sh" &>> "${LOG_FILE}"
+      sh -c "${TMP_DIR}/heroku/install.sh" &>> "${LOG_FILE}"
       is_failed "Done" "Skipping: Heroku CLI installation did not complete successfully. See log for more info."
-      cd "${OLDPWD}"
     fi
   fi
 }
