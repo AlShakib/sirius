@@ -31,6 +31,7 @@
    - [Internet Speed Meter](https://extensions.gnome.org/extension/2980/internet-speed-meter)
    - [OpenWeather](https://extensions.gnome.org/extension/750/openweather)
    - [Panel OSD](https://extensions.gnome.org/extension/708/panel-osd)
+   - [Remove Dropdown Arrows](https://extensions.gnome.org/extension/800/remove-dropdown-arrows/)
    - [Status Area Horizontal Spacing](https://extensions.gnome.org/extension/355/status-area-horizontal-spacing)
    - [system-monitor](https://extensions.gnome.org/extension/120/system-monitor)
    - [TopIcons Plus Git](https://extensions.gnome.org/extension/2311/topicons-plus)
