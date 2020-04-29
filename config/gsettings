@@ -118,9 +118,6 @@ org.gnome.FileRoller.UI view-sidebar true
 # Set display line numbers
 org.gnome.gedit.preferences.editor display-line-numbers true
 
-# Set display overview map
-org.gnome.gedit.preferences.editor display-overview-map true
-
 # Set highlight current line
 org.gnome.gedit.preferences.editor highlight-current-line true
 
