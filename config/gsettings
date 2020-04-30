@@ -171,3 +171,9 @@ org.gnome.software download-updates-notify false
 
 # Disable automatic updates
 org.gnome.software download-updates false
+
+
+## Geary
+
+# Watch for new mail when closed
+org.gnome.Geary startup-notifications true
