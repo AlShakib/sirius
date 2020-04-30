@@ -13,6 +13,9 @@ org.gnome.desktop.input-sources per-window true
 # Disable recently used
 org.gnome.desktop.privacy remember-recent-files false
 
+# Beep when Num Lock or Caps Lock are turned on
+org.gnome.desktop.a11y.keyboard togglekeys-enable true
+
 # Set blank screen to 'never'
 org.gnome.desktop.session idle-delay uint32 0
 
