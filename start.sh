@@ -117,10 +117,21 @@ backup_csync_config() {
   fi
 }
 
+backup_ssh() {
+  if [[ -d "${SUDO_HOME}/.ssh" ]]; then
+    mkdir -p "${SRC_DIR}/backup/ssh"
+    rsync -av --delete --chown="${SUDO_USER}":"${SUDO_USER}" "${SUDO_HOME}/.ssh/" "${SRC_DIR}/backup/ssh" &>> "${LOG_FILE}"
+    is_failed "SSH backup completed successfully" "Skipping: SSH backup did not complete successfully. See log for more info."
+  else
+    print_warning "Skipping: SSH configuration is not found"
+  fi
+}
+
 create_backup() {
   backup_vnstat_database
   backup_rclone_config
   backup_csync_config
+  backup_ssh
   # make available for non root user
   if [[ -d "${SRC_DIR}/backup" ]]; then
     chown "${SUDO_USER}":"${SUDO_USER}" -R "${SRC_DIR}/backup"
