@@ -3,3 +3,9 @@ com.spotify.Client
 
 # GNU Image Manipulation Program - Create images and edit photographs
 org.gimp.GIMP
+
+# Skype - Call and message skype users, with video chat support
+com.skype.Client
+
+# Zoom - Video Conferencing, Web Conferencing, Webinars, Screen Sharing
+us.zoom.Zoom
