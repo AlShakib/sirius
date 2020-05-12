@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=DroidCam
+Comment=DroidCam turns your Android device into a wireless webcam.
+Exec=droidcam
+Terminal=false
+Type=Application
+Categories=Network;AudioVideo;
+Icon=droidcam
+TryExec=droidcam

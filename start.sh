@@ -537,6 +537,31 @@ install_typora() {
   fi
 }
 
+install_droidcam() {
+  print "Installing DroidCam"
+  if [[ -x "$(command -v droidcam)" ]]; then
+    print_success "Skipping: DroidCam is already installed"
+  else
+    mkdir -p "${TMP_DIR}/droidcam"
+    print "Downloading DroidCam pre compiled binary"
+    wget "https://files.dev47apps.net/linux/droidcam_latest.zip" -O "${TMP_DIR}/droidcam/droidcam.zip" &>> "${LOG_FILE}"
+    if [[ "$?" -ne 0 ]]; then
+      print_failed "Skipping: DroidCam downloading did not complete successfully. See log for more info."
+    else
+      print_success "Done"
+      cd "${TMP_DIR}/droidcam"
+      print "Extracting DroidCam bundle"
+      unzip "droidcam.zip" &>> "${LOG_FILE}"
+      is_failed "Done" "Skipping. Extracting DroidCam bundle is failed. See log for more info."
+      print "Installing DroidCam binary"
+      chmod +x ./install &>> "${LOG_FILE}"
+      ./install &>> "${LOG_FILE}"
+      is_failed "Done" "Skipping: DroidCam installation did not complete successfully. See log for more info."
+      cd "${OLDPWD}"
+    fi
+  fi
+}
+
 install_ibus_avro() {
   print "Installing ibus-avro"
   if [[ -d "${SRC_DIR}/apps/ibus-avro" ]]; then
@@ -799,6 +824,7 @@ setup_operating_system() {
   install_hugo_extended_cli
   install_heroku_cli
   install_typora
+  install_droidcam
   install_telegram_desktop
   install_bash_scripts
   add_repos
