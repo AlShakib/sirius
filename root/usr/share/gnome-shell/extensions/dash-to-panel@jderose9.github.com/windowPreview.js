@@ -26,7 +26,6 @@ const PopupMenu = imports.ui.popupMenu;
 const Signals = imports.signals;
 const Shell = imports.gi.Shell;
 const St = imports.gi.St;
-const Tweener = imports.ui.tweener;
 const WindowManager = imports.ui.windowManager;
 const Workspace = imports.ui.workspace;
 
@@ -171,8 +170,14 @@ var PreviewMenu = Utils.defineClass({
     },
 
     requestOpen: function(appIcon) {
+        let timeout = Me.settings.get_int('show-window-previews-timeout');
+
+        if (this.opened) {
+            timeout = Math.min(100, timeout);
+        }
+
         this._endOpenCloseTimeouts();
-        this._timeoutsHandler.add([T1, Me.settings.get_int('show-window-previews-timeout'), () => this.open(appIcon)]);
+        this._timeoutsHandler.add([T1, timeout, () => this.open(appIcon)]);
     },
 
     requestClose: function() {
@@ -208,6 +213,7 @@ var PreviewMenu = Utils.defineClass({
         this._endPeek();
         
         if (immediate) {
+            Utils.stopAnimations(this.menu);
             this._resetHiddenState();
         } else {
             this._animateOpenOrClose(false, () => this._resetHiddenState());
@@ -410,7 +416,7 @@ var PreviewMenu = Utils.defineClass({
         isLeftButtons = Meta.prefs_get_button_layout().left_buttons.indexOf(Meta.ButtonFunction.CLOSE) >= 0;
         isTopHeader = Me.settings.get_string('window-preview-title-position') == 'TOP';
         isManualStyling = Me.settings.get_boolean('window-preview-manual-styling');
-        scaleFactor = St.ThemeContext.get_for_stage(global.stage).scale_factor;
+        scaleFactor = Utils.getScaleFactor();
         headerHeight = Me.settings.get_boolean('window-preview-show-title') ? HEADER_HEIGHT * scaleFactor : 0;
         animationTime = Me.settings.get_int('window-preview-animation-time') * .001;
         aspectRatio.x = {
@@ -422,11 +428,9 @@ var PreviewMenu = Utils.defineClass({
             fixed: Me.settings.get_boolean('window-preview-fixed-y')
         };
         
-        if (this.panel.dynamicTransparency) {
-            alphaBg = Me.settings.get_boolean('preview-use-custom-opacity') ? 
-                      Me.settings.get_int('preview-custom-opacity') * .01 : 
-                      this.panel.dynamicTransparency.alpha;
-        }
+        alphaBg = Me.settings.get_boolean('preview-use-custom-opacity') ? 
+                  Me.settings.get_int('preview-custom-opacity') * .01 : 
+                  this.panel.dynamicTransparency.alpha;
     },
 
     _updateClip: function() {
@@ -485,7 +489,7 @@ var PreviewMenu = Utils.defineClass({
             this.menu.set_position(x, y);
             this.menu.set_size(previewsWidth, previewsHeight);
         } else {
-            Tweener.addTween(this.menu, getTweenOpts({ x: x, y: y, width: previewsWidth, height: previewsHeight }));
+            Utils.animate(this.menu, getTweenOpts({ x: x, y: y, width: previewsWidth, height: previewsHeight }));
         }
     },
 
@@ -580,7 +584,7 @@ var PreviewMenu = Utils.defineClass({
 
         tweenOpts[this._translationProp] = show ? this._translationDirection : this._translationOffset;
 
-        Tweener.addTween(this.menu, getTweenOpts(tweenOpts));
+        Utils.animate(this.menu, getTweenOpts(tweenOpts));
     },
 
     _peek: function(window) {
@@ -607,9 +611,10 @@ var PreviewMenu = Utils.defineClass({
         this._timeoutsHandler.remove(T3);
 
         if (this._peekedWindow) {
-            this._restorePeekedWindowStack();
+            let immediate = !stayHere && this.peekInitialWorkspaceIndex != Utils.getCurrentWorkspace().index();
 
-            this._focusMetaWindow(255);
+            this._restorePeekedWindowStack();
+            this._focusMetaWindow(255, this._peekedWindow, immediate);
             this._peekedWindow = null;
 
             if (!stayHere) {
@@ -622,27 +627,28 @@ var PreviewMenu = Utils.defineClass({
 
     _switchToWorkspaceImmediate: function(workspaceIndex) {
         let workspace = Utils.getWorkspaceByIndex(workspaceIndex);
+        let shouldAnimate = Main.wm._shouldAnimate;
 
         if (!workspace || (!workspace.list_windows().length && 
-            workspaceIndex < Utils.getWorkspaceCount() -1)) {
+            workspaceIndex < Utils.getWorkspaceCount() - 1)) {
             workspace = Utils.getCurrentWorkspace();
         }
 
-        Main.wm._blockAnimations = true;
+        Main.wm._shouldAnimate = () => false;
         workspace.activate(global.display.get_current_time_roundtrip());
-        Main.wm._blockAnimations = false;
+        Main.wm._shouldAnimate = shouldAnimate;
     },
 
-    _focusMetaWindow: function(dimOpacity, window) {
+    _focusMetaWindow: function(dimOpacity, window, immediate) {
         if (Main.overview.visibleTarget) {
             return;
         }
 
-        global.get_window_actors().forEach(wa => {
-            let mw = wa.meta_window;
+        window.get_workspace().list_windows().forEach(mw => {
+            let wa = mw.get_compositor_private();
             let isFocused = mw == window;
 
-            if (mw) {
+            if (wa) {
                 if (isFocused) {
                     mw[PEEK_INDEX_PROP] = wa.get_parent().get_children().indexOf(wa);
                     wa.get_parent().set_child_above_sibling(wa, null);
@@ -652,7 +658,15 @@ var PreviewMenu = Utils.defineClass({
                     wa.show();
                 }
                 
-                Utils.animateWindowOpacity(wa, getTweenOpts({ opacity: isFocused ? 255 : dimOpacity }));
+                if (!mw.minimized) {
+                    let tweenOpts = getTweenOpts({ opacity: isFocused ? 255 : dimOpacity });
+    
+                    if (immediate && !mw.is_on_all_workspaces()) {
+                        tweenOpts.time = 0;
+                    }
+                    
+                    Utils.animateWindowOpacity(wa, tweenOpts);
+                }
             }
         });
     },
@@ -795,7 +809,10 @@ var Preview = Utils.defineClass({
                 } else if (!this._waitWindowId) {
                     this._waitWindowId = Mainloop.idle_add(() => {
                         this._waitWindowId = 0;
-                        _assignWindowClone();
+
+                        if (this._previewMenu.opened) {
+                            _assignWindowClone();
+                        }
                     });
                 }
             };
@@ -815,8 +832,8 @@ var Preview = Utils.defineClass({
 
             this.animatingOut = true;
 
-            Tweener.removeTweens(this);
-            Tweener.addTween(this, tweenOpts);
+            Utils.stopAnimations(this);
+            Utils.animate(this, tweenOpts);
         }
     },
 
@@ -824,8 +841,8 @@ var Preview = Utils.defineClass({
         if (this.animatingOut) {
             this.animatingOut = false;
 
-            Tweener.removeTweens(this);
-            Tweener.addTween(this, getTweenOpts({ opacity: 255 }));
+            Utils.stopAnimations(this);
+            Utils.animate(this, getTweenOpts({ opacity: 255 }));
         }
     },
 
@@ -964,7 +981,7 @@ var Preview = Utils.defineClass({
 
     _hideOrShowCloseButton: function(hide) {
         if (this._needsCloseButton) {
-            Tweener.addTween(this._closeButtonBin, getTweenOpts({ opacity: hide ? 0 : 255 }));
+            Utils.animate(this._closeButtonBin, getTweenOpts({ opacity: hide ? 0 : 255 }));
         }
     },
 
@@ -1008,7 +1025,7 @@ var Preview = Utils.defineClass({
             }
 
             currentClones.forEach(c => c.destroy());
-            Tweener.addTween(currentCloneBin, currentCloneOpts);
+            Utils.animate(currentCloneBin, currentCloneOpts);
         } else if (animateSize) {
             newCloneBin.width = 0;
             newCloneBin.height = 0;
@@ -1016,7 +1033,7 @@ var Preview = Utils.defineClass({
             newCloneOpts.height = this.cloneHeight;
         }
 
-        Tweener.addTween(newCloneBin, newCloneOpts);
+        Utils.animate(newCloneBin, newCloneOpts);
     },
     
     _getWindowCloneBin: function(window) {
