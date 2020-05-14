@@ -224,38 +224,93 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         let rightPanelWidth = this._settings.get_int('right-panel-width');
         this.rightBox.style = "width: " + rightPanelWidth + "px;";
         this.shortcutsScrollBox.style = "width: " + rightPanelWidth + "px;";
-
-        this.loadCategories();
+        
         this.loadFavorites();
+        this.loadCategories();
         this.setDefaultMenuView(); 
     }
 
     loadCategories(){
         this.categoryDirectories = null;
         this.categoryDirectories = new Map();
-        
-        let categoryMenuItem = new MW.CategoryMenuItem(this, Constants.CategoryType.FREQUENT_APPS);
-        this.categoryDirectories.set(Constants.CategoryType.FREQUENT_APPS, categoryMenuItem);
-        let mostUsed = Shell.AppUsage.get_default().get_most_used();
-        for (let i = 0; i < mostUsed.length; i++) {
-            if (mostUsed[i] && mostUsed[i].get_app_info().should_show())
-                categoryMenuItem.appList.push(mostUsed[i]);
-        }
+
+        let extraCategories = this._settings.get_value("extra-categories").deep_unpack();
+
+        for(let i = 0; i < extraCategories.length; i++){
+            let categoryEnum = extraCategories[i][0];
+            let shouldShow = extraCategories[i][1];
+            //If ArcMenu layout set to "Pinned Apps" default view 
+            //and Extra Categories "Pinned Apps" is enabled
+            //do not display "Pinned Apps" as an extra category
+            if(categoryEnum == Constants.CategoryType.PINNED_APPS && shouldShow && this._settings.get_boolean('enable-pinned-apps'))
+                shouldShow = false;
+            if(shouldShow){
+                let categoryMenuItem = new MW.CategoryMenuItem(this, categoryEnum);
+                this.categoryDirectories.set(categoryEnum, categoryMenuItem);
+            }
+        }        
 
         super.loadCategories();
+    }
+
+    displayFavorites(){
+        this.activeCategoryType = Constants.CategoryType.PINNED_APPS;
+        if(!this._settings.get_boolean('enable-pinned-apps')){
+            this.viewProgramsButton.actor.hide();
+            this.backButton.actor.show();
+        }
+        else{
+            this.viewProgramsButton.actor.show();
+            this.backButton.actor.hide();
+        }
+        super.displayFavorites();
+    }
+
+    displayAllApps(){
+        super.displayAllApps();
+        this.backButton.actor.show();
+        this.viewProgramsButton.actor.hide();  
+    }
+
+    displayCategories(){
+        this.activeCategoryType = Constants.CategoryType.CATEGORIES_LIST;
+        if(this._settings.get_boolean('enable-pinned-apps')){
+            this.viewProgramsButton.actor.hide();
+            this.backButton.actor.show();
+        }
+        else{
+            this.viewProgramsButton.actor.show();
+            this.backButton.actor.hide();
+        }
+        
+        super.displayCategories();
     }
 
     setDefaultMenuView(){
         super.setDefaultMenuView();
         if(this._settings.get_boolean('enable-pinned-apps')){
-            this.currentMenu = Constants.CURRENT_MENU.FAVORITES;
             this.displayFavorites();
         }	
         else{
-            this.currentMenu = Constants.CURRENT_MENU.CATEGORIES;
             this.displayCategories();
         }
         this.backButton.actor.hide();
         this.viewProgramsButton.actor.show();
+    }
+
+    displayCategoryAppList(appList){
+        super.displayCategoryAppList(appList);
+        this.backButton.actor.show();
+        this.viewProgramsButton.actor.hide();
+        this.activeCategoryType = Constants.CategoryType.CATEGORY_APP_LIST; 
+    }
+
+    _onSearchBoxChanged(searchBox, searchString){  
+        super._onSearchBoxChanged(searchBox, searchString);  
+        if(!searchBox.isEmpty()){  
+            this.backButton.actor.show();
+            this.viewProgramsButton.actor.hide(); 
+            this.activeCategoryType = Constants.CategoryType.SEARCH_RESULTS;   
+        }            
     }
 }

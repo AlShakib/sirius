@@ -132,10 +132,12 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
 
         this.applicationsScrollBox.add_actor( this.applicationsBox);
         this.subMainBox.add(this.applicationsScrollBox);
-
+        this.activeCategoryType = Constants.CategoryType.HOME_SCREEN;
+        
+        this.loadFavorites();
         this.loadCategories();
         this.displayAllApps();
-        this.loadFavorites();
+
         this._createFavoritesMenu();
         this.setDefaultMenuView();
     }
@@ -286,7 +288,12 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         let isIconGrid = true;
         super.loadCategories(MW.CategoryMenuItem, isIconGrid);
     }
-   
+    
+    _clearActorsFromBox(box){
+        super._clearActorsFromBox(box);
+        this.activeCategoryType = Constants.CategoryType.HOME_SCREEN;
+    }
+
     _displayAppList(apps) {
         super._displayAppGridList(apps, 5);
     }

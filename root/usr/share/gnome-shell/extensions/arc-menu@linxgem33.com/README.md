@@ -13,7 +13,7 @@ Arc Menu is a Gnome shell extension designed to replace the standard menu found 
 
 ### Volunteers needed!
 
-This extension could be even better with your help! Any items in the issue tracker labelled **Help Needed** or **Good First Issue** are open for contribution and help. For more info, see the [Contributing Feature List](https://gitlab.com/LinxGem33/Arc-Menu/issues/54) for more details on current issues or features which need your help.
+This extension could be even better with your help! Any items in the issue tracker labelled **Help Needed** or **Good First Issue** are open for contribution. For more info, see the [Contributing Feature List](https://gitlab.com/LinxGem33/Arc-Menu/issues/54) for more details on current issues or features which need your help.
 
 ![image](/uploads/85b3cf3baea40163ffc5c115b7d7306e/image.png)  ![image](/uploads/d5b2fb82db8d2955923d327caef8e4aa/image.png)
 
@@ -97,7 +97,33 @@ Arc Menu is available under the terms of the GPL-2.0 license See [`COPYING`](htt
 
 Arc-Menu is Free Software: You can use, study share and improve it at your will. Specifically you can redistribute and/or modify it under the terms of the [GNU General Public License](https://www.gnu.org/licenses/gpl.html) as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version. 
 
-All ArcMenu's Image assets including wiki images and application Image assets are created by [LinxGem33](https://gitlab.com/LinxGem33) and licensed under; [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+All ArcMenu's Image assets including wiki images, Icons and application Image assets are created by [LinxGem33](https://gitlab.com/LinxGem33) and licensed under; [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+
+[Exceptions]() Trademarked icons (logo) (name) please see `Legal disclaimer for brand icons and trademarks` below regarding Distro icons section for more details.
+
+<details>
+<summary><b>Legal disclaimer for brand icons and trademarks..</b></summary>
+
+<p>
+
+**Legal disclaimer for brand icons and trademarks..**
+
+*" All brand icons are trademarks of their respective owners. The use of these trademarks does not indicate endorsement of the trademark holder by Arc Menu project, nor vice versa. Please do not use brand logos for any purpose except to represent the company, product, or service to which they refer. "*
+
+* **UBUNTU ![copyright2.svg](/uploads/c5f15274ae7fffddf1f2e3dcda5971d8/copyright2.svg)** - Ubuntu name and Ubuntu logo is a trademark of Canonical ![copyright2.svg](/uploads/c5f15274ae7fffddf1f2e3dcda5971d8/copyright2.svg) Ltd.
+
+* **FEDORA ![copyright2.svg](/uploads/c5f15274ae7fffddf1f2e3dcda5971d8/copyright2.svg)** - Fedora and the Infinity design logo are trademarks of Red Hat, Inc.
+
+* **DEBIAN ![copyright2.svg](/uploads/c5f15274ae7fffddf1f2e3dcda5971d8/copyright2.svg)** - is a registered trademark owned by Software in the Public Interest, Inc. Debian trademark is a registered United States trademark of Software in the Public Interest, Inc., managed by the Debian project.
+
+* **MANJARO ![copyright2.svg](/uploads/c5f15274ae7fffddf1f2e3dcda5971d8/copyright2.svg)** - (logo) and name is a trademark of Manjaro GmbH & Co. KG
+
+* **POP_OS! ![copyright2.svg](/uploads/c5f15274ae7fffddf1f2e3dcda5971d8/copyright2.svg)** - Name and (logo) is a trademark of system 76 ![copyright2.svg](/uploads/c5f15274ae7fffddf1f2e3dcda5971d8/copyright2.svg) Inc.
+
+* **ARCH LINUX ![copyright2.svg](/uploads/c5f15274ae7fffddf1f2e3dcda5971d8/copyright2.svg)** - The stylized Arch Linux logo are recognised trademarks of Arch Linux, copyright 2002-2017 Judd Vinet and Aaron Griffin
+
+</p>
+</details>
 
 -----
 
@@ -156,6 +182,14 @@ Hi, I’m Andrew. My role on the project is to design, create, and implement fea
 -----
 
 ### Translations
+
+-----
+
+**Disclaimer..**
+
+*" Translations are not provided by the ArcMenu team members and may contain incorrect or inaccurate translations. The ArcMenu team relies on user contributions for translations. Therefore if you wish to correct or modify a translation that you feel is inaccurate please send a Merge Request with a brief description with the reason for any corrections. "*
+
+Kind regards - **ArcMenu Team**
 
 -----
 

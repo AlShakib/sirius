@@ -28,8 +28,8 @@ const _ = Gettext.gettext;
 var Notebook = GObject.registerClass(class ArcMenu_Notebook extends Gtk.Notebook{
     _init() {
         super._init({
-            margin_left: 6,
-            margin_right: 6
+            margin_left: 0,
+            margin_right: 0
         });
     }
 
@@ -42,7 +42,7 @@ var Notebook = GObject.registerClass(class ArcMenu_Notebook extends Gtk.Notebook
     }
 });
 
-var NotebookPage =GObject.registerClass(class ArcMenu_NotebookPage extends Gtk.Box {
+var NotebookPage = GObject.registerClass(class ArcMenu_NotebookPage extends Gtk.Box {
     _init(title) {
         super._init({
             orientation: Gtk.Orientation.VERTICAL,
@@ -66,6 +66,7 @@ var IconButton = GObject.registerClass(class ArcMenu_IconButton extends Gtk.Butt
     _init(params) {
         super._init();
         this._params = params;
+
         if (this._params.circular) {
             let context = this.get_style_context();
             context.add_class('circular');
@@ -73,7 +74,8 @@ var IconButton = GObject.registerClass(class ArcMenu_IconButton extends Gtk.Butt
         if (this._params.icon_name) {
             let image = new Gtk.Image({
                 icon_name: this._params.icon_name,
-                xalign: 0.5
+                halign: Gtk.Align.CENTER,
+                margin: this._params.circular ? 4 : 0
             });
             this.add(image);
         }
@@ -81,6 +83,20 @@ var IconButton = GObject.registerClass(class ArcMenu_IconButton extends Gtk.Butt
             this.set_tooltip_text(this._params.tooltip_text);
         }
     }
+});
+
+var InfoButton = GObject.registerClass(class ArcMenu_InfoButton extends Gtk.Button{
+    _init(params) {
+        super._init();
+        this.halign = Gtk.Align.END;
+        this.valign = Gtk.Align.END;
+        let infoImage = new Gtk.Image({ pixbuf: GdkPixbuf.Pixbuf.new_from_file_at_size(Me.path + '/media/misc/info-circle.svg', 20, 20) });
+        this.image = infoImage;
+        if(params && params.tooltip_text){
+            this.set_tooltip_text(params.tooltip_text);
+        }
+    }
+
 });
 
 var DialogWindow = GObject.registerClass(class ArcMenu_DialogWindow extends Gtk.Dialog {
@@ -162,6 +178,11 @@ var FrameBoxRow = GObject.registerClass(class ArcMenu_FrameBoxRow extends Gtk.Li
     add(widget) {
         this._grid.add(widget);
     }
+    
+    setVerticalAlignmentBottom(){
+        this._grid.vexpand = true;
+        this._grid.valign = Gtk.Align.END;
+    }
 });
 
 var TileGrid = GObject.registerClass(class ArcMenu_TileGrid extends Gtk.FlowBox{
@@ -186,7 +207,7 @@ var Tile = GObject.registerClass(class ArcMenu_Tile extends Gtk.Button{
         let pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(file, width, height);
         this._image = new Gtk.Image({ pixbuf: pixbuf });
         this.name = name;
-        this._label = new Gtk.Label({ label: this.name });
+        this._label = new Gtk.Label({ label: _(this.name) });
         this.layout = layout;
 
         this._vbox = new Gtk.Box({ orientation: Gtk.Orientation.VERTICAL });
@@ -199,47 +220,42 @@ var Tile = GObject.registerClass(class ArcMenu_Tile extends Gtk.Button{
 
 var LayoutTile = GObject.registerClass(class ArcMenu_LayoutTile extends Gtk.Box{
     _init(name, file, width, height, layout) {
-        super._init({orientation: Gtk.Orientation.VERTICAL});
+        super._init({orientation: Gtk.Orientation.HORIZONTAL});
         this.name = name;
         this.layout = layout.layoutStyle;
-        this.info = "<b>"+ this.name + "</b>\n\n" +layout.description + "\n\n" + _("Included Layouts") + ":";
+        this.info = "<b>"+ _(this.name) + "</b>\n\n" + _(layout.description)+ "\n\n" + _("Included Layouts") + ":";
         
-        this.layoutList = "";
-        this.layout.forEach((style) => {
-            this.layoutList += "•   " + style.name + "\n";
-        });
-
-        let pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(file, width, height, false);
-        this._image = new Gtk.Image({ pixbuf: pixbuf });
-        this.add(this._image);
-
         this._hbox = new Gtk.Box({ 
-            orientation: Gtk.Orientation.HORIZONTAL,
+            orientation: Gtk.Orientation.VERTICAL,
             spacing: 10,
             homogeneous: false,
-            margin: 5 
         });
+
+        this.layoutList = "";
+        this.layout.forEach((style) => {
+            this.layoutList += "•   " + _(style.name) + "\n";
+        });
+
+        let pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(file, width, height);
+        this._image = new Gtk.Image({ pixbuf: pixbuf });
+        this._hbox.add(this._image);
+
         this.layoutButton = new Gtk.Button({
-            label: this.name,
+            label: _(this.name),
             halign: Gtk.Align.FILL,
             hexpand: true,
-            tooltip_text: _("Browse all") + " " + this.name
+            tooltip_text: _("Browse all") + " " + _(this.name)
         });
         this._hbox.add(this.layoutButton);
 
-        pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(Me.path + '/media/misc/info-circle.svg', 20, 20);
-        let infoImage = new Gtk.Image({ pixbuf: pixbuf });
-        this.infoButton = new Gtk.Button({
-            image: infoImage,
-            halign: Gtk.Align.END,
-            tooltip_text: this.name + " " + _("Information")
+       
+        this.infoButton = new InfoButton({
+            tooltip_text: _(this.name) + " " + _("Information")
         });
-        this._hbox.add(this.infoButton);
-
         this.add(this._hbox);
-        
+
+        this.add(this.infoButton);
         this.margin = 1;
         this.spacing = 10;
    }
 });
-

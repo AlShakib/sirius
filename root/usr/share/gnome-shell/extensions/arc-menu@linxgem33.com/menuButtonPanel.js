@@ -47,7 +47,6 @@ var ApplicationsButton = GObject.registerClass(class ArcMenu_ApplicationsButton 
         this._settings = settings;
         this._panel = panel;
         this._menuButtonWidget = new MW.MenuButtonWidget();
-        
         //Tooltip showing/hiding
         this.tooltipShowing = false;
         this.tooltipHidingID = null;
@@ -328,7 +327,8 @@ var ApplicationsButton = GObject.registerClass(class ArcMenu_ApplicationsButton 
 
         if(this.subMenuManager.activeMenu)
             this.subMenuManager.activeMenu.toggle();
-
+        if(Main.panel.menuManager && Main.panel.menuManager.activeMenu)
+            Main.panel.menuManager.activeMenu.toggle();
         //If Layout is GnomeDash - toggle Main Overview   
         let layout = this._settings.get_enum('menu-layout');
         if(layout == Constants.MENU_LAYOUT.GnomeDash)
@@ -384,7 +384,7 @@ var ApplicationsButton = GObject.registerClass(class ArcMenu_ApplicationsButton 
         
         this.reload();
     }
-    destroy(){
+    _onDestroy(){
         if (this._iconThemeChangedId){
             St.TextureCache.get_default().disconnect(this._iconThemeChangedId);
             this._iconThemeChangedId = null;
@@ -434,8 +434,8 @@ var ApplicationsButton = GObject.registerClass(class ArcMenu_ApplicationsButton 
         if(this.rightClickMenu){
             this.rightClickMenu.destroy();
         }
-        this.container.child = null;
-        this.container.destroy();
+
+        super._onDestroy();
     }
     _updateMenuLayout(){
         this.tooltipShowing = false;
@@ -512,14 +512,6 @@ var ApplicationsButton = GObject.registerClass(class ArcMenu_ApplicationsButton 
         if(this.MenuLayout)
             this.MenuLayout.needsReload = true;
     }
-    setCurrentMenu(menu) {
-        if(this.MenuLayout)
-            this.MenuLayout.setCurrentMenu(menu);
-    }
-    getCurrentMenu(){
-        if(this.MenuLayout)
-            return this.MenuLayout.getCurrentMenu();
-    }
     getShouldLoadFavorites(){
         if(this.MenuLayout)
             return this.MenuLayout.shouldLoadFavorites;
@@ -561,7 +553,8 @@ var ApplicationsMenu = class ArcMenu_ApplicationsMenu extends PopupMenu.PopupMen
         this._button = button;  
         Main.uiGroup.add_actor(this.actor);
         this.actor.hide();
-        this.connect('menu-closed', () => this._onCloseEvent());
+        this._menuCloseID = this.connect('menu-closed', () => this._onCloseEvent());
+        this.connect('destroy', () => this._onDestroy());
     }
 
     open(animation){
@@ -598,6 +591,13 @@ var ApplicationsMenu = class ArcMenu_ApplicationsMenu extends PopupMenu.PopupMen
             this._button.setDefaultMenuView(); 
         }
     }
+
+    _onDestroy(){
+        if(this._menuCloseID){
+            this.disconnect(this._menuCloseID)
+            this._menuCloseID = null;
+        }
+    }
 };
 
 var RightClickMenu = class ArcMenu_RightClickMenu extends PopupMenu.PopupMenu {
@@ -621,7 +621,7 @@ var RightClickMenu = class ArcMenu_RightClickMenu extends PopupMenu.PopupMenu {
         
         item = new PopupMenu.PopupMenuItem(_("Arc Menu GitLab Page"));        
         item.connect('activate', ()=>{
-            Util.spawnCommandLine('xdg-open https://gitlab.com/LinxGem33/Arc-Menu');
+            Util.spawnCommandLine('xdg-open ' + Me.metadata.url);
         });     
         this.addMenuItem(item);  
         item = new PopupMenu.PopupMenuItem(_("Arc Menu User Manual"));          

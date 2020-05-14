@@ -49,6 +49,7 @@ var createMenu =  class extends BaseMenuLayout.BaseLayout{
         }
         this.section.actor.add_actor(this.mainBox);  
 
+        this.loadFavorites();
         this.loadCategories();
         this._display(); 
     }
@@ -72,11 +73,16 @@ var createMenu =  class extends BaseMenuLayout.BaseLayout{
         this.categoryDirectories = null;
         this.categoryDirectories = new Map();
 
-        let categoryMenuItem = new MW.SimpleMenuItem(this, Constants.CategoryType.FAVORITES);
-        this.categoryDirectories.set(Constants.CategoryType.FAVORITES, categoryMenuItem);
+        let extraCategories = this._settings.get_value("extra-categories").deep_unpack();
 
-        categoryMenuItem = new MW.SimpleMenuItem(this, Constants.CategoryType.ALL_PROGRAMS);
-        this.categoryDirectories.set(Constants.CategoryType.ALL_PROGRAMS, categoryMenuItem);
+        for(let i = 0; i < extraCategories.length; i++){
+            let categoryEnum = extraCategories[i][0];
+            let shouldShow = extraCategories[i][1];
+            if(shouldShow){
+                let categoryMenuItem = new MW.SimpleMenuItem(this, categoryEnum);
+                this.categoryDirectories.set(categoryEnum, categoryMenuItem);
+            }
+        }        
         
         super.loadCategories(MW.SimpleMenuItem);
     }
@@ -84,9 +90,33 @@ var createMenu =  class extends BaseMenuLayout.BaseLayout{
     displayCategories(){
         super.displayCategories(this.mainBox);
     }
-    
+
+    displayFavorites() {
+        let categoryMenuItem = this.categoryDirectories.get(Constants.CategoryType.PINNED_APPS);
+        if(categoryMenuItem){
+            let children = categoryMenuItem.applicationsBox.get_children();
+            for (let i = 0; i < children.length; i++) {
+                let actor = children[i];
+                if(actor._delegate instanceof MW.CategorySubMenuItem)
+                    actor._delegate.menu.close();
+                categoryMenuItem.applicationsBox.remove_actor(actor);
+            }
+            for(let i = 0;i < this.favoritesArray.length; i++){
+                categoryMenuItem.applicationsBox.add_actor(this.favoritesArray[i].actor);	
+                if(!this.favoritesArray[i].shouldShow)
+                    this.favoritesArray[i].actor.hide();
+                if(i==0){
+                    this.activeMenuItem = this.favoritesArray[i];
+                    if(this.leftClickMenu.isOpen){
+                        this.mainBox.grab_key_focus();
+                    }
+                }	   
+            }
+        } 
+    }
+
     _clearActorsFromBox(box) {
-        super._clearActorsFromBox(this.mainBox);
+        
     }
 
     displayCategoryAppList(appList, categoryMenuItem){

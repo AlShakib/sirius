@@ -180,9 +180,9 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
             this.appShortcuts.push(shortcutMenuItem);
         }
 
+        this.loadFavorites();
         this.loadCategories();
         this.displayCategories();
-        this.loadFavorites();
         this.displayFavorites();
         this.setDefaultMenuView();
     }
@@ -208,12 +208,12 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         let homeScreen = this._settings.get_boolean('enable-ubuntu-homescreen');
         if(homeScreen){
             this.activeCategory = _("Pinned Apps");
-            this.currentMenu = Constants.CURRENT_MENU.FAVORITES;
+            this.activeCategoryType = Constants.CategoryType.HOME_SCREEN;
             this.displayFavorites();
         }
         else{
             this.activeCategory = _("All Programs");
-            this.currentMenu = Constants.CURRENT_MENU.CATEGORY_APPLIST;
+            this.activeCategoryType = Constants.CategoryType.ALL_PROGRAMS;
             this.displayAllApps();   
         }
     }
@@ -244,8 +244,18 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         let categoryMenuItem = new MW.CategoryMenuButton(this, Constants.CategoryType.HOME_SCREEN);
         this.categoryDirectories.set(Constants.CategoryType.HOME_SCREEN, categoryMenuItem);
 
-        categoryMenuItem = new MW.CategoryMenuButton(this, Constants.CategoryType.ALL_PROGRAMS);
-        this.categoryDirectories.set(Constants.CategoryType.ALL_PROGRAMS, categoryMenuItem);
+        let extraCategories = this._settings.get_value("extra-categories").deep_unpack();
+
+        for(let i = 0; i < extraCategories.length; i++){
+            let categoryEnum = extraCategories[i][0];
+            let shouldShow = extraCategories[i][1];
+            if(categoryEnum == Constants.CategoryType.PINNED_APPS)
+                shouldShow = false;
+            if(shouldShow){
+                let categoryMenuItem = new MW.CategoryMenuButton(this, categoryEnum);
+                this.categoryDirectories.set(categoryEnum, categoryMenuItem);
+            }
+        }
 
         let isIconGrid = true;
         super.loadCategories(MW.CategoryMenuButton, isIconGrid);
@@ -258,7 +268,10 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
     }
 
     displayFavorites() {
-        this._clearActorsFromBox();
+        if(this.activeCategoryType === Constants.CategoryType.HOME_SCREEN)
+            this._clearActorsFromBox(this.applicationsBox);
+        else
+            this._clearActorsFromBox();
         this._displayAppList(this.favoritesArray, true);
         this._displayAppList(this.appShortcuts, true, this.shortcutsGrid);
         if(!this.applicationsBox.contains(this.shortcutsBox))
@@ -285,10 +298,6 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
     }
 
     _displayAppList(apps, isFavoriteMenuItem = false, differentGrid = null){  
-        if(!isFavoriteMenuItem)
-            this.currentMenu = Constants.CURRENT_MENU.CATEGORY_APPLIST;
-        else
-            this.currentMenu = Constants.CURRENT_MENU.FAVORITES;    
         let grid = differentGrid ? differentGrid : this.grid;  
         grid.remove_all_children();
         super._displayAppGridList(apps, 3, isFavoriteMenuItem, differentGrid);
@@ -311,7 +320,6 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
     }
    
     destroy(isReload){
-        this.actionsBox.remove_all_children();
         if(this._clocksItem)
             this._clocksItem.destroy();
         if(this._weatherItem)

@@ -65,7 +65,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
             vertical: true
         });
 
-        this.categoriesTopBox.style = "padding: 5px 15px 0px 0px; margin-bottom: 10px;";
+        this.categoriesTopBox.style = "padding: 0px 15px 0px 0px; margin-bottom: 10px;";
         this.mainBox.add(this.topBox);
         this.categoriesButton = new MW.CategoriesButton(this);
         this.categoriesButton.actor.x_expand = false;
@@ -85,7 +85,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
 
         this.searchBox = new MW.SearchBox(this);
         this.searchBox._stEntry.style = "min-height: 0px; min-height: 0px; border-radius: 18px; padding: 7px 12px;";
-        this.searchBox.actor.style ="margin: 0px 10px 10px 10px;padding-top: 5px; padding-bottom: 0.0em;padding-left: 0.4em;padding-right: 0.4em;";
+        this.searchBox.actor.style ="margin: 0px 10px 10px 10px;padding-top: 4px; padding-bottom: 0.0em;padding-left: 0.4em;padding-right: 0.4em;";
         this._searchBoxChangedId = this.searchBox.connect('changed', this._onSearchBoxChanged.bind(this));
         this._searchBoxKeyPressId = this.searchBox.connect('key-press-event', this._onSearchBoxKeyPress.bind(this));
         this._searchBoxKeyFocusInId = this.searchBox.connect('key-focus-in', this._onSearchBoxKeyFocusIn.bind(this));
@@ -197,11 +197,11 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
             shortcutMenuItem.setAsIcon();
             this.appShortcuts.push(shortcutMenuItem);
         }
-
+        this.loadFavorites();
         this.loadCategories();
         this._createFavoritesMenu();
         this.loadPinnedShortcuts();
-        this.loadFavorites();
+
         this.setDefaultMenuView();
     }
 
@@ -244,7 +244,19 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
             software = 'io.elementary.appcenter';
             icon = 'pop-shop';
         }
-        pinnedApps.push(_("Software"), icon, software+".desktop");
+        else if(GLib.find_program_in_path('snap-store')){
+            software = 'snap-store_ubuntu-software';
+            icon = 'org.gnome.Software';
+        }
+        else{
+            software = null;
+        }
+        if(software)
+            pinnedApps.push(_("Software"), icon, software+".desktop");
+        else{
+            pinnedApps.push(_("Computer"), "ArcMenu_Computer", "ArcMenu_Computer");
+        }
+        
         pinnedApps.push(_("Files"), "system-file-manager", "org.gnome.Nautilus.desktop");
         pinnedApps.push(_("Log Out"), "application-exit-symbolic", "ArcMenu_LogOut");
         pinnedApps.push(_("Lock"), "changes-prevent-symbolic", "ArcMenu_Lock");
@@ -316,12 +328,12 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         let homeScreen = this._settings.get_boolean('enable-ubuntu-homescreen');
         if(homeScreen){
             this.activeCategory = _("Pinned Apps");
-            this.currentMenu = Constants.CURRENT_MENU.FAVORITES;
+            this.activeCategoryType = Constants.CategoryType.HOME_SCREEN;
             this.displayFavorites();
         }
         else{
             this.activeCategory = _("All Programs");
-            this.currentMenu = Constants.CURRENT_MENU.CATEGORY_APPLIST;
+            this.activeCategoryType = Constants.CategoryType.ALL_PROGRAMS;
             this.displayAllApps();   
         }
     }
@@ -358,8 +370,18 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         let categoryMenuItem = new MW.CategoryMenuItem(this, Constants.CategoryType.HOME_SCREEN);
         this.categoryDirectories.set(Constants.CategoryType.HOME_SCREEN, categoryMenuItem);
 
-        categoryMenuItem = new MW.CategoryMenuItem(this, Constants.CategoryType.ALL_PROGRAMS);
-        this.categoryDirectories.set(Constants.CategoryType.ALL_PROGRAMS, categoryMenuItem);
+        let extraCategories = this._settings.get_value("extra-categories").deep_unpack();
+
+        for(let i = 0; i < extraCategories.length; i++){
+            let categoryEnum = extraCategories[i][0];
+            let shouldShow = extraCategories[i][1];
+            if(categoryEnum == Constants.CategoryType.PINNED_APPS)
+                shouldShow = false;
+            if(shouldShow){
+                let categoryMenuItem = new MW.CategoryMenuItem(this, categoryEnum);
+                this.categoryDirectories.set(categoryEnum, categoryMenuItem);
+            }
+        }
 
         let isIconGrid = true;
         super.loadCategories(MW.CategoryMenuItem, isIconGrid);
@@ -376,8 +398,11 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
     }
 
     displayFavorites() {
-        this._clearActorsFromBox();
-        this.subMainBox.remove_actor(this.actionsContainerBox)
+        if(this.activeCategoryType === Constants.CategoryType.HOME_SCREEN)
+            this._clearActorsFromBox(this.applicationsBox);
+        else
+            this._clearActorsFromBox();
+        this.subMainBox.remove_actor(this.actionsContainerBox);
         this._displayAppList(this.favoritesArray, true);
         this._displayAppList(this.appShortcuts, true, this.shortcutsGrid);
         if(!this.applicationsBox.contains(this.shortcutsBox))
@@ -402,10 +427,6 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
     }
 
     _displayAppList(apps, isFavoriteMenuItem = false, differentGrid = null){      
-        if(!isFavoriteMenuItem)
-            this.currentMenu = Constants.CURRENT_MENU.CATEGORY_APPLIST;
-        else
-            this.currentMenu = Constants.CURRENT_MENU.FAVORITES;
         let grid = differentGrid ? differentGrid : this.grid;  
         grid.remove_all_children();
         super._displayAppGridList(apps, 5, isFavoriteMenuItem, differentGrid);

@@ -120,7 +120,7 @@ var TweaksDialog = GObject.registerClass(
             avatarStyleCombo.set_active(this._settings.get_enum('avatar-style'));
             avatarStyleCombo.connect('changed', (widget) => {
                 this._settings.set_enum('avatar-style', widget.get_active());
-                this._settings.set_boolean('reload-theme', false);
+                this._settings.reset('reload-theme');
                 this._settings.set_boolean('reload-theme', true);
             });
             avatarStyleRow.add(avatarStyleLabel);
@@ -151,6 +151,40 @@ var TweaksDialog = GObject.registerClass(
         _loadBudgieMenuTweaks(vbox){
             let budgieMenuTweaksFrame = new PW.FrameBox();
             budgieMenuTweaksFrame.add(this._createActivateOnHoverRow());
+
+            let searchbarLocationRow = new PW.FrameBoxRow();
+            let searchbarLocationLabel = new Gtk.Label({
+                label: _("Searchbar Location"),
+                use_markup: true,
+                xalign: 0,
+                hexpand: true
+            });
+            let searchbarLocationCombo = new Gtk.ComboBoxText({ halign: Gtk.Align.END });
+            searchbarLocationCombo.append_text(_("Bottom"));
+            searchbarLocationCombo.append_text(_("Top"));
+            searchbarLocationCombo.set_active(this._settings.get_enum('searchbar-location-redmond'));
+            searchbarLocationCombo.connect('changed', (widget) => {
+                    this._settings.set_enum('searchbar-location-redmond', widget.get_active());
+            });
+            searchbarLocationRow.add(searchbarLocationLabel);
+            searchbarLocationRow.add(searchbarLocationCombo);
+            budgieMenuTweaksFrame.add(searchbarLocationRow);
+
+            let enableActivitiesRow = new PW.FrameBoxRow();
+            let enableActivitiesLabel = new Gtk.Label({
+                label: _('Enable Activities Overview Shortcut'),
+                xalign:0,
+                hexpand: true,
+            });   
+            let enableActivitiesSwitch = new Gtk.Switch({ halign: Gtk.Align.END });
+            enableActivitiesSwitch.set_active(this._settings.get_boolean('enable-activities-shortcut'));
+            enableActivitiesSwitch.connect('notify::active', (widget) => {
+                this._settings.set_boolean('enable-activities-shortcut', widget.get_active());
+            });
+            enableActivitiesRow.add(enableActivitiesLabel);
+            enableActivitiesRow.add(enableActivitiesSwitch);
+            budgieMenuTweaksFrame.add(enableActivitiesRow);
+
             vbox.add(budgieMenuTweaksFrame);
         }
         _loadKRunnerMenuTweaks(vbox){
@@ -291,8 +325,7 @@ var TweaksDialog = GObject.registerClass(
             let pinnedAppsSeparatorLabel = new Gtk.Label({
                 label: _("Separator Position Index"),
                 use_markup: true,
-                xalign: 0,
-                hexpand: true
+                xalign: 0
             });
             let pinnedAppsSeparatorScale = new Gtk.HScale({
                 adjustment: new Gtk.Adjustment({
@@ -305,12 +338,26 @@ var TweaksDialog = GObject.registerClass(
             pinnedAppsSeparatorScale.connect('value-changed', (widget) => {
                 this._settings.set_int('ubuntu-dash-separator-index', widget.get_value());
             }); 
+            
+            let infoButton = new PW.InfoButton();
+            infoButton.connect('clicked', ()=> {
+                let dialog = new Gtk.MessageDialog({
+                    text: _('Adjust the position of the separator in the button panel'),
+                    use_markup: true,
+                    buttons: Gtk.ButtonsType.OK,
+                    message_type: Gtk.MessageType.OTHER,
+                    transient_for: this.get_toplevel(),
+                    modal: true
+                });
+                dialog.connect ('response', ()=> dialog.destroy());
+                dialog.show();
+            });
+
             pinnedAppsSeparatorRow.add(pinnedAppsSeparatorLabel);
             pinnedAppsSeparatorRow.add(pinnedAppsSeparatorScale);
+            pinnedAppsSeparatorRow.add(infoButton);
             pinnedAppsSeparatorFrame.add(pinnedAppsSeparatorRow);
             buttonsPage.add(pinnedAppsSeparatorFrame);
-            
-            
         }
         _loadRavenTweaks(vbox){
             let notebook = new PW.Notebook();
@@ -412,8 +459,7 @@ var TweaksDialog = GObject.registerClass(
             let pinnedAppsSeparatorLabel = new Gtk.Label({
                 label: _("Separator Position Index"),
                 use_markup: true,
-                xalign: 0,
-                hexpand: true
+                xalign: 0
             });
             let pinnedAppsSeparatorScale = new Gtk.HScale({
                 adjustment: new Gtk.Adjustment({
@@ -426,8 +472,24 @@ var TweaksDialog = GObject.registerClass(
             pinnedAppsSeparatorScale.connect('value-changed', (widget) => {
                 this._settings.set_int('mint-separator-index', widget.get_value());
             }); 
+
+            let infoButton = new PW.InfoButton();
+            infoButton.connect('clicked', ()=> {
+                let dialog = new Gtk.MessageDialog({
+                    text: _('Adjust the position of the separator in the button panel'),
+                    use_markup: true,
+                    buttons: Gtk.ButtonsType.OK,
+                    message_type: Gtk.MessageType.OTHER,
+                    transient_for: this.get_toplevel(),
+                    modal: true
+                });
+                dialog.connect ('response', ()=> dialog.destroy());
+                dialog.show();
+            });
+
             pinnedAppsSeparatorRow.add(pinnedAppsSeparatorLabel);
             pinnedAppsSeparatorRow.add(pinnedAppsSeparatorScale);
+            pinnedAppsSeparatorRow.add(infoButton);
             pinnedAppsSeparatorFrame.add(pinnedAppsSeparatorRow);
             vbox.add(pinnedAppsSeparatorFrame);
             
@@ -468,7 +530,6 @@ var TweaksDialog = GObject.registerClass(
                     margin_bottom: 0,
                     vexpand: false,
                     hexpand: false,
-                    margin_right: 15,
                     column_spacing: 2
                 });
 
@@ -476,7 +537,8 @@ var TweaksDialog = GObject.registerClass(
                 //and delete pinned apps
                 let addPinnedAppsButton = new PW.IconButton({
                     circular: false,
-                    icon_name: 'list-add-symbolic'
+                    icon_name: 'text-editor-symbolic',
+                    tooltip_text: _("Change")
                 });
                 addPinnedAppsButton.connect('clicked', ()=> {
                     let dialog = new Prefs.AddAppsToPinnedListWindow(this._settings, this, Constants.DIALOG_TYPE.Mint_Pinned_Apps);
@@ -501,15 +563,18 @@ var TweaksDialog = GObject.registerClass(
 
                 let editButton = new PW.IconButton({
                     circular: false,
-                    icon_name: 'emblem-system-symbolic'
+                    icon_name: 'emblem-system-symbolic',
+                    tooltip_text: _("Modify")
                 });
                 let upButton = new PW.IconButton({
                     circular: false,
-                    icon_name: 'go-up-symbolic'
+                    icon_name: 'go-up-symbolic',
+                    tooltip_text: _('Move Up')
                 });
                 let downButton = new PW.IconButton({
                     circular: false,
-                    icon_name: 'go-down-symbolic'
+                    icon_name: 'go-down-symbolic',
+                    tooltip_text: _('Move Down')
                 });
                 editButton.connect('clicked', ()=> {
                     let appArray = [frameRow._name,frameRow._icon,frameRow._cmd];
@@ -653,7 +718,10 @@ var TweaksDialog = GObject.registerClass(
                 xalign: 0,
                 hexpand: true
             });
-            let defaultLeftBoxCombo = new Gtk.ComboBoxText({ halign: Gtk.Align.END });
+            let defaultLeftBoxCombo = new Gtk.ComboBoxText({ 
+                halign: Gtk.Align.END,
+                tooltip_text: _("Choose the default menu view for Arc Menu") 
+            });
             defaultLeftBoxCombo.append_text(_("Pinned Apps"));
             defaultLeftBoxCombo.append_text(_("Categories List"));
             if(this._settings.get_boolean('enable-pinned-apps'))

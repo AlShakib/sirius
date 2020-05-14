@@ -343,7 +343,7 @@ var ApplicationsButton = GObject.registerClass(class ArcMenu_DashApplicationsBut
         
         this.reload();
     }
-    destroy() {  
+    _onDestroy() {  
         if (this._iconThemeChangedId){
             St.TextureCache.get_default().disconnect(this._iconThemeChangedId);
             this._iconThemeChangedId = null;
@@ -390,8 +390,7 @@ var ApplicationsButton = GObject.registerClass(class ArcMenu_DashApplicationsBut
             this.rightClickMenu.destroy();
         }
         
-        this.container.child = null;
-        this.container.destroy();
+        super._onDestroy();
     }
     _updateMenuLayout(){
         this.tooltipShowing = false;
@@ -468,14 +467,6 @@ var ApplicationsButton = GObject.registerClass(class ArcMenu_DashApplicationsBut
         if(this.MenuLayout)
             this.MenuLayout.needsReload = true;
     }
-    setCurrentMenu(menu) {
-        if(this.MenuLayout)
-            this.MenuLayout.setCurrentMenu(menu);
-    }
-    getCurrentMenu(){
-        if(this.MenuLayout)
-            return this.MenuLayout.getCurrentMenu();
-    }
     getShouldLoadFavorites(){
         if(this.MenuLayout)
             return this.MenuLayout.shouldLoadFavorites;
@@ -511,7 +502,8 @@ var ApplicationsMenu = class ArcMenu_ApplicationsDashMenu extends PopupMenu.Popu
         this.actor.add_style_class_name('panel-menu');
         Main.uiGroup.add_actor(this.actor);
         this.actor.hide();
-        this.connect('menu-closed', () => this._onCloseEvent());
+        this._menuCloseID = this.connect('menu-closed', () => this._onCloseEvent());
+        this.connect('destroy', () => this._onDestroy());
     }
 
     open(animation){
@@ -544,6 +536,13 @@ var ApplicationsMenu = class ArcMenu_ApplicationsDashMenu extends PopupMenu.Popu
             this._button.setDefaultMenuView(); 
         }
     }
+
+    _onDestroy(){
+        if(this._menuCloseID){
+            this.disconnect(this._menuCloseID)
+            this._menuCloseID = null;
+        }
+    }
 };
 
 var RightClickMenu = class ArcMenu_RightClickDashMenu extends PopupMenu.PopupMenu {
@@ -567,7 +566,7 @@ var RightClickMenu = class ArcMenu_RightClickDashMenu extends PopupMenu.PopupMen
         
         item = new PopupMenu.PopupMenuItem(_("Arc Menu GitLab Page"));        
         item.connect('activate', ()=>{
-            Util.spawnCommandLine('xdg-open https://gitlab.com/LinxGem33/Arc-Menu');
+            Util.spawnCommandLine('xdg-open ' + Me.metadata.url);
         });     
         this.addMenuItem(item);  
         item = new PopupMenu.PopupMenuItem(_("Arc Menu User Manual"));          

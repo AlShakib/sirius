@@ -48,7 +48,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
             vertical: false
         });
 
-        this.actionsBox.style ="spacing: 10px; margin-right: 10px;";
+        this.actionsBox.style ="spacing: 10px; margin-right: 10px; padding-right: 0.4em;";
         this.mainBox.add(this.actionsBox);
 
         let userAvatarSize = 30;
@@ -139,6 +139,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         this.categoriesBox = new St.BoxLayout({ vertical: true });
         this.categoriesScrollBox.add_actor(this.categoriesBox);
 
+        this.loadFavorites();
         this.loadCategories();
         this.displayCategories();
         this.setDefaultMenuView(); 
@@ -146,7 +147,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
    
     setDefaultMenuView(){
         super.setDefaultMenuView();
-        this.displayGnomeFavorites();
+        this.categoryDirectories.values().next().value.activate();
     }
 
     reload() {
@@ -160,11 +161,17 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
     loadCategories(){
         this.categoryDirectories = null;
         this.categoryDirectories = new Map(); 
-        let categoryMenuItem = new MW.CategoryMenuItem(this, Constants.CategoryType.FAVORITES);
-        this.categoryDirectories.set(Constants.CategoryType.FAVORITES, categoryMenuItem);
+        
+        let extraCategories = this._settings.get_value("extra-categories").deep_unpack();
 
-        categoryMenuItem = new MW.CategoryMenuItem(this, Constants.CategoryType.ALL_PROGRAMS);
-        this.categoryDirectories.set(Constants.CategoryType.ALL_PROGRAMS, categoryMenuItem);
+        for(let i = 0; i < extraCategories.length; i++){
+            let categoryEnum = extraCategories[i][0];
+            let shouldShow = extraCategories[i][1];
+            if(shouldShow){
+                let categoryMenuItem = new MW.CategoryMenuItem(this, categoryEnum);
+                this.categoryDirectories.set(categoryEnum, categoryMenuItem);
+            }
+        }
 
         super.loadCategories();
     } 

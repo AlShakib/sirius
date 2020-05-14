@@ -5,26 +5,15 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   viewBox="0 0 640 512"
+   height="512"
+   width="512"
    version="1.1"
-   id="svg4"
+   id="svg2"
    sodipodi:docname="traditional-symbolic.svg"
    inkscape:version="0.92.3 (2405546, 2018-03-11)">
-  <metadata
-     id="metadata10">
-    <rdf:RDF>
-      <cc:Work
-         rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-      </cc:Work>
-    </rdf:RDF>
-  </metadata>
-  <defs
-     id="defs8" />
   <sodipodi:namedview
      pagecolor="#ffffff"
      bordercolor="#666666"
@@ -36,33 +25,746 @@
      inkscape:pageshadow="2"
      inkscape:window-width="3840"
      inkscape:window-height="2055"
-     id="namedview6"
+     id="namedview53"
      showgrid="false"
      inkscape:zoom="1.84375"
-     inkscape:cx="104.2738"
-     inkscape:cy="256"
+     inkscape:cx="89.491521"
+     inkscape:cy="257.05185"
      inkscape:window-x="0"
      inkscape:window-y="44"
      inkscape:window-maximized="1"
-     inkscape:current-layer="g16" />
-  <g
-     id="g16"
-     style="fill:#cccccc">
-    <path
-       id="path2"
-       d="M624 416H381.54c-.74 19.81-14.71 32-32.74 32H288c-18.69 0-33.02-17.47-32.77-32H16c-8.8 0-16 7.2-16 16v16c0 35.2 28.8 64 64 64h512c35.2 0 64-28.8 64-64v-16c0-8.8-7.2-16-16-16zM576 48c0-26.4-21.6-48-48-48H112C85.6 0 64 21.6 64 48v336h512V48zm-64 272H128V64h384v256z"
-       style="fill:#cccccc" />
+     inkscape:current-layer="svg2" />
+  <metadata
+     id="metadata8">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs6">
+    <linearGradient
+       gradientTransform="matrix(0,-1,1,0,-1.5e-6,47.999998)"
+       gradientUnits="userSpaceOnUse"
+       x2="47"
+       x1="1"
+       id="linearGradient3764">
+      <stop
+         id="stop7"
+         stop-opacity="1"
+         stop-color="#e4e4e4" />
+      <stop
+         id="stop9"
+         stop-opacity="1"
+         stop-color="#eee"
+         offset="1" />
+    </linearGradient>
+    <clipPath
+       id="clipPath-365326813">
+      <g
+         id="g12"
+         transform="translate(0,-1004.3622)">
+        <path
+           style="fill:#1890d0"
+           id="path14"
+           transform="matrix(15.333333,0,0,11.5,414.99999,878.8622)"
+           d="m -24,13 c 0,1.105 -0.672,2 -1.5,2 -0.828,0 -1.5,-0.895 -1.5,-2 0,-1.105 0.672,-2 1.5,-2 0.828,0 1.5,0.895 1.5,2 z" />
+      </g>
+    </clipPath>
+    <clipPath
+       id="clipPath-370729992">
+      <g
+         id="g17"
+         transform="translate(0,-1004.3622)">
+        <path
+           style="fill:#1890d0"
+           id="path19"
+           transform="matrix(15.333333,0,0,11.5,414.99999,878.8622)"
+           d="m -24,13 c 0,1.105 -0.672,2 -1.5,2 -0.828,0 -1.5,-0.895 -1.5,-2 0,-1.105 0.672,-2 1.5,-2 0.828,0 1.5,0.895 1.5,2 z" />
+      </g>
+    </clipPath>
+    <defs
+       id="defs5">
+      <rect
+         id="SVGID_1_"
+         width="1024"
+         height="1024" />
+    </defs>
+    <clipPath
+       id="SVGID_2_">
+      <use
+         xlink:href="#SVGID_1_"
+         overflow="visible"
+         id="use9" />
+    </clipPath>
+    <defs
+       id="defs38">
+      <rect
+         y="0"
+         x="0"
+         height="1024"
+         width="1024"
+         id="SVGID_8_" />
+    </defs>
+    <clipPath
+       id="SVGID_9_">
+      <use
+         height="100%"
+         width="100%"
+         y="0"
+         x="0"
+         style="overflow:visible"
+         id="use42"
+         overflow="visible"
+         xlink:href="#SVGID_8_" />
+    </clipPath>
+    <defs
+       id="defs44">
+      <filter
+         height="413.96701"
+         width="413.93399"
+         y="293.44199"
+         x="305.03299"
+         filterUnits="userSpaceOnUse"
+         id="Adobe_OpacityMaskFilter">
+        <feFlood
+           id="feFlood47"
+           result="back" />
+        <feBlend
+           id="feBlend49"
+           mode="normal"
+           in2="back"
+           in="SourceGraphic" />
+      </filter>
+    </defs>
+    <mask
+       id="SVGID_10_"
+       height="413.967"
+       width="413.934"
+       y="293.442"
+       x="305.033"
+       maskUnits="userSpaceOnUse">
+      <g
+         style="filter:url(#Adobe_OpacityMaskFilter)"
+         id="g52">
+        <g
+           id="g54"
+           enable-background="new    ">
+          <g
+             id="g56">
+            <defs
+               id="defs58">
+              <path
+                 d="m 513.458,309.257 c 91.063,0 164.903,76.897 164.903,171.722 0,94.833 -73.84,171.727 -164.903,171.727 -91.047,0 -164.89,-76.894 -164.89,-171.727 0,-94.825 73.843,-171.722 164.89,-171.722"
+                 id="SVGID_11_" />
+            </defs>
+            <clipPath
+               clip-path="url(#SVGID_9_)"
+               id="SVGID_12_">
+              <use
+                 height="100%"
+                 width="100%"
+                 y="0"
+                 x="0"
+                 style="overflow:visible"
+                 id="use62"
+                 overflow="visible"
+                 xlink:href="#SVGID_11_" />
+            </clipPath>
+            <linearGradient
+               gradientTransform="matrix(-10.9559,383.4525,383.4525,10.9559,-392132.59,-11061.132)"
+               y2="1024"
+               x2="1"
+               y1="1024"
+               x1="0"
+               gradientUnits="userSpaceOnUse"
+               id="SVGID_13_">
+              <stop
+                 id="stop65"
+                 style="stop-color:#1C1B18"
+                 offset="0" />
+              <stop
+                 id="stop67"
+                 style="stop-color:#4B4846"
+                 offset="0.1871" />
+              <stop
+                 id="stop69"
+                 style="stop-color:#7F7B79"
+                 offset="0.3677" />
+              <stop
+                 id="stop71"
+                 style="stop-color:#B0ADAD"
+                 offset="0.5336" />
+              <stop
+                 id="stop73"
+                 style="stop-color:#D9D8D8"
+                 offset="0.6817" />
+              <stop
+                 id="stop75"
+                 style="stop-color:#F5F5F5"
+                 offset="0.8068" />
+              <stop
+                 id="stop77"
+                 style="stop-color:#FFFFFF"
+                 offset="0.8938" />
+              <stop
+                 id="stop79"
+                 style="stop-color:#FFFFFF"
+                 offset="1" />
+            </linearGradient>
+            <polygon
+               style="fill:url(#SVGID_13_)"
+               id="polygon81"
+               points="338.763,652.426 348.837,299.842 688.166,309.537 678.092,662.121 "
+               clip-path="url(#SVGID_12_)" />
+          </g>
+        </g>
+      </g>
+    </mask>
+    <filter
+       id="filter139"
+       style="color-interpolation-filters:sRGB;">
+      <feFlood
+         id="feFlood129"
+         result="flood"
+         flood-color="rgb(0,0,0)"
+         flood-opacity="0.498039" />
+      <feComposite
+         id="feComposite131"
+         result="composite1"
+         operator="in"
+         in2="SourceGraphic"
+         in="flood" />
+      <feGaussianBlur
+         id="feGaussianBlur133"
+         result="blur"
+         stdDeviation="3"
+         in="composite1" />
+      <feOffset
+         id="feOffset135"
+         result="offset"
+         dy="2"
+         dx="2" />
+      <feComposite
+         id="feComposite137"
+         result="composite2"
+         operator="over"
+         in2="offset"
+         in="SourceGraphic" />
+    </filter>
+    <linearGradient
+       id="linearGradient3764-5"
+       x1="1"
+       x2="47"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0,-1,1,0,-1.5e-6,47.999998)">
+      <stop
+         stop-color="#e4e4e4"
+         stop-opacity="1"
+         id="stop7-0" />
+      <stop
+         offset="1"
+         stop-color="#eee"
+         stop-opacity="1"
+         id="stop9-9" />
+    </linearGradient>
+    <clipPath
+       id="clipPath-365326813-6">
+      <g
+         transform="translate(0,-1004.3622)"
+         id="g12-3">
+        <path
+           d="m -24,13 c 0,1.105 -0.672,2 -1.5,2 -0.828,0 -1.5,-0.895 -1.5,-2 0,-1.105 0.672,-2 1.5,-2 0.828,0 1.5,0.895 1.5,2 z"
+           transform="matrix(15.333333,0,0,11.5,414.99999,878.8622)"
+           id="path14-8"
+           style="fill:#1890d0" />
+      </g>
+    </clipPath>
+    <clipPath
+       id="clipPath-370729992-5">
+      <g
+         transform="translate(0,-1004.3622)"
+         id="g17-6">
+        <path
+           d="m -24,13 c 0,1.105 -0.672,2 -1.5,2 -0.828,0 -1.5,-0.895 -1.5,-2 0,-1.105 0.672,-2 1.5,-2 0.828,0 1.5,0.895 1.5,2 z"
+           transform="matrix(15.333333,0,0,11.5,414.99999,878.8622)"
+           id="path19-1"
+           style="fill:#1890d0" />
+      </g>
+    </clipPath>
+    <defs
+       id="defs5-1">
+      <rect
+         height="1024"
+         width="1024"
+         id="SVGID_1_-5" />
+    </defs>
+    <clipPath
+       id="SVGID_2_-9">
+      <use
+         id="use9-8"
+         overflow="visible"
+         xlink:href="#SVGID_1_-5" />
+    </clipPath>
+    <defs
+       id="defs38-4">
+      <rect
+         id="SVGID_8_-8"
+         width="1024"
+         height="1024"
+         x="0"
+         y="0" />
+    </defs>
+    <clipPath
+       id="SVGID_9_-1">
+      <use
+         xlink:href="#SVGID_8_-8"
+         overflow="visible"
+         id="use42-0"
+         style="overflow:visible"
+         x="0"
+         y="0"
+         width="100%"
+         height="100%" />
+    </clipPath>
+    <defs
+       id="defs44-3">
+      <filter
+         id="Adobe_OpacityMaskFilter-0"
+         filterUnits="userSpaceOnUse"
+         x="305.03299"
+         y="293.44199"
+         width="413.93399"
+         height="413.96701">
+        <feFlood
+           result="back"
+           id="feFlood47-4" />
+        <feBlend
+           in="SourceGraphic"
+           in2="back"
+           mode="normal"
+           id="feBlend49-4" />
+      </filter>
+    </defs>
+    <mask
+       maskUnits="userSpaceOnUse"
+       x="305.033"
+       y="293.442"
+       width="413.934"
+       height="413.967"
+       id="SVGID_10_-4">
+      <g
+         id="g52-4"
+         style="filter:url(#Adobe_OpacityMaskFilter-0)">
+        <g
+           enable-background="new    "
+           id="g54-7">
+          <g
+             id="g56-6">
+            <defs
+               id="defs58-3">
+              <path
+                 id="SVGID_11_-1"
+                 d="m 513.458,309.257 c 91.063,0 164.903,76.897 164.903,171.722 0,94.833 -73.84,171.727 -164.903,171.727 -91.047,0 -164.89,-76.894 -164.89,-171.727 0,-94.825 73.843,-171.722 164.89,-171.722" />
+            </defs>
+            <clipPath
+               id="SVGID_12_-7"
+               clip-path="url(#SVGID_9_-1)">
+              <use
+                 xlink:href="#SVGID_11_-1"
+                 overflow="visible"
+                 id="use62-5"
+                 style="overflow:visible"
+                 x="0"
+                 y="0"
+                 width="100%"
+                 height="100%" />
+            </clipPath>
+            <linearGradient
+               id="linearGradient143"
+               gradientUnits="userSpaceOnUse"
+               x1="0"
+               y1="1024"
+               x2="1"
+               y2="1024"
+               gradientTransform="matrix(-10.9559,383.4525,383.4525,10.9559,-392132.59,-11061.132)">
+              <stop
+                 offset="0"
+                 style="stop-color:#1C1B18"
+                 id="stop65-9" />
+              <stop
+                 offset="0.1871"
+                 style="stop-color:#4B4846"
+                 id="stop67-6" />
+              <stop
+                 offset="0.3677"
+                 style="stop-color:#7F7B79"
+                 id="stop69-2" />
+              <stop
+                 offset="0.5336"
+                 style="stop-color:#B0ADAD"
+                 id="stop71-1" />
+              <stop
+                 offset="0.6817"
+                 style="stop-color:#D9D8D8"
+                 id="stop73-7" />
+              <stop
+                 offset="0.8068"
+                 style="stop-color:#F5F5F5"
+                 id="stop75-8" />
+              <stop
+                 offset="0.8938"
+                 style="stop-color:#FFFFFF"
+                 id="stop77-5" />
+              <stop
+                 offset="1"
+                 style="stop-color:#FFFFFF"
+                 id="stop79-7" />
+            </linearGradient>
+            <polygon
+               clip-path="url(#SVGID_12_-7)"
+               points="338.763,652.426 348.837,299.842 688.166,309.537 678.092,662.121 "
+               id="polygon81-4"
+               style="fill:url(#SVGID_13_)" />
+          </g>
+        </g>
+      </g>
+    </mask>
+    <filter
+       style="color-interpolation-filters:sRGB;"
+       id="filter139-1">
+      <feFlood
+         flood-opacity="0.498039"
+         flood-color="rgb(0,0,0)"
+         result="flood"
+         id="feFlood129-8" />
+      <feComposite
+         in="flood"
+         in2="SourceGraphic"
+         operator="in"
+         result="composite1"
+         id="feComposite131-5" />
+      <feGaussianBlur
+         in="composite1"
+         stdDeviation="3"
+         result="blur"
+         id="feGaussianBlur133-9" />
+      <feOffset
+         dx="2"
+         dy="2"
+         result="offset"
+         id="feOffset135-7" />
+      <feComposite
+         in="SourceGraphic"
+         in2="offset"
+         operator="over"
+         result="composite2"
+         id="feComposite137-5" />
+    </filter>
     <rect
-       style="fill:#cccccc;fill-opacity:1"
-       id="rect10"
-       width="71.05085"
-       height="53.152542"
-       x="288"
-       y="324.33899" />
+       height="1024"
+       width="1024"
+       id="rect156" />
+    <rect
+       id="rect158"
+       width="1024"
+       height="1024"
+       x="0"
+       y="0" />
+    <filter
+       id="filter164"
+       filterUnits="userSpaceOnUse"
+       x="305.03299"
+       y="293.44199"
+       width="413.93399"
+       height="413.96701">
+      <feFlood
+         result="back"
+         id="feFlood160" />
+      <feBlend
+         in="SourceGraphic"
+         in2="back"
+         mode="normal"
+         id="feBlend162" />
+    </filter>
     <path
-       style="fill:#cccccc;fill-opacity:1"
-       d="M 320,152.94922 A 35.525425,35.525425 0 0 0 284.4746,188.47461 35.525425,35.525425 0 0 0 320,224 35.525425,35.525425 0 0 0 355.52539,188.47461 35.525425,35.525425 0 0 0 320,152.94922 Z m -2.06446,16.58398 c 6.2808,0 10.70916,2.24685 14.27931,7.27149 v -6.41211 h 4.89257 v 36.16406 h -4.89257 v -6.34766 c -3.8346,5.15687 -7.80066,7.20704 -13.94923,7.20704 -11.10709,0 -19.37108,-8.06528 -19.37108,-18.8418 0,-10.84264 8.19836,-19.04102 19.041,-19.04102 z m 0.13086,4.4961 c -7.86751,0 -14.21484,6.34732 -14.21484,14.21484 0,8.26421 6.28237,14.67578 14.48048,14.67578 7.8014,0 13.88281,-6.41323 13.88281,-14.61133 0,-8.06586 -6.21481,-14.27929 -14.14845,-14.27929 z"
-       id="path17"
-       inkscape:connector-curvature="0" />
-  </g>
+       id="path166"
+       d="m 513.458,309.257 c 91.063,0 164.903,76.897 164.903,171.722 0,94.833 -73.84,171.727 -164.903,171.727 -91.047,0 -164.89,-76.894 -164.89,-171.727 0,-94.825 73.843,-171.722 164.89,-171.722" />
+    <linearGradient
+       gradientTransform="matrix(0,-1,1,0,-1.5e-6,47.999998)"
+       gradientUnits="userSpaceOnUse"
+       x2="47"
+       x1="1"
+       id="linearGradient3764-3">
+      <stop
+         id="stop7-8"
+         stop-opacity="1"
+         stop-color="#e4e4e4" />
+      <stop
+         id="stop9-5"
+         stop-opacity="1"
+         stop-color="#eee"
+         offset="1" />
+    </linearGradient>
+    <clipPath
+       id="clipPath-365326813-61">
+      <g
+         id="g12-1"
+         transform="translate(0,-1004.3622)">
+        <path
+           style="fill:#1890d0"
+           inkscape:connector-curvature="0"
+           id="path14-5"
+           transform="matrix(15.333333,0,0,11.5,414.99999,878.8622)"
+           d="m -24,13 c 0,1.105 -0.672,2 -1.5,2 -0.828,0 -1.5,-0.895 -1.5,-2 0,-1.105 0.672,-2 1.5,-2 0.828,0 1.5,0.895 1.5,2 z" />
+      </g>
+    </clipPath>
+    <clipPath
+       id="clipPath-370729992-9">
+      <g
+         id="g17-8"
+         transform="translate(0,-1004.3622)">
+        <path
+           style="fill:#1890d0"
+           inkscape:connector-curvature="0"
+           id="path19-4"
+           transform="matrix(15.333333,0,0,11.5,414.99999,878.8622)"
+           d="m -24,13 c 0,1.105 -0.672,2 -1.5,2 -0.828,0 -1.5,-0.895 -1.5,-2 0,-1.105 0.672,-2 1.5,-2 0.828,0 1.5,0.895 1.5,2 z" />
+      </g>
+    </clipPath>
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 256 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="512 : 256 : 1"
+       inkscape:persp3d-origin="256 : 170.66667 : 1"
+       id="perspective3018" />
+    <defs
+       id="defs5-8">
+      <rect
+         id="SVGID_1_-1"
+         width="1024"
+         height="1024" />
+    </defs>
+    <clipPath
+       id="SVGID_2_-0">
+      <use
+         xlink:href="#SVGID_1_-1"
+         overflow="visible"
+         id="use9-3" />
+    </clipPath>
+    <defs
+       id="defs38-0">
+      <rect
+         y="0"
+         x="0"
+         height="1024"
+         width="1024"
+         id="SVGID_8_-4" />
+    </defs>
+    <clipPath
+       id="SVGID_9_-4">
+      <use
+         height="100%"
+         width="100%"
+         y="0"
+         x="0"
+         style="overflow:visible"
+         id="use42-4"
+         overflow="visible"
+         xlink:href="#SVGID_8_-4" />
+    </clipPath>
+    <defs
+       id="defs44-4">
+      <filter
+         height="413.96701"
+         width="413.93399"
+         y="293.44199"
+         x="305.03299"
+         filterUnits="userSpaceOnUse"
+         id="Adobe_OpacityMaskFilter-7">
+        <feFlood
+           id="feFlood47-6"
+           result="back" />
+        <feBlend
+           id="feBlend49-3"
+           mode="normal"
+           in2="back"
+           in="SourceGraphic" />
+      </filter>
+    </defs>
+    <mask
+       id="SVGID_10_-1"
+       height="413.967"
+       width="413.934"
+       y="293.442"
+       x="305.033"
+       maskUnits="userSpaceOnUse">
+      <g
+         style="filter:url(#Adobe_OpacityMaskFilter-7)"
+         id="g52-7">
+        <g
+           id="g54-5"
+           enable-background="new    ">
+          <g
+             id="g56-9">
+            <defs
+               id="defs58-6">
+              <path
+                 inkscape:connector-curvature="0"
+                 d="m 513.458,309.257 c 91.063,0 164.903,76.897 164.903,171.722 0,94.833 -73.84,171.727 -164.903,171.727 -91.047,0 -164.89,-76.894 -164.89,-171.727 0,-94.825 73.843,-171.722 164.89,-171.722"
+                 id="SVGID_11_-2" />
+            </defs>
+            <clipPath
+               clip-path="url(#SVGID_9_-4)"
+               id="SVGID_12_-1">
+              <use
+                 height="100%"
+                 width="100%"
+                 y="0"
+                 x="0"
+                 style="overflow:visible"
+                 id="use62-7"
+                 overflow="visible"
+                 xlink:href="#SVGID_11_-2" />
+            </clipPath>
+            <linearGradient
+               gradientTransform="matrix(-10.9559,383.4525,383.4525,10.9559,-392132.59,-11061.132)"
+               y2="1024"
+               x2="1"
+               y1="1024"
+               x1="0"
+               gradientUnits="userSpaceOnUse"
+               id="linearGradient200">
+              <stop
+                 id="stop65-8"
+                 style="stop-color:#1C1B18"
+                 offset="0" />
+              <stop
+                 id="stop67-5"
+                 style="stop-color:#4B4846"
+                 offset="0.1871" />
+              <stop
+                 id="stop69-7"
+                 style="stop-color:#7F7B79"
+                 offset="0.3677" />
+              <stop
+                 id="stop71-4"
+                 style="stop-color:#B0ADAD"
+                 offset="0.5336" />
+              <stop
+                 id="stop73-1"
+                 style="stop-color:#D9D8D8"
+                 offset="0.6817" />
+              <stop
+                 id="stop75-85"
+                 style="stop-color:#F5F5F5"
+                 offset="0.8068" />
+              <stop
+                 id="stop77-9"
+                 style="stop-color:#FFFFFF"
+                 offset="0.8938" />
+              <stop
+                 id="stop79-75"
+                 style="stop-color:#FFFFFF"
+                 offset="1" />
+            </linearGradient>
+            <polygon
+               style="fill:url(#SVGID_13_)"
+               id="polygon81-3"
+               points="338.763,652.426 348.837,299.842 688.166,309.537 678.092,662.121 "
+               clip-path="url(#SVGID_12_-1)" />
+          </g>
+        </g>
+      </g>
+    </mask>
+    <filter
+       id="filter139-8"
+       inkscape:label="Drop Shadow"
+       style="color-interpolation-filters:sRGB;">
+      <feFlood
+         id="feFlood129-83"
+         result="flood"
+         flood-color="rgb(0,0,0)"
+         flood-opacity="0.498039" />
+      <feComposite
+         id="feComposite131-1"
+         result="composite1"
+         operator="in"
+         in2="SourceGraphic"
+         in="flood" />
+      <feGaussianBlur
+         id="feGaussianBlur133-8"
+         result="blur"
+         stdDeviation="3"
+         in="composite1" />
+      <feOffset
+         id="feOffset135-9"
+         result="offset"
+         dy="2"
+         dx="2" />
+      <feComposite
+         id="feComposite137-6"
+         result="composite2"
+         operator="over"
+         in2="offset"
+         in="SourceGraphic" />
+    </filter>
+    <rect
+       id="rect213"
+       width="1024"
+       height="1024" />
+    <rect
+       y="0"
+       x="0"
+       height="1024"
+       width="1024"
+       id="rect215" />
+    <filter
+       height="413.96701"
+       width="413.93399"
+       y="293.44199"
+       x="305.03299"
+       filterUnits="userSpaceOnUse"
+       id="filter221">
+      <feFlood
+         id="feFlood217"
+         result="back" />
+      <feBlend
+         id="feBlend219"
+         mode="normal"
+         in2="back"
+         in="SourceGraphic" />
+    </filter>
+    <path
+       inkscape:connector-curvature="0"
+       d="m 513.458,309.257 c 91.063,0 164.903,76.897 164.903,171.722 0,94.833 -73.84,171.727 -164.903,171.727 -91.047,0 -164.89,-76.894 -164.89,-171.727 0,-94.825 73.843,-171.722 164.89,-171.722"
+       id="path223" />
+  </defs>
+  <path
+     style="fill:#ecf0f1;fill-opacity:1;filter:url(#filter139)"
+     d="M 242.88306,465.05978 C 214.91529,461.87171 196.18722,456.83741 174.73431,446.74069 112.2511,417.33323 69.321844,357.99673 60.119498,288.32094 58.095827,272.99865 58.761564,244.71548 61.507899,229.33622 75.689371,149.92109 133.2641,87.414158 210.19319,67.91364 c 18.40006,-4.664179 26.57957,-5.594971 49.1669,-5.594971 22.5553,0 30.77404,0.932616 49.0541,5.566371 76.98992,19.515939 135.81073,83.91708 149.1815,163.33427 3.44166,20.4421 2.76363,53.93432 -1.52486,75.32357 -3.98452,19.87309 -14.67949,46.51666 -26.26716,65.43734 -35.28067,57.60729 -102.94016,94.36324 -172.19103,93.54262 -6.54772,-0.0776 -13.17603,-0.28597 -14.72958,-0.46306 z m 40.01565,-20.54167 c 14.11828,-1.90877 22.43576,-3.82184 35.30792,-8.12108 C 413.22073,404.66275 464.28269,302.29326 432.52529,207.20992 400.79101,112.19579 298.42154,61.13381 203.33819,92.891208 108.32408,124.62554 57.262098,226.99502 89.019495,322.07837 c 22.064155,66.06115 78.577935,112.5725 148.685075,122.36916 12.00126,1.67703 33.0686,1.70993 45.19414,0.0706 z"
+     id="path2984" />
+  <circle
+     r="189.07317"
+     cy="263.92749"
+     cx="259.36676"
+     id="path77-3"
+     style="fill:#00aad4;fill-opacity:1" />
+  <rect
+     style="fill:#b6c2c6;fill-opacity:1;stroke-width:1.28264356"
+     id="rect105"
+     width="178.4407"
+     height="164.06349"
+     x="170.14586"
+     y="156.94585" />
+  <path
+     id="path77"
+     d="M 259.36719 74.853516 A 189.07317 189.07317 0 0 0 70.292969 263.92773 A 189.07317 189.07317 0 0 0 259.36719 453 A 189.07317 189.07317 0 0 0 448.43945 263.92773 A 189.07317 189.07317 0 0 0 259.36719 74.853516 z M 175.00391 160.0957 L 343.73047 160.0957 C 354.43811 160.0957 363.19922 168.8568 363.19922 179.56445 L 363.19922 315.84375 L 155.53516 315.84375 L 155.53516 179.56445 C 155.53516 168.8568 164.29627 160.0957 175.00391 160.0957 z M 181.49219 186.05273 L 181.49219 289.88477 L 337.24023 289.88477 L 337.24023 186.05273 L 181.49219 186.05273 z M 259.36719 222.13086 A 14.408853 14.408853 0 0 1 273.77539 236.53906 A 14.408853 14.408853 0 0 1 259.36719 250.94922 A 14.408853 14.408853 0 0 1 244.95703 236.53906 A 14.408853 14.408853 0 0 1 259.36719 222.13086 z M 258.5293 228.85742 C 254.13161 228.85742 250.80664 232.18238 250.80664 236.58008 C 250.80664 240.95095 254.15911 244.22266 258.66406 244.22266 C 261.15788 244.22266 262.76502 243.39042 264.32031 241.29883 L 264.32031 243.87305 L 266.30469 243.87305 L 266.30469 229.20508 L 264.32031 229.20508 L 264.32031 231.80664 C 262.87228 229.76868 261.07675 228.85742 258.5293 228.85742 z M 258.58203 230.68164 C 261.79986 230.68164 264.32031 233.20121 264.32031 236.47266 C 264.32031 239.79775 261.85364 242.39844 258.68945 242.39844 C 255.36436 242.39844 252.81641 239.79721 252.81641 236.44531 C 252.81641 233.2543 255.39103 230.68164 258.58203 230.68164 z M 136.06641 328.82227 L 233.0957 328.82227 C 232.99431 334.71554 238.80814 341.80078 246.38867 341.80078 L 271.04688 341.80078 C 278.35971 341.80078 284.02603 336.85706 284.32617 328.82227 L 382.66602 328.82227 C 386.23524 328.82227 389.15625 331.74328 389.15625 335.3125 L 389.15625 341.80078 C 389.15625 356.07764 377.47608 367.75977 363.19922 367.75977 L 155.53516 367.75977 C 141.2583 367.75977 129.57617 356.07764 129.57617 341.80078 L 129.57617 335.3125 C 129.57617 331.74328 132.4972 328.82227 136.06641 328.82227 z "
+     style="fill:#383a3c;fill-opacity:1" />
 </svg>

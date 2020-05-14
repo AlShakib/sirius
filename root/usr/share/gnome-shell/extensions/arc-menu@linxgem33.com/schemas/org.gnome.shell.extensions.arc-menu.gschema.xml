@@ -1,83 +1,104 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist gettext-domain="arc-menu">
-  <enum id='org.gnome.shell.extensions.arc-menu.menulayout'>
-    <value value='0' nick='Default'/>
-    <value value='1' nick='Brisk'/>
-    <value value='2' nick='Whisker'/>
-    <value value='3' nick='GnomeMenu'/>
-    <value value='4' nick='Mint'/>
-    <value value='5' nick='Elementary'/>
-    <value value='6' nick='GnomeDash'/>
-    <value value='7' nick='Simple'/>
-    <value value='8' nick='Simple2'/>
-    <value value='9' nick='Redmond'/>
-    <value value='10' nick='UbuntuDash'/>
-    <value value='11' nick='Budgie'/>
-    <value value='12' nick='Windows'/>
-    <value value='13' nick='Runner'/>
-    <value value='14' nick='Chromebook'/>
-    <value value='15' nick='Raven'/>
-  </enum>
-  <enum id='org.gnome.shell.extensions.arc-menu.menu-hotkey'>
-    <value value='0' nick='Undefined'/>
-    <value value='1' nick='Super_L'/>
-    <value value='2' nick='Super_R'/>
-    <value value='3' nick='Custom'/>
-  </enum>
-  <enum id='org.gnome.shell.extensions.arc-menu.menu-position'>
-    <value value="0" nick="Left"/>
-    <value value="1" nick="Center"/>
-    <value value="2" nick="Right"/>
-  </enum>
-  <enum id='org.gnome.shell.extensions.arc-menu.menu-button-appearance'>
-    <value value="0" nick="Icon"/>
-    <value value="1" nick="Text"/>
-    <value value="2" nick="Icon_Text"/>
-    <value value="3" nick="Text_Icon"/>
-    <value value="4" nick="None"/>
-  </enum>
-  <enum id='org.gnome.shell.extensions.arc-menu.avatar-style'>
-    <value value="0" nick="Circular"/>
-    <value value="1" nick="Square"/>
-  </enum>
-  <enum id='org.gnome.shell.extensions.arc-menu.arc-menu-placement'>
-    <value value="0" nick="Panel"/>
-    <value value="1" nick="DTP"/>
-    <value value="2" nick="DTD"/>
-  </enum>
-  <enum id='org.gnome.shell.extensions.arc-menu.menu-button-icon'>
-    <value value="0" nick="Arc_Menu_Icon"/>
-    <value value="1" nick="System_Icon"/>
-    <value value="2" nick="Custom_Icon"/>
-    <value value="3" nick="Arc_Menu_Alt"/>
-    <value value="4" nick="Arc_Menu_Original"/>
-    <value value="5" nick="Curved_A"/>
-    <value value="6" nick="Start_Box"/>
-    <value value="7" nick="Focus"/>
-    <value value="8" nick="Triple_Dash"/>
-    <value value="9" nick="Whirl"/>
-    <value value="10" nick="Whirl_Circle"/>
-    <value value="11" nick="Sums"/>
-    <value value="12" nick="Arrow"/>
-    <value value="13" nick="Lins"/>
-    <value value="14" nick="Diamond_Square"/>
-    <value value="15" nick="Octo_Maze"/>
-    <value value="16" nick="Search"/>
-  </enum>
-  <enum id='org.gnome.shell.extensions.arc-menu.runner-position'>
-    <value value="0" nick="Top"/>
-    <value value="1" nick="Centered"/>
-  </enum>
-  <enum id='org.gnome.shell.extensions.arc-menu.searchbar-location'>
-    <value value="0" nick="Bottom"/>
-    <value value="1" nick="Top"/>
-  </enum>
-  <enum id='org.gnome.shell.extensions.arc-menu.hot-corners'>
-    <value value="0" nick="Default"/>
-    <value value="1" nick="Disabled"/>
-    <value value="2" nick="ToggleArcMenu"/>
-    <value value="3" nick="Custom"/>
-  </enum>
+    <enum id='org.gnome.shell.extensions.arc-menu.menulayout'>
+        <value value='0' nick='Default'/>
+        <value value='1' nick='Brisk'/>
+        <value value='2' nick='Whisker'/>
+        <value value='3' nick='GnomeMenu'/>
+        <value value='4' nick='Mint'/>
+        <value value='5' nick='Elementary'/>
+        <value value='6' nick='GnomeDash'/>
+        <value value='7' nick='Simple'/>
+        <value value='8' nick='Simple2'/>
+        <value value='9' nick='Redmond'/>
+        <value value='10' nick='UbuntuDash'/>
+        <value value='11' nick='Budgie'/>
+        <value value='12' nick='Windows'/>
+        <value value='13' nick='Runner'/>
+        <value value='14' nick='Chromebook'/>
+        <value value='15' nick='Raven'/>
+    </enum>
+    <enum id='org.gnome.shell.extensions.arc-menu.menu-hotkey'>
+        <value value='0' nick='Undefined'/>
+        <value value='1' nick='Super_L'/>
+        <value value='2' nick='Super_R'/>
+        <value value='3' nick='Custom'/>
+    </enum>
+    <enum id='org.gnome.shell.extensions.arc-menu.menu-position'>
+        <value value="0" nick="Left"/>
+        <value value="1" nick="Center"/>
+        <value value="2" nick="Right"/>
+    </enum>
+    <enum id='org.gnome.shell.extensions.arc-menu.menu-button-appearance'>
+        <value value="0" nick="Icon"/>
+        <value value="1" nick="Text"/>
+        <value value="2" nick="Icon_Text"/>
+        <value value="3" nick="Text_Icon"/>
+        <value value="4" nick="None"/>
+    </enum>
+    <enum id='org.gnome.shell.extensions.arc-menu.avatar-style'>
+        <value value="0" nick="Circular"/>
+        <value value="1" nick="Square"/>
+    </enum>
+    <enum id='org.gnome.shell.extensions.arc-menu.arc-menu-placement'>
+        <value value="0" nick="Panel"/>
+        <value value="1" nick="DTP"/>
+        <value value="2" nick="DTD"/>
+    </enum>
+    <enum id='org.gnome.shell.extensions.arc-menu.menu-button-icon'>
+        <value value="0" nick="Arc_Menu_Icon"/>
+        <value value="1" nick="System_Icon"/>
+        <value value="2" nick="Distro_Icon"/>
+        <value value="3" nick="Custom_Icon"/>
+        <value value="4" nick="Arc_Menu_Alt"/>
+        <value value="5" nick="Arc_Menu_Original"/>
+        <value value="6" nick="Curved_A"/>
+        <value value="7" nick="Start_Box"/>
+        <value value="8" nick="Focus"/>
+        <value value="9" nick="Triple_Dash"/>
+        <value value="10" nick="Whirl"/>
+        <value value="11" nick="Whirl_Circle"/>
+        <value value="12" nick="Sums"/>
+        <value value="13" nick="Arrow"/>
+        <value value="14" nick="Lins"/>
+        <value value="15" nick="Diamond_Square"/>
+        <value value="16" nick="Octo_Maze"/>
+        <value value="17" nick="Search"/>
+        <value value="18" nick="3d"/>
+        <value value="19" nick="Alien"/>
+        <value value="20" nick="Cloud"/>
+        <value value="21" nick="Dragon"/>
+        <value value="22" nick="Fly"/>
+        <value value="23" nick="Pacman"/>
+        <value value="24" nick="Peaks"/>
+        <value value="25" nick="Pie"/>
+        <value value="26" nick="Pointer"/>
+        <value value="27" nick="Toxic"/>
+        <value value="28" nick="Tree"/>
+        <value value="29" nick="Zegon"/>
+    </enum>
+    <enum id='org.gnome.shell.extensions.arc-menu.distro-icons'>
+        <value value="0" nick="Debian"/>
+        <value value="1" nick="Fedora"/>
+        <value value="2" nick="Manjaro"/>
+        <value value="3" nick="PopOs"/>
+        <value value="4" nick="Ubuntu"/>
+        <value value="5" nick="ArchLinux"/>
+    </enum>
+    <enum id='org.gnome.shell.extensions.arc-menu.runner-position'>
+        <value value="0" nick="Top"/>
+        <value value="1" nick="Centered"/>
+    </enum>
+    <enum id='org.gnome.shell.extensions.arc-menu.searchbar-location'>
+        <value value="0" nick="Bottom"/>
+        <value value="1" nick="Top"/>
+    </enum>
+    <enum id='org.gnome.shell.extensions.arc-menu.hot-corners'>
+        <value value="0" nick="Default"/>
+        <value value="1" nick="Disabled"/>
+        <value value="2" nick="ToggleArcMenu"/>
+        <value value="3" nick="Custom"/>
+    </enum>
   <schema path="/org/gnome/shell/extensions/arc-menu/" id="org.gnome.shell.extensions.arc-menu">
     <key type="i" name="menu-position-alignment">
       <default>50</default>
@@ -179,6 +200,11 @@
       <summary>Disable the user avatar icon from the menu</summary>
       <description>Disable the user avatar icon from the menu</description>
     </key>
+    <key type="b" name="enable-activities-shortcut">
+      <default>false</default>
+      <summary>Enable an Activitities Overview Shortcut</summary>
+      <description>Enable an Activitities Overview Shortcut</description>
+    </key>
     <key enum="org.gnome.shell.extensions.arc-menu.searchbar-location" name="searchbar-location">
       <default>'Bottom'</default>
       <summary>Searchbar location for ArcMenu layout</summary>
@@ -211,8 +237,8 @@
     </key>
     <key type="s" name="menu-color">
       <default>"rgba(28, 28, 28, 0.98)"</default>
-      <summary>Menu Color</summary>
-      <description>Menu Color.</description>
+      <summary>Menu Background Color</summary>
+      <description>Menu Background Color.</description>
     </key>
     <key type="s" name="menu-foreground-color">
       <default>"rgba(211, 218, 227, 1)"</default>
@@ -226,8 +252,13 @@
     </key>
     <key type="s" name="highlight-color">
       <default>"rgba(238, 238, 236, 0.1)"</default>
-      <summary>Highlight Color</summary>
-      <description>Highlight Color.</description>
+      <summary>Highlight/Active Menu Item Background Color</summary>
+      <description>Highlight/Active Menu Item Background Color.</description>
+    </key>
+    <key type="s" name="highlight-foreground-color">
+      <default>"rgba(255,255,255,1)"</default>
+      <summary>Highlight/Active Menu Item Foreground Color</summary>
+      <description>Highlight/Active Menu Item Foreground Color.</description>
     </key>
     <key type="i" name="menu-font-size">
       <default>9</default>
@@ -414,6 +445,11 @@
       <summary>Icon of the menu button.</summary>
       <description>Icon of the menu button.</description>
     </key>
+    <key name="distro-icon" enum="org.gnome.shell.extensions.arc-menu.distro-icons">
+      <default>'Debian'</default>
+      <summary>Icon of the menu button.</summary>
+      <description>Icon of the menu button.</description>
+    </key>
     <key type="s" name="custom-menu-button-icon">
       <default>''</default>
       <summary>File path of the custom icon for the menu button.</summary>
@@ -438,6 +474,11 @@
       <default>'rgb(214,214,214)'</default>
       <summary>Active color for for the menu button icon</summary>
       <description>Active for color for the menu button icon.</description>
+    </key>
+    <key name="extra-categories" type="a(ib)">
+      <default>[(0, true), (1, true), (2, false), (3, false)]</default>
+      <summary>List of recently installed apps</summary>
+      <description>List of recently installed apps</description>
     </key>
     <key name="recently-installed-apps" type="as">
       <default>[]</default>
@@ -489,9 +530,9 @@
       <description>Index of Mint Layout Pinned App Separator, 0 = none</description>
     </key>
     <key name="color-themes" type="aas">
-      <default>[['Arc Menu Theme', 'rgba(28, 28, 28, 0.98)', 'rgba(211, 218, 227, 1)', 'rgb(63,62,64)', 'rgba(238, 238, 236, 0.1)', 'rgb(63,62,64)', '9', '0', '0', '0', '0', 'false'], 
-      ['Dark Blue Theme', 'rgb(25,31,34)', 'rgb(189,230,251)', 'rgb(41,50,55)', 'rgb(41,50,55)', 'rgb(41,50,55)', '9', '1', '5', '12', '24', 'true'], 
-      ['Light Blue Theme', 'rgb(255,255,255)', 'rgb(51,51,51)', 'rgb(235,235,235)', 'rgba(189,230,251,0.9)', 'rgba(189,230,251,0.9)', '9', '1', '5', '12', '24', 'true']]</default>
+      <default>[['Arc Menu Theme', 'rgba(28, 28, 28, 0.98)', 'rgba(211, 218, 227, 1)', 'rgb(63,62,64)', 'rgba(238, 238, 236, 0.1)', 'rgba(255,255,255,1)', 'rgb(63,62,64)', '9', '0', '0', '0', '0', 'false'], 
+      ['Dark Blue Theme', 'rgb(25,31,34)', 'rgb(189,230,251)', 'rgb(41,50,55)', 'rgb(41,50,55)', 'rgba(255,255,255,1)', 'rgb(41,50,55)', '9', '1', '5', '12', '24', 'true'], 
+      ['Light Blue Theme', 'rgb(255,255,255)', 'rgb(51,51,51)', 'rgb(235,235,235)', 'rgba(189,230,251,0.9)', 'rgba(89,89,89,1)', 'rgba(189,230,251,0.9)', '9', '1', '5', '12', '24', 'true']]</default>
       <summary>List of color-themes</summary>
       <description> List of color themes.
       </description>

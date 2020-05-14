@@ -87,6 +87,7 @@ var MenuSettingsController = class {
             this._settings.connect('changed::menu-button-appearance', this._setButtonAppearance.bind(this)),
             this._settings.connect('changed::custom-menu-button-text', this._setButtonText.bind(this)),
             this._settings.connect('changed::menu-button-icon', this._setButtonIcon.bind(this)),
+            this._settings.connect('changed::distro-icon', this._setButtonIcon.bind(this)),
             this._settings.connect('changed::custom-menu-button-icon', this._setButtonIcon.bind(this)),
             this._settings.connect('changed::custom-menu-button-icon-size', this._setButtonIconSize.bind(this)),
             this._settings.connect('changed::button-icon-padding', this._setButtonIconPadding.bind(this)),
@@ -100,6 +101,7 @@ var MenuSettingsController = class {
             this._settings.connect('changed::directory-shortcuts-list', this._reload.bind(this)),
             this._settings.connect('changed::application-shortcuts-list', this._reload.bind(this)),
             this._settings.connect('changed::disable-recently-installed-apps', this._reload.bind(this)),
+            this._settings.connect('changed::extra-categories', this._reload.bind(this)),
             this._settings.connect('changed::show-power-button', this._reload.bind(this)),
             this._settings.connect('changed::show-logout-button', this._reload.bind(this)),
             this._settings.connect('changed::show-lock-button', this._reload.bind(this)),
@@ -107,6 +109,7 @@ var MenuSettingsController = class {
             this._settings.connect('changed::show-bookmarks', this._reload.bind(this)),
             this._settings.connect('changed::show-suspend-button', this._reload.bind(this)),
             this._settings.connect('changed::disable-user-avatar', this._reload.bind(this)),
+            this._settings.connect('changed::enable-activities-shortcut', this._reload.bind(this)),
             this._settings.connect('changed::enable-horizontal-flip', this._reload.bind(this)),
             this._settings.connect('changed::searchbar-location', this._reload.bind(this)),
             this._settings.connect('changed::searchbar-location-redmond', this._reload.bind(this)),
@@ -122,7 +125,7 @@ var MenuSettingsController = class {
             this._settings.connect('changed::mint-separator-index',this._updateButtonFavorites.bind(this)),
             this._settings.connect('changed::ubuntu-dash-pinned-app-list',this._updateButtonFavorites.bind(this)),
             this._settings.connect('changed::ubuntu-dash-separator-index',this._updateButtonFavorites.bind(this)),
-            this._settings.connect('changed::enable-pinned-apps',this._updateMenuDefaultView.bind(this)),
+            this._settings.connect('changed::enable-pinned-apps',this._reload.bind(this)),
             this._settings.connect('changed::enable-ubuntu-homescreen',this._setDefaultMenuView.bind(this)),
             this._settings.connect('changed::menu-layout', this._updateMenuLayout.bind(this)),
             this._settings.connect('changed::enable-large-icons', this.updateIcons.bind(this)),
@@ -190,9 +193,9 @@ var MenuSettingsController = class {
 
     _reloadExtension(){
         if(this._settings.get_boolean('reload-theme')){
+            this._settings.reset('reload-theme');
             Utils.createStylesheet(this._settings);
             Main.loadTheme();
-            this._settings.set_boolean('reload-theme', false);
         }
     }
 
@@ -210,36 +213,19 @@ var MenuSettingsController = class {
     }
 
     _updateFavorites(){
-        let layout = this._settings.get_enum('menu-layout');
-        if(layout == Constants.MENU_LAYOUT.Default || layout == Constants.MENU_LAYOUT.UbuntuDash ||
-            layout == Constants.MENU_LAYOUT.Windows || layout == Constants.MENU_LAYOUT.Raven){
-            if(this._menuButton.getShouldLoadFavorites())
-                this._menuButton._loadFavorites();
-            if(this._menuButton.getCurrentMenu() == Constants.CURRENT_MENU.FAVORITES || layout == Constants.MENU_LAYOUT.Windows)
-               this._menuButton._displayFavorites();
-        }
+        if(this._menuButton.getShouldLoadFavorites())
+            this._menuButton._loadFavorites();
+        //If the active category is Pinned Apps, redisplay the new Pinned Apps
+        if(this._menuButton.MenuLayout.activeCategoryType === Constants.CategoryType.PINNED_APPS || 
+                this._menuButton.MenuLayout.activeCategoryType === Constants.CategoryType.HOME_SCREEN)
+            this._menuButton._displayFavorites();  
     }
 
     _updateButtonFavorites(){
         let layout = this._settings.get_enum('menu-layout');
-        if(layout == Constants.MENU_LAYOUT.UbuntuDash){
+        if(layout == Constants.MENU_LAYOUT.UbuntuDash || layout == Constants.MENU_LAYOUT.Mint){
             if(this._menuButton.getShouldLoadFavorites())
                 this._menuButton._loadPinnedShortcuts();
-        }
-        if(layout == Constants.MENU_LAYOUT.Mint ){
-            if(this._menuButton.getShouldLoadFavorites())
-                this._menuButton._loadFavorites();
-        }
-
-    }
-
-    _updateMenuDefaultView(){
-        let layout = this._settings.get_enum('menu-layout');
-        if(layout == Constants.MENU_LAYOUT.Default){
-            if(this._settings.get_boolean('enable-pinned-apps'))
-                this._menuButton._displayFavorites();
-            else
-                this._menuButton._displayCategories();
         }
     }
 
@@ -430,8 +416,15 @@ var MenuSettingsController = class {
                 stIcon.set_gicon(Gio.icon_new_for_string(path));
             } 
         }
+        else if(iconEnum == Constants.MENU_BUTTON_ICON.Distro_Icon){
+            iconEnum = this._settings.get_enum('distro-icon');
+            path = Me.path + Constants.DISTRO_ICONS[iconEnum].path;
+            if (GLib.file_test(path, GLib.FileTest.EXISTS)) {
+                stIcon.set_gicon(Gio.icon_new_for_string(path));
+            } 
+        }
         else{
-            path = Me.path + Constants.MENU_ICONS[iconEnum - 3].path;
+            path = Me.path + Constants.MENU_ICONS[iconEnum - 4].path;
             if (GLib.file_test(path, GLib.FileTest.EXISTS)) {
                 stIcon.set_gicon(Gio.icon_new_for_string(path));
             } 
