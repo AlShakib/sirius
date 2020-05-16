@@ -9,15 +9,14 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="32"
-   height="32"
-   viewBox="0 0 8.4666659 8.4666659"
+   width="96"
+   height="96"
+   id="svg2"
    version="1.1"
-   id="svg8"
-   inkscape:version="0.92+devel (unknown)"
-   sodipodi:docname="key-shift-latched-uppercase.svg">
+   inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
+   sodipodi:docname="calendar-today-other.svg">
   <defs
-     id="defs2" />
+     id="defs4" />
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
@@ -25,21 +24,27 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="22.4"
-     inkscape:cx="6.589846"
-     inkscape:cy="16.278086"
+     inkscape:zoom="9.6805556"
+     inkscape:cx="36"
+     inkscape:cy="34.127268"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
-     units="px"
-     inkscape:window-width="1480"
-     inkscape:window-height="975"
-     inkscape:window-x="350"
-     inkscape:window-y="182"
-     inkscape:window-maximized="0"
-     inkscape:document-rotation="0" />
+     inkscape:window-width="1280"
+     inkscape:window-height="734"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid2985"
+       empspacing="5"
+       visible="true"
+       enabled="true"
+       snapvisiblegridlinesonly="true" />
+  </sodipodi:namedview>
   <metadata
-     id="metadata5">
+     id="metadata7">
     <rdf:RDF>
       <cc:Work
          rdf:about="">
@@ -71,13 +76,12 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(0,-288.53334)">
-    <path
-       style="fill:#3f51b5;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:2.20472646"
-       d="M 16,3 6,16 h 6 v 7 h 8 v -7 h 6 z m -4,24 v 2 l 8,0 0,-2 z"
-       transform="matrix(0.26458331,0,0,0.26458331,0,288.53334)"
-       id="path2987"
-       inkscape:connector-curvature="0"
-       sodipodi:nodetypes="ccccccccccccc" />
+     transform="translate(0,-956.3622)">
+    <circle
+       style="fill:#2196f3;fill-opacity:0.28999999;stroke:none;stroke-width:2"
+       id="path3757"
+       cx="48"
+       cy="1040.3622"
+       r="8" />
   </g>
 </svg>
