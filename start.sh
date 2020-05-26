@@ -824,7 +824,6 @@ setup_operating_system() {
   install_hugo_extended_cli
   install_heroku_cli
   install_typora
-  install_droidcam
   install_telegram_desktop
   install_bash_scripts
   add_repos
@@ -837,6 +836,7 @@ setup_operating_system() {
   install_pip_packages
   remove_pip_packages
   install_ibus_avro
+  install_droidcam
   restore_rclone_config
   restore_csync_config
   restore_vnstat_database
