@@ -232,6 +232,11 @@ add_repos() {
   dnf copr -y enable "tcg/themes" &>> "${LOG_FILE}"
   is_failed "Done" "Skipping: tcg/themes repo did not enable successfully. See log for more info."
 
+  # enable scrcpy repo
+  print "Enabling zeno/scrcpy copr repo"
+  dnf copr -y enable "zeno/scrcpy" &>> "${LOG_FILE}"
+  is_failed "Done" "Skipping: zeno/scrcpy repo did not enable successfully. See log for more info."
+
   # add rpmfusion repo
   print "Installing RPM Fusion repo"
   dnf install -y "https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-${RELEASE_VER}.noarch.rpm" \

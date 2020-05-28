@@ -258,3 +258,6 @@ virt-manager
 
 # A lightweight email program designed around conversations
 geary
+
+# Display and control your Android device
+scrcpy
