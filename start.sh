@@ -212,6 +212,10 @@ add_repos() {
   dnf config-manager -y --add-repo "https://download.sublimetext.com/rpm/stable/${CPU_ARCH}/sublime-text.repo" &>> "${LOG_FILE}"
   is_failed "Done" "Skipping: Sublime HQ repo did not install successfully. See log for more info."
 
+  # add visual studio code repo
+  rpm --import https://packages.microsoft.com/keys/microsoft.asc
+  sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'
+
   # import google chrome key
   print "Importing Google Chrome pub key"
   rpm --import "https://dl.google.com/linux/linux_signing_key.pub" &>> "${LOG_FILE}"
