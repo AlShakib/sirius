@@ -264,3 +264,6 @@ scrcpy
 
 # Visual Studio Code
 code
+
+# cat(1) clone with wings
+bat
