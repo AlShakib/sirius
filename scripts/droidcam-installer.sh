@@ -12,6 +12,7 @@ NC='\033[0m' # No Color
 TMP_DIR=$(dirname $(mktemp -u))
 RANDOM_DIR=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 16 ; echo '')
 TMP_DIR="${TMP_DIR}/${RANDOM_DIR}"
+DL_URL="https://files.dev47apps.net/linux/droidcam_latest.zip"
 
 # print <arg>
 print() {
@@ -59,7 +60,7 @@ is_warning() {
 install_droidcam() {
   mkdir -p "${TMP_DIR}/droidcam"
   print "Downloading DroidCam pre compiled binary"
-  wget "https://files.dev47apps.net/linux/droidcam_latest.zip" -O "${TMP_DIR}/droidcam/droidcam.zip" &>> /dev/null
+  wget "${DL_URL}" -O "${TMP_DIR}/droidcam/droidcam.zip" &>> /dev/null
   if [[ "$?" -ne 0 ]]; then
     print_failed "Skipping: DroidCam downloading did not complete successfully."
   else
@@ -71,10 +72,7 @@ install_droidcam() {
     print "Installing DroidCam binary"
     chmod +x ./install
     rmmod v4l2loopback_dc &>> /dev/null
-    ./install
-    echo "options v4l2loopback_dc width=1920 height=1080" > "/etc/modprobe.d/droidcam.conf" &>> /dev/null
-    rmmod v4l2loopback_dc &>> /dev/null
-    insmod /lib/modules/`uname -r`/kernel/drivers/media/video/v4l2loopback-dc.ko width=1920 height=1080 &>> /dev/null
+    ./install 1920 1080
     is_failed "Installed successfully." "Skipping: DroidCam installation did not complete successfully."
     cd "${OLDPWD}"
     mkdir -p /opt/DroidCam &>> /dev/null
@@ -82,6 +80,11 @@ install_droidcam() {
     rm -rf "${TMP_DIR}"
   fi
 }
+
+if [[ "$(id -u)" -ne 0 ]]; then
+  print_failed "This program must be run with administrator privileges. Try with sudo"
+  exit 1
+fi
 
 if [ $# -eq 0 ]; then
   echo -e "Usage: droidcam-installer [OPTIONS]" >&2
