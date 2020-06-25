@@ -3,6 +3,7 @@
 # Name: DroidCam driver installer
 # Author: Al Shakib
 
+VERSION=1.0
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[0;33m'
@@ -98,7 +99,7 @@ do
       echo "$VERSION"
       exit
     elif [[ "$var" == "-h" ]]; then
-      echo "Usage: ssdl [OPTION] [URL...]"
+      echo "Usage: droidcam-installer [OPTION]"
       echo ""
       echo "OPTIONS:"
       echo "    -h          Print this help text and exit"
@@ -117,7 +118,7 @@ do
       print "Reinstalling DroidCam driver"
       install_droidcam
     else
-      isFailed "Invalid argument: $var"
+      print_failed "Invalid argument: $var"
     fi
   fi
 done
