@@ -1,9 +1,6 @@
 # Spotify - Online music streaming service
 com.spotify.Client
 
-# GNU Image Manipulation Program - Create images and edit photographs
-org.gimp.GIMP
-
 # Skype - Call and message skype users, with video chat support
 com.skype.Client
 
