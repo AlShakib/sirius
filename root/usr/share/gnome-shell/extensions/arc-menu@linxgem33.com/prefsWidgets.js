@@ -74,8 +74,7 @@ var IconButton = GObject.registerClass(class ArcMenu_IconButton extends Gtk.Butt
         if (this._params.icon_name) {
             let image = new Gtk.Image({
                 icon_name: this._params.icon_name,
-                halign: Gtk.Align.CENTER,
-                margin: this._params.circular ? 4 : 0
+                halign: Gtk.Align.CENTER
             });
             this.add(image);
         }
@@ -90,7 +89,9 @@ var InfoButton = GObject.registerClass(class ArcMenu_InfoButton extends Gtk.Butt
         super._init();
         this.halign = Gtk.Align.END;
         this.valign = Gtk.Align.END;
-        let infoImage = new Gtk.Image({ pixbuf: GdkPixbuf.Pixbuf.new_from_file_at_size(Me.path + '/media/misc/info-circle.svg', 20, 20) });
+        let infoImage = new Gtk.Image({
+            gicon: Gio.icon_new_for_string(Me.path + '/media/misc/info-circle-symbolic.svg')
+        });
         this.image = infoImage;
         if(params && params.tooltip_text){
             this.set_tooltip_text(params.tooltip_text);
@@ -197,6 +198,22 @@ var TileGrid = GObject.registerClass(class ArcMenu_TileGrid extends Gtk.FlowBox{
             halign: Gtk.Align.CENTER,
             homogeneous: true,
             selection_mode: Gtk.SelectionMode.NONE
+        });
+    }
+});
+
+var IconGrid = GObject.registerClass(class ArcMenu_IconGrid extends Gtk.FlowBox{
+    _init() {
+        super._init({
+            max_children_per_line: 7,
+            row_spacing: 10,
+            column_spacing: 10,
+            vexpand: true,
+            hexpand: false,
+            valign: Gtk.Align.START,
+            halign: Gtk.Align.CENTER,
+            homogeneous: true,
+            selection_mode: Gtk.SelectionMode.SINGLE
         });
     }
 });

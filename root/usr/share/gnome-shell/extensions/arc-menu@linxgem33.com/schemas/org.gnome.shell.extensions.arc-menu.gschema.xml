@@ -17,6 +17,7 @@
         <value value='13' nick='Runner'/>
         <value value='14' nick='Chromebook'/>
         <value value='15' nick='Raven'/>
+        <value value='16' nick='Tognee '/>
     </enum>
     <enum id='org.gnome.shell.extensions.arc-menu.menu-hotkey'>
         <value value='0' nick='Undefined'/>
@@ -47,43 +48,17 @@
     </enum>
     <enum id='org.gnome.shell.extensions.arc-menu.menu-button-icon'>
         <value value="0" nick="Arc_Menu_Icon"/>
-        <value value="1" nick="System_Icon"/>
-        <value value="2" nick="Distro_Icon"/>
-        <value value="3" nick="Custom_Icon"/>
-        <value value="4" nick="Arc_Menu_Alt"/>
-        <value value="5" nick="Arc_Menu_Original"/>
-        <value value="6" nick="Curved_A"/>
-        <value value="7" nick="Start_Box"/>
-        <value value="8" nick="Focus"/>
-        <value value="9" nick="Triple_Dash"/>
-        <value value="10" nick="Whirl"/>
-        <value value="11" nick="Whirl_Circle"/>
-        <value value="12" nick="Sums"/>
-        <value value="13" nick="Arrow"/>
-        <value value="14" nick="Lins"/>
-        <value value="15" nick="Diamond_Square"/>
-        <value value="16" nick="Octo_Maze"/>
-        <value value="17" nick="Search"/>
-        <value value="18" nick="3d"/>
-        <value value="19" nick="Alien"/>
-        <value value="20" nick="Cloud"/>
-        <value value="21" nick="Dragon"/>
-        <value value="22" nick="Fly"/>
-        <value value="23" nick="Pacman"/>
-        <value value="24" nick="Peaks"/>
-        <value value="25" nick="Pie"/>
-        <value value="26" nick="Pointer"/>
-        <value value="27" nick="Toxic"/>
-        <value value="28" nick="Tree"/>
-        <value value="29" nick="Zegon"/>
+        <value value="1" nick="Distro_Icon"/>
+        <value value="2" nick="Custom_Icon"/>
     </enum>
-    <enum id='org.gnome.shell.extensions.arc-menu.distro-icons'>
-        <value value="0" nick="Debian"/>
-        <value value="1" nick="Fedora"/>
-        <value value="2" nick="Manjaro"/>
-        <value value="3" nick="PopOs"/>
-        <value value="4" nick="Ubuntu"/>
-        <value value="5" nick="ArchLinux"/>
+    <enum id='org.gnome.shell.extensions.arc-menu.default-menu-view'>
+        <value value="0" nick="Pinned_Apps"/>
+        <value value="1" nick="Categories_List"/>
+        <value value="2" nick="Frequent_Apps"/>
+    </enum>
+        <enum id='org.gnome.shell.extensions.arc-menu.default-menu-view-tognee'>
+        <value value="0" nick="Categories_List"/>
+        <value value="1" nick="All_Programs"/>
     </enum>
     <enum id='org.gnome.shell.extensions.arc-menu.runner-position'>
         <value value="0" nick="Top"/>
@@ -175,10 +150,20 @@
       <summary>disable tooltips</summary>
       <description>disable tooltips.</description>
     </key>
-    <key type="b" name="enable-pinned-apps">
+    <key type="b" name="alphabetize-all-programs">
       <default>true</default>
-      <summary>Enable Pinned Apps</summary>
-      <description>Enable Pinned Apps.</description>
+      <summary>Separate All Programs by a Character Listing</summary>
+      <description>Separate All Programs by a Character Listing.</description>
+    </key>
+    <key enum="org.gnome.shell.extensions.arc-menu.default-menu-view" name="default-menu-view">
+      <default>'Pinned_Apps'</default>
+      <summary>Set ArcMenu Layout Default View</summary>
+      <description>Set ArcMenu Layout Default View.</description>
+    </key>
+    <key enum="org.gnome.shell.extensions.arc-menu.default-menu-view-tognee" name="default-menu-view-tognee">
+      <default>'Categories_List'</default>
+      <summary>Set Tognee Layout Default View</summary>
+      <description>Set Tognee Layout Default View.</description>
     </key>
     <key type="b" name="enable-ubuntu-homescreen">
       <default>true</default>
@@ -205,15 +190,15 @@
       <summary>Enable an Activitities Overview Shortcut</summary>
       <description>Enable an Activitities Overview Shortcut</description>
     </key>
-    <key enum="org.gnome.shell.extensions.arc-menu.searchbar-location" name="searchbar-location">
+    <key enum="org.gnome.shell.extensions.arc-menu.searchbar-location" name="searchbar-default-bottom-location">
       <default>'Bottom'</default>
-      <summary>Searchbar location for ArcMenu layout</summary>
-      <description>Searchbar location for ArcMenu layout</description>
+      <summary>Searchbar location for layouts with default searchbar on bottom</summary>
+      <description>Searchbar location for layouts with default searchbar on bottom</description>
     </key>
-    <key enum="org.gnome.shell.extensions.arc-menu.searchbar-location" name="searchbar-location-redmond">
+    <key enum="org.gnome.shell.extensions.arc-menu.searchbar-location" name="searchbar-default-top-location">
       <default>'Top'</default>
-      <summary>Searchbar location for Redmond layout</summary>
-      <description>Searchbar location for Redmond layout</description>
+      <summary>Searchbar location for layouts with default searchbar on top</summary>
+      <description>Searchbar location for layouts with default searchbar on top</description>
     </key>
     <key type="b" name="enable-horizontal-flip">
       <default>false</default>
@@ -445,8 +430,13 @@
       <summary>Icon of the menu button.</summary>
       <description>Icon of the menu button.</description>
     </key>
-    <key name="distro-icon" enum="org.gnome.shell.extensions.arc-menu.distro-icons">
-      <default>'Debian'</default>
+    <key name="arc-menu-icon" type="i">
+      <default>0</default>
+      <summary>Icon of the menu button.</summary>
+      <description>Icon of the menu button.</description>
+    </key>
+    <key name="distro-icon" type="i">
+      <default>0</default>
       <summary>Icon of the menu button.</summary>
       <description>Icon of the menu button.</description>
     </key>

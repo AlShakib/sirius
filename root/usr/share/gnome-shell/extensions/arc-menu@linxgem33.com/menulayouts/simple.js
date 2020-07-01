@@ -29,6 +29,7 @@ const BaseMenuLayout = Me.imports.menulayouts.baseMenuLayout;
 const Constants = Me.imports.constants;
 const Gettext = imports.gettext.domain(Me.metadata['gettext-domain']);
 const MW = Me.imports.menuWidgets;
+const PopupMenu = imports.ui.popupMenu;
 const _ = Gettext.gettext;
 
 var createMenu =  class extends BaseMenuLayout.BaseLayout{
@@ -119,11 +120,14 @@ var createMenu =  class extends BaseMenuLayout.BaseLayout{
         
     }
 
-    displayCategoryAppList(appList, categoryMenuItem){
-        this._displayAppList(appList, categoryMenuItem);
+    displayCategoryAppList(appList, categoryMenuItem, category){
+        this._displayAppList(appList, categoryMenuItem, category);
     }
 
-    _displayAppList(apps, categoryMenuItem) {
+    _displayAppList(apps, categoryMenuItem, displayAllApps) {
+        let currentCharacter;
+        let needsNewSeparator = false; 
+        let listByCharacter = this._settings.get_boolean("alphabetize-all-programs");
         if (apps) {
             let children = categoryMenuItem.applicationsBox.get_children();
             for (let i = 0; i < children.length; i++) {
@@ -134,6 +138,25 @@ var createMenu =  class extends BaseMenuLayout.BaseLayout{
             }
             for (let i = 0; i < apps.length; i++) {
                 let app = apps[i];
+                if(listByCharacter && displayAllApps){
+                    if(currentCharacter !== app.get_name().charAt(0).toLowerCase()){
+                        currentCharacter = app.get_name().charAt(0).toLowerCase();
+                        needsNewSeparator = true;
+                    }
+                    else{
+                        needsNewSeparator = false;
+                    }
+                    if(needsNewSeparator){
+                        let characterLabel = new PopupMenu.PopupMenuItem(currentCharacter.toUpperCase(), {
+                            hover: false,
+                            can_focus: false
+                        });  
+                        characterLabel.actor.add_style_pseudo_class = () => { return false;};
+                        characterLabel.actor.add(this._createHorizontalSeparator(Constants.SEPARATOR_STYLE.LONG));
+                        characterLabel.label.style = 'font-weight: bold;';
+                        categoryMenuItem.applicationsBox.add_actor(characterLabel.actor)
+                    }
+                }
                 let item = this.applicationsMap.get(app);
                 if (!item) {
                     item = new MW.ApplicationMenuItem(this, app);

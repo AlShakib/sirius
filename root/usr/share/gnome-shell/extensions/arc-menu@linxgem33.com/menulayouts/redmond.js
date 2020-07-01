@@ -33,6 +33,10 @@ const PopupMenu = imports.ui.popupMenu;
 const Utils =  Me.imports.utils;
 const _ = Gettext.gettext;
 
+const COLUMN_SPACING = 10;
+const ROW_SPACING = 10;
+const COLUMN_COUNT = 4;
+
 var createMenu = class extends BaseMenuLayout.BaseLayout{
     constructor(mainButton) {
         super(mainButton,{
@@ -55,7 +59,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
             y_align: Clutter.ActorAlign.FILL,
             vertical: true
         });
-        if(this._settings.get_enum('searchbar-location-redmond') === Constants.SearchbarLocation.TOP)
+        if(this._settings.get_enum('searchbar-default-top-location') === Constants.SearchbarLocation.TOP)
             this.subMainBox.add(this.searchBox.actor);
         
         this.applicationsBox = new St.BoxLayout({
@@ -64,8 +68,8 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
 
         let layout = new Clutter.GridLayout({ 
             orientation: Clutter.Orientation.VERTICAL,
-            column_spacing: 10,
-            row_spacing: 10 
+            column_spacing: COLUMN_SPACING,
+            row_spacing: ROW_SPACING 
         });
         this.grid = new St.Widget({ 
             x_expand: true,
@@ -77,8 +81,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         this.applicationsScrollBox = this._createScrollBox({
             x_expand: true,
             y_expand: true,
-            x_fill:false,
-            y_fill: false,
+            x_align: Clutter.ActorAlign.START,
             y_align: Clutter.ActorAlign.START,
             overlay_scrollbars: true,
             style_class: 'vfade'
@@ -88,7 +91,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         this.applicationsScrollBox.add_actor(this.applicationsBox);
 
         this.subMainBox.add(this.applicationsScrollBox);
-        if(this._settings.get_enum('searchbar-location-redmond') === Constants.SearchbarLocation.BOTTOM){
+        if(this._settings.get_enum('searchbar-default-top-location') === Constants.SearchbarLocation.BOTTOM){
             this.searchBox.actor.style = "padding-top: 0.75em; padding-bottom: 0.25em; padding-left: 1em; padding-right: 0.25em; margin-right: .5em;";
             this.subMainBox.add(this.searchBox.actor);
         }
@@ -117,11 +120,9 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         });
 
         this.shortcutsScrollBox = this._createScrollBox({
-            x_fill: true,
-            y_fill: false,
             y_align: Clutter.ActorAlign.START,
             overlay_scrollbars: true,
-            style_class: 'vfade'
+            style_class: 'small-vfade'
         });     
 
         this.shortcutsScrollBox.add_actor(this.shortcutsBox);
@@ -183,8 +184,6 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
             y_expand: true,
             y_align: Clutter.ActorAlign.END,
             x_align: Clutter.ActorAlign.CENTER,
-            x_fill: true,
-            y_fill: true
         });
         this.actionsScrollBox.set_policy(Gtk.PolicyType.EXTERNAL, Gtk.PolicyType.NEVER);
         this.actionsScrollBox.clip_to_allocation = true;
@@ -243,7 +242,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
     }
     
     _displayAppList(apps) {
-        super._displayAppGridList(apps, 4);
+        super._displayAppGridList(apps, COLUMN_COUNT);
     }
 
     _displayAppIcons(){

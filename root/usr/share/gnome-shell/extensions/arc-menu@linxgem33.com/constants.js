@@ -43,8 +43,23 @@ var CategoryType = {
     HOME_SCREEN: 4,
     SEARCH_RESULTS: 5,
     CATEGORIES_LIST: 6,
-    CATEGORY_APP_LIST: 7
+    CATEGORY_APP_LIST: 7,
+    ALL_PROGRAMS_BUTTON: 8,
 };
+
+var DefaultMenuView = {
+    PINNED_APPS: 0,
+    CATEGORIES_LIST: 1,
+    FREQUENT_APPS: 2
+}
+
+var DefaultMenuViewTognee = {
+    CATEGORIES_LIST: 0,
+    ALL_PROGRAMS: 1
+}
+
+var SoftwareManagerIDs = ['org.gnome.Software.desktop', 'pamac-manager.desktop', 'io.elementary.appcenter.desktop',
+                            'snap-store_ubuntu-software.desktop', 'snap-store_snap-store.desktop'];
 
 var CATEGORIES = [
     {Category: CategoryType.FAVORITES, Name: _("Favorites"), Icon: 'emblem-favorite-symbolic'},
@@ -139,52 +154,74 @@ var MENU_APPEARANCE = {
 
 var MENU_BUTTON_ICON = { 
     Arc_Menu: 0,
-    System: 1,
-    Distro_Icon: 2,
-    Custom: 3
-};
-
-var ARC_MENU_ICON = { 
-    name: _("Arc Menu"), 
-    path: '/media/icons/arc-menu-symbolic.svg'
+    Distro_Icon: 1,
+    Custom: 2
 };
 
 var MENU_ICONS = [
-    { name: _("Arc Menu Alt"), path: '/media/icons/arc-menu-alt-symbolic.svg'},
-    { name: _("Arc Menu Original"), path: '/media/icons/arc-menu-old-symbolic.svg'},
-    { name: _("Curved A"), path: '/media/icons/curved-a-symbolic.svg'},
-    { name: _("Start Box"), path: '/media/icons/start-box-symbolic.svg'},
-    { name: _("Focus"), path: '/media/icons/focus-symbolic.svg'},
-    { name: _("Triple Dash"), path: '/media/icons/triple-dash-symbolic.svg'},
-    { name: _("Whirl"), path: '/media/icons/whirl-symbolic.svg'},
-    { name: _("Whirl Circle"), path: '/media/icons/whirl-circle-symbolic.svg'},
-    { name: _("Sums"), path: '/media/icons/sums-symbolic.svg'},
-    { name: _("Arrow"), path: '/media/icons/arrow-symbolic.svg'},
-    { name: _("Lins"), path: '/media/icons/lins-symbolic.svg'},
-    { name: _("Diamond Square"), path: '/media/icons/diamond-square-symbolic.svg'},
-    { name: _("Octo Maze"), path: '/media/icons/octo-maze-symbolic.svg'},
-    { name: _("Search"), path: '/media/icons/search-symbolic.svg'},
-    { name: _("3d"), path: '/media/icons/3d-symbolic.svg'},
-    { name: _("Alien"), path: '/media/icons/alien-symbolic.svg'},
-    { name: _("Cloud"), path: '/media/icons/cloud-symbolic.svg'},
-    { name: _("Dragon"), path: '/media/icons/dragon-symbolic.svg'},
-    { name: _("Fly"), path: '/media/icons/fly-symbolic.svg'},
-    { name: _("Pacman"), path: '/media/icons/pacman-symbolic.svg'},
-    { name: _("Peaks"), path: '/media/icons/peaks-symbolic.svg'},
-    { name: _("Pie"), path: '/media/icons/pie-symbolic.svg'},
-    { name: _("Pointer"), path: '/media/icons/pointer-symbolic.svg'},
-    { name: _("Toxic"), path: '/media/icons/toxic-symbolic.svg'},
-    { name: _("Tree"), path: '/media/icons/tree-symbolic.svg'},
-    { name: _("Zegon"), path: '/media/icons/zegon-symbolic.svg'}
+    { path: '/media/icons/arc-menu-symbolic.svg'},
+    { path: '/media/icons/arc-menu-alt-symbolic.svg'},
+    { path: '/media/icons/arc-menu-old-symbolic.svg'},
+    { path: 'start-here-symbolic'},
+    { path: '/media/icons/curved-a-symbolic.svg'},
+    { path: '/media/icons/start-box-symbolic.svg'},
+    { path: '/media/icons/focus-symbolic.svg'},
+    { path: '/media/icons/triple-dash-symbolic.svg'},
+    { path: '/media/icons/whirl-symbolic.svg'},
+    { path: '/media/icons/whirl-circle-symbolic.svg'},
+    { path: '/media/icons/sums-symbolic.svg'},
+    { path: '/media/icons/arrow-symbolic.svg'},
+    { path: '/media/icons/lins-symbolic.svg'},
+    { path: '/media/icons/diamond-square-symbolic.svg'},
+    { path: '/media/icons/octo-maze-symbolic.svg'},
+    { path: '/media/icons/search-symbolic.svg'},
+    { path: '/media/icons/3d-symbolic.svg'},
+    { path: '/media/icons/alien-symbolic.svg'},
+    { path: '/media/icons/cloud-symbolic.svg'},
+    { path: '/media/icons/dragon-symbolic.svg'},
+    { path: '/media/icons/fly-symbolic.svg'},
+    { path: '/media/icons/pacman-symbolic.svg'},
+    { path: '/media/icons/peaks-symbolic.svg'},
+    { path: '/media/icons/pie-symbolic.svg'},
+    { path: '/media/icons/pointer-symbolic.svg'},
+    { path: '/media/icons/toxic-symbolic.svg'},
+    { path: '/media/icons/tree-symbolic.svg'},
+    { path: '/media/icons/zegon-symbolic.svg'},
+    { path: '/media/icons/apps-symbolic.svg'},
+    { path: '/media/icons/bug-symbolic.svg'},
+    { path: '/media/icons/cita-symbolic.svg'},
+    { path: '/media/icons/dragonheart-symbolic.svg'},
+    { path: '/media/icons/eclipse-symbolic.svg'},
+    { path: '/media/icons/football-symbolic.svg'},
+    { path: '/media/icons/heddy-symbolic.svg'},
+    { path: '/media/icons/helmet-symbolic.svg'},
+    { path: '/media/icons/palette-symbolic.svg'},
+    { path: '/media/icons/peeks-symbolic.svg'},
+    { path: '/media/icons/record-symbolic.svg'},
+    { path: '/media/icons/saucer-symbolic.svg'},
+    { path: '/media/icons/step-symbolic.svg'},
+    { path: '/media/icons/vancer-symbolic.svg'},
+    { path: '/media/icons/vibe-symbolic.svg'},
+    { path: '/media/icons/dimond-win-symbolic.svg'},
+    { path: '/media/icons/dolphin-symbolic.svg'},
+    { path: '/media/icons/dota-symbolic.svg'},
+    { path: '/media/icons/football2-symbolic.svg'},
+    { path: '/media/icons/loveheart-symbolic.svg'},
+    { path: '/media/icons/pyrimid-symbolic.svg'},
+    { path: '/media/icons/rewind-symbolic.svg'},
+    { path: '/media/icons/snap-symbolic.svg'},
+    { path: '/media/icons/time-symbolic.svg'},
+    { path: '/media/icons/transform-symbolic.svg'},
 ]
 
 var DISTRO_ICONS = [
-    { name: _("Debian"), path: '/media/icons/distros/debian-logo-symbolic.svg'},
-    { name: _("Fedora"), path: '/media/icons/distros/fedora-logo-symbolic.svg'},
-    { name: _("Manjaro"), path: '/media/icons/distros/manjaro-logo-symbolic.svg'},
-    { name: _("Pop!_OS"), path: '/media/icons/distros/pop-os-logo-symbolic.svg'},
-    { name: _("Ubuntu"), path: '/media/icons/distros/ubuntu-logo-symbolic.svg'},
-    { name: _("Arch Linux"), path: '/media/icons/distros/arch-logo-symbolic.svg'},
+    { path: '/media/icons/distros/debian-logo-symbolic.svg'},
+    { path: '/media/icons/distros/fedora-logo-symbolic.svg'},
+    { path: '/media/icons/distros/manjaro-logo-symbolic.svg'},
+    { path: '/media/icons/distros/pop-os-logo-symbolic.svg'},
+    { path: '/media/icons/distros/ubuntu-logo-symbolic.svg'},
+    { path: '/media/icons/distros/arch-logo-symbolic.svg'},
+    { path: '/media/icons/distros/opensuse-logo-symbolic.svg'},
 ]
 
 var MENU_LAYOUT = {
@@ -203,7 +240,8 @@ var MENU_LAYOUT = {
     Windows: 12,
     Runner: 13,
     Chromebook: 14,
-    Raven: 15
+    Raven: 15,
+    Tognee : 16
 };
 
 var TRADITIONAL_MENU_STYLE = [   
@@ -217,6 +255,7 @@ var TRADITIONAL_MENU_STYLE = [
 var MODERN_MENU_STYLE = [   
     { thumbnail: '/media/layouts/windows-10.svg', name: _('Windows 10 Style'), layout: MENU_LAYOUT.Windows},
     { thumbnail: '/media/layouts/ubuntu-dash-menu.svg', name: _('Ubuntu Dash Style'), layout: MENU_LAYOUT.UbuntuDash},
+    { thumbnail: '/media/layouts/tognee-menu.svg', name: _('tognee Menu'), layout: MENU_LAYOUT.Tognee},
     { thumbnail: '/media/layouts/redmond-style-menu.svg', name: _('Redmond Menu Style'), layout: MENU_LAYOUT.Redmond}];
 
 var TOUCH_MENU_STYLE = [   
@@ -268,7 +307,7 @@ var COLOR_PRESET = {
 };
 
 var WARNING_ICON = {
-    Path: '/media/misc/warning.svg',
+    Path: '/media/misc/warning-symbolic.svg',
     Size: [30, 30] 
 };
 
@@ -277,7 +316,7 @@ var HAMBURGER = {
 };
 
 var KEYBOARD_LOGO = {
-    Path: '/media/misc/keyboard.svg',
+    Path: '/media/misc/keyboard-symbolic.svg',
     Size: [256, 72] 
 };
 
@@ -297,7 +336,8 @@ var DistroIconsDisclaimer = '<i>"All brand icons are trademarks of their respect
                                 '\n\n•   <b>DEBIAN©</b> - is a registered trademark owned by Software in the Public Interest, Inc. Debian trademark is a registered United States trademark of Software in the Public Interest, Inc., managed by the Debian project.'+
                                 '\n\n•   <b>MANJARO©</b> - logo and name are trademarks of Manjaro GmbH &amp; Co. KG'+
                                 '\n\n•   <b>POP_OS!©</b> - logo and name are trademarks of system 76© Inc.'+
-                                '\n\n•   <b>ARCH LINUX©</b> - The stylized Arch Linux logo is a recognized trademark of Arch Linux, copyright 2002-2017 Judd Vinet and Aaron Griffin.';
+                                '\n\n•   <b>ARCH LINUX©</b> - The stylized Arch Linux logo is a recognized trademark of Arch Linux, copyright 2002-2017 Judd Vinet and Aaron Griffin.'+
+                                '\n\n•   <b>openSUSE©</b> - logo and name 2001–2020 SUSE LLC, © 2005–2020 openSUSE Contributors &amp; others.';
 
 var CREDITS = '\n<b>Credits:</b>'+
 		'\n\nCurrent Active Developers'+

@@ -121,7 +121,6 @@ var ApplicationsButton = GObject.registerClass(class ArcMenu_DashApplicationsBut
             }
             
             this._appList = this._newAppList;
-            this.reload();
         });
         //-----------------------------------------------------------------------------------
         this._setMenuPositionAlignment();

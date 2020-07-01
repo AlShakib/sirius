@@ -88,6 +88,7 @@ var MenuSettingsController = class {
             this._settings.connect('changed::custom-menu-button-text', this._setButtonText.bind(this)),
             this._settings.connect('changed::menu-button-icon', this._setButtonIcon.bind(this)),
             this._settings.connect('changed::distro-icon', this._setButtonIcon.bind(this)),
+            this._settings.connect('changed::arc-menu-icon', this._setButtonIcon.bind(this)),
             this._settings.connect('changed::custom-menu-button-icon', this._setButtonIcon.bind(this)),
             this._settings.connect('changed::custom-menu-button-icon-size', this._setButtonIconSize.bind(this)),
             this._settings.connect('changed::button-icon-padding', this._setButtonIconPadding.bind(this)),
@@ -111,8 +112,9 @@ var MenuSettingsController = class {
             this._settings.connect('changed::disable-user-avatar', this._reload.bind(this)),
             this._settings.connect('changed::enable-activities-shortcut', this._reload.bind(this)),
             this._settings.connect('changed::enable-horizontal-flip', this._reload.bind(this)),
-            this._settings.connect('changed::searchbar-location', this._reload.bind(this)),
-            this._settings.connect('changed::searchbar-location-redmond', this._reload.bind(this)),
+            this._settings.connect('changed::searchbar-default-bottom-location', this._reload.bind(this)),
+            this._settings.connect('changed::searchbar-default-top-location', this._reload.bind(this)),
+            this._settings.connect('changed::recently-installed-apps', this._reload.bind(this)),
             this._settings.connect('changed::menu-height', this._updateMenuHeight.bind(this)),
             this._settings.connect('changed::right-panel-width', this._updateMenuHeight.bind(this)),
             this._settings.connect('changed::reload-theme', this._reloadExtension.bind(this)),
@@ -125,7 +127,9 @@ var MenuSettingsController = class {
             this._settings.connect('changed::mint-separator-index',this._updateButtonFavorites.bind(this)),
             this._settings.connect('changed::ubuntu-dash-pinned-app-list',this._updateButtonFavorites.bind(this)),
             this._settings.connect('changed::ubuntu-dash-separator-index',this._updateButtonFavorites.bind(this)),
-            this._settings.connect('changed::enable-pinned-apps',this._reload.bind(this)),
+            this._settings.connect('changed::default-menu-view',this._reload.bind(this)),
+            this._settings.connect('changed::default-menu-view-tognee',this._reload.bind(this)),
+            this._settings.connect('changed::alphabetize-all-programs',this._reload.bind(this)),
             this._settings.connect('changed::enable-ubuntu-homescreen',this._setDefaultMenuView.bind(this)),
             this._settings.connect('changed::menu-layout', this._updateMenuLayout.bind(this)),
             this._settings.connect('changed::enable-large-icons', this.updateIcons.bind(this)),
@@ -196,6 +200,7 @@ var MenuSettingsController = class {
             this._settings.reset('reload-theme');
             Utils.createStylesheet(this._settings);
             Main.loadTheme();
+            this._updateStyle();
         }
     }
 
@@ -403,31 +408,26 @@ var MenuSettingsController = class {
         let stIcon = menuButtonWidget.getPanelIcon();
         let iconEnum = this._settings.get_enum('menu-button-icon');
         if(iconEnum == Constants.MENU_BUTTON_ICON.Custom){
-            if (GLib.file_test(path, GLib.FileTest.EXISTS)) {
+            stIcon.set_icon_name('start-here-symbolic');
+            if (path && GLib.file_test(path, GLib.FileTest.IS_REGULAR))
                 stIcon.set_gicon(Gio.icon_new_for_string(path));
+            else{
+                global.log("ArcMenu - Custom Menu Icon Error! Set to System Default.")
             }
         }
-        else if(iconEnum == Constants.MENU_BUTTON_ICON.System){
-            stIcon.set_icon_name('start-here-symbolic');
-        }
-        else if(iconEnum == Constants.MENU_BUTTON_ICON.Arc_Menu){
-            path = Me.path + Constants.ARC_MENU_ICON.path;
-            if (GLib.file_test(path, GLib.FileTest.EXISTS)) {
-                stIcon.set_gicon(Gio.icon_new_for_string(path));
-            } 
-        }
         else if(iconEnum == Constants.MENU_BUTTON_ICON.Distro_Icon){
-            iconEnum = this._settings.get_enum('distro-icon');
+            iconEnum = this._settings.get_int('distro-icon');
             path = Me.path + Constants.DISTRO_ICONS[iconEnum].path;
-            if (GLib.file_test(path, GLib.FileTest.EXISTS)) {
+            if (GLib.file_test(path, GLib.FileTest.IS_REGULAR))
                 stIcon.set_gicon(Gio.icon_new_for_string(path));
-            } 
         }
         else{
-            path = Me.path + Constants.MENU_ICONS[iconEnum - 4].path;
-            if (GLib.file_test(path, GLib.FileTest.EXISTS)) {
+            iconEnum = this._settings.get_int('arc-menu-icon');
+            path = Me.path + Constants.MENU_ICONS[iconEnum].path;
+            if(Constants.MENU_ICONS[iconEnum].path === 'start-here-symbolic')
+                stIcon.set_icon_name('start-here-symbolic');
+            else if(GLib.file_test(path, GLib.FileTest.IS_REGULAR))
                 stIcon.set_gicon(Gio.icon_new_for_string(path));
-            } 
         }
     }
 

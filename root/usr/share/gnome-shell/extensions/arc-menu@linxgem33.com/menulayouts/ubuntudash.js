@@ -23,7 +23,7 @@
 
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 
-const {Clutter, GLib, Gtk, St} = imports.gi;
+const {Clutter, GLib, Gtk, Shell, St} = imports.gi;
 const BaseMenuLayout = Me.imports.menulayouts.baseMenuLayout;
 const Constants = Me.imports.constants;
 const Gettext = imports.gettext.domain(Me.metadata['gettext-domain']);
@@ -32,6 +32,10 @@ const MW = Me.imports.menuWidgets;
 const PopupMenu = imports.ui.popupMenu;
 const Utils =  Me.imports.utils;
 const _ = Gettext.gettext;
+
+const COLUMN_SPACING = 15;
+const ROW_SPACING = 15;
+const COLUMN_COUNT = 6;
 
 var createMenu = class extends BaseMenuLayout.BaseLayout{
     constructor(mainButton) {
@@ -93,13 +97,14 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         this.topBox.add(this.categoriesTopBox);
 
         this.applicationsBox = new St.BoxLayout({
-            vertical: true
+            vertical: true,
+            style: "padding-bottom: 10px;"
         });
 
         let layout = new Clutter.GridLayout({ 
             orientation: Clutter.Orientation.VERTICAL,
-            column_spacing: 30,
-            row_spacing: 30 
+            column_spacing: COLUMN_SPACING,
+            row_spacing: ROW_SPACING 
         });
         this.grid = new St.Widget({ 
             x_expand: true,
@@ -111,8 +116,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         this.applicationsScrollBox = this._createScrollBox({
             x_expand: true,
             y_expand: true,
-            x_fill: false,
-            y_fill: false,
+            x_align: Clutter.ActorAlign.FILL,
             y_align: Clutter.ActorAlign.START,
             overlay_scrollbars: true,
             style_class: 'vfade'
@@ -176,8 +180,8 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
 
         layout = new Clutter.GridLayout({ 
             orientation: Clutter.Orientation.VERTICAL,
-            column_spacing: 30,
-            row_spacing: 30
+            column_spacing: COLUMN_SPACING,
+            row_spacing: ROW_SPACING
         });
         this.shortcutsGrid = new St.Widget({ 
             x_expand: true,
@@ -230,32 +234,12 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         pinnedApps.push(_("Home"), "ArcMenu_Home", "ArcMenu_Home");
         pinnedApps.push(_("Documents"), "ArcMenu_Documents", "ArcMenu_Documents");
         pinnedApps.push(_("Downloads"), "ArcMenu_Downloads", "ArcMenu_Downloads");
-        let software = '';
-        let icon = '';
-        if(GLib.find_program_in_path('gnome-software')){
-            software = 'org.gnome.Software';
-            icon = 'org.gnome.Software';
-        }
-        else if(GLib.find_program_in_path('pamac-manager')){
-            software = 'pamac-manager';
-            icon = 'org.gnome.Software';
-        }
-        else if(GLib.find_program_in_path('io.elementary.appcenter')){
-            software = 'io.elementary.appcenter';
-            icon = 'pop-shop';
-        }
-        else if(GLib.find_program_in_path('snap-store')){
-            software = 'snap-store_ubuntu-software';
-            icon = 'org.gnome.Software';
-        }
-        else{
-            software = null;
-        }
+
+        let software = Utils.findSoftwareManager();
         if(software)
-            pinnedApps.push(_("Software"), icon, software+".desktop");
-        else{
+            pinnedApps.push(_("Software"), 'system-software-install-symbolic', software);
+        else
             pinnedApps.push(_("Computer"), "ArcMenu_Computer", "ArcMenu_Computer");
-        }
         
         pinnedApps.push(_("Files"), "system-file-manager", "org.gnome.Nautilus.desktop");
         pinnedApps.push(_("Log Out"), "application-exit-symbolic", "ArcMenu_LogOut");
@@ -285,10 +269,8 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         this.categoriesScrollBox = this._createScrollBox({
             x_expand: true, 
             y_expand: true,
-            x_fill: true,
-            y_fill: false,
             y_align: Clutter.ActorAlign.START,
-            style_class: 'vfade',
+            style_class: 'small-vfade',
             overlay_scrollbars: true,
             reactive:true
         });        
@@ -334,7 +316,8 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         else{
             this.activeCategory = _("All Programs");
             this.activeCategoryType = Constants.CategoryType.ALL_PROGRAMS;
-            this.displayAllApps();   
+            let isGridLayout = true;
+            this.displayAllApps(isGridLayout);
         }
     }
 
@@ -417,6 +400,11 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         this.subMainBox.add(this.actionsContainerBox);     
     }
 
+    displayCategoryAppList(appList){
+        this._clearActorsFromBox();
+        this._displayAppList(appList);
+    }
+
     _clearActorsFromBox(box) {
         if(this.categoriesMenu.isOpen)
             this.categoriesMenu.toggle();
@@ -429,7 +417,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
     _displayAppList(apps, isFavoriteMenuItem = false, differentGrid = null){      
         let grid = differentGrid ? differentGrid : this.grid;  
         grid.remove_all_children();
-        super._displayAppGridList(apps, 5, isFavoriteMenuItem, differentGrid);
+        super._displayAppGridList(apps, COLUMN_COUNT, isFavoriteMenuItem, differentGrid);
         let favsLabel = new PopupMenu.PopupMenuItem(differentGrid ? _("Shortcuts") : _(this.activeCategory), {
             hover: false,
             can_focus: false
@@ -448,6 +436,10 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         appsScrollBoxAdj.set_value(0);
         if(!this.applicationsBox.contains(this.grid))
             this.applicationsBox.add(this.grid);
+        this.activeMenuItem = this.firstItem;
+        if(this.leftClickMenu.isOpen){
+            this.activeMenuItem.actor.grab_key_focus();
+        }
     }
    
     destroy(isReload){

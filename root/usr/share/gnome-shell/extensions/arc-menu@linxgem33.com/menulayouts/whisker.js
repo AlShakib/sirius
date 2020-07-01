@@ -51,7 +51,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         this.actionsBox.style ="spacing: 10px; margin-right: 10px; padding-right: 0.4em;";
         this.mainBox.add(this.actionsBox);
 
-        let userAvatarSize = 30;
+        let userAvatarSize = 32;
         this.user = new MW.UserMenuItem(this, userAvatarSize);
         this.user.actor.x_expand = true;
         this.user.actor.x_align = Clutter.ActorAlign.FILL;
@@ -70,11 +70,17 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         this.actionsBox.add(logout.actor);
            
         this.searchBox = new MW.SearchBox(this);
-        this.searchBox.actor.style ="margin: 10px; padding-top: 0.0em; padding-bottom: 0.5em;padding-left: 0.4em;padding-right: 0.4em;";
         this._searchBoxChangedId = this.searchBox.connect('changed', this._onSearchBoxChanged.bind(this));
         this._searchBoxKeyPressId = this.searchBox.connect('key-press-event', this._onSearchBoxKeyPress.bind(this));
         this._searchBoxKeyFocusInId = this.searchBox.connect('key-focus-in', this._onSearchBoxKeyFocusIn.bind(this));
-        this.mainBox.add(this.searchBox.actor);
+        if(this._settings.get_enum('searchbar-default-top-location') === Constants.SearchbarLocation.TOP){
+            this.searchBox.actor.style ="margin: 10px; padding-top: 0.0em; padding-bottom: 0.5em;padding-left: 0.4em;padding-right: 0.4em;";
+            this.mainBox.add(this.searchBox.actor);
+        }
+        else{
+            let horizontalSep = this._createHorizontalSeparator(Constants.SEPARATOR_STYLE.LONG);
+            this.mainBox.add(horizontalSep);
+        }
 
         //Sub Main Box -- stores left and right box
         this.subMainBox = new St.BoxLayout({
@@ -94,16 +100,12 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         });
 
         this.applicationsBox = new St.BoxLayout({
-            vertical: true,
-            y_expand: true,
-            y_align: Clutter.ActorAlign.FILL
+            vertical: true
         });
         this.applicationsScrollBox = this._createScrollBox({
-            x_fill: true,
-            y_fill: false,
             y_align: Clutter.ActorAlign.START,
             overlay_scrollbars: true,
-            style_class: 'vfade'
+            style_class: 'small-vfade'
         }); 
         let rightPanelWidth = this._settings.get_int('right-panel-width');
         rightPanelWidth += 45;
@@ -116,29 +118,31 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         this.leftBox = new St.BoxLayout({
             x_expand: true,
             y_expand: true,
-            y_align: Clutter.ActorAlign.START,
+            y_align: Clutter.ActorAlign.FILL,
             vertical: true,
             style_class: 'left-box'
         });
-
-        this.subMainBox.add(this.leftBox);
+        
+        let horizonalFlip = this._settings.get_boolean("enable-horizontal-flip");
+        this.subMainBox.add(horizonalFlip ? this.rightBox : this.leftBox);  
         this.subMainBox.add(this._createVerticalSeparator());
-        this.subMainBox.add(this.rightBox);
+        this.subMainBox.add(horizonalFlip ? this.leftBox : this.rightBox);
 
         this.categoriesScrollBox = this._createScrollBox({
             x_expand: true, 
-            y_expand: false,
-            x_fill: true,
-            y_fill: false,
+            y_expand: true,
             y_align: Clutter.ActorAlign.START,
-            style_class: 'apps-menu vfade left-scroll-area',
+            style_class: 'apps-menu small-vfade left-scroll-area',
             overlay_scrollbars: true
         });
 
         this.leftBox.add(this.categoriesScrollBox);
         this.categoriesBox = new St.BoxLayout({ vertical: true });
         this.categoriesScrollBox.add_actor(this.categoriesBox);
-
+        if(this._settings.get_enum('searchbar-default-top-location') === Constants.SearchbarLocation.BOTTOM){
+            this.searchBox.actor.style = "margin: 10px 10px 0px 10px; padding-left: 0.4em;padding-right: 0.4em;";
+            this.mainBox.add(this.searchBox.actor);
+        }
         this.loadFavorites();
         this.loadCategories();
         this.displayCategories();
@@ -147,7 +151,8 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
    
     setDefaultMenuView(){
         super.setDefaultMenuView();
-        this.categoryDirectories.values().next().value.activate();
+        this.categoryDirectories.values().next().value.displayAppList();
+        this.activeMenuItem = this.categoryDirectories.values().next().value;
     }
 
     reload() {
@@ -174,6 +179,10 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         }
 
         super.loadCategories();
+        for(let categoryMenuItem of this.categoryDirectories.values()){
+            if(categoryMenuItem._arrowIcon)
+                categoryMenuItem.actor.remove_actor(categoryMenuItem._arrowIcon);
+        }
     } 
 
     displayCategories(){

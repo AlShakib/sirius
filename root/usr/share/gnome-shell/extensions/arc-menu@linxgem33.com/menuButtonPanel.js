@@ -140,7 +140,6 @@ var ApplicationsButton = GObject.registerClass(class ArcMenu_ApplicationsButton 
             }
             
             this._appList = this._newAppList;
-            this.reload();
         });
         //-----------------------------------------------------------------------------------
         this._setMenuPositionAlignment();
@@ -575,7 +574,7 @@ var ApplicationsMenu = class ArcMenu_ApplicationsMenu extends PopupMenu.PopupMen
     }
 
     _onOpenEvent(){
-        this._button.menu.actor._muteInput = false;
+        this._button.leftClickMenu.actor._muteInput = false;
         if(this._button.MenuLayout && this._button.MenuLayout.needsReload){
             this._button.MenuLayout.reload();
             this._button.MenuLayout.needsReload = false;
@@ -610,20 +609,23 @@ var RightClickMenu = class ArcMenu_RightClickMenu extends PopupMenu.PopupMenu {
         this.actor.add_style_class_name('panel-menu');
         Main.uiGroup.add_actor(this.actor);
         this.actor.hide();
+
         let item = new PopupMenu.PopupMenuItem(_("Arc Menu Settings"));
         item.connect('activate', ()=>{
             Util.spawnCommandLine('gnome-extensions prefs arc-menu@linxgem33.com');
         });
-        this.addMenuItem(item);        
+        this.addMenuItem(item);       
+
         item = new PopupMenu.PopupSeparatorMenuItem();     
         item._separator.style_class='arc-menu-sep';     
-        this.addMenuItem(item);      
-        
+        this.addMenuItem(item);
+
         item = new PopupMenu.PopupMenuItem(_("Arc Menu GitLab Page"));        
         item.connect('activate', ()=>{
             Util.spawnCommandLine('xdg-open ' + Me.metadata.url);
         });     
         this.addMenuItem(item);  
+        
         item = new PopupMenu.PopupMenuItem(_("Arc Menu User Manual"));          
         item.connect('activate', ()=>{
             Util.spawnCommandLine('xdg-open ' + Constants.ARCMENU_MANUAL_URL);

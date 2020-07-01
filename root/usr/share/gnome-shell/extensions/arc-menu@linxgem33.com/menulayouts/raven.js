@@ -33,6 +33,10 @@ const PopupMenu = imports.ui.popupMenu;
 const Utils =  Me.imports.utils;
 const _ = Gettext.gettext;
 
+const COLUMN_SPACING = 10;
+const ROW_SPACING = 10;
+const COLUMN_COUNT = 4;
+
 var createMenu = class extends BaseMenuLayout.BaseLayout{
     constructor(mainButton) {
         super(mainButton, {
@@ -98,13 +102,14 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
 
         this.applicationsBox = new St.BoxLayout({
             x_align: Clutter.ActorAlign.FILL,
-            vertical: true
+            vertical: true,
+            style: "padding-bottom: 10px;"
         });
 
         let layout = new Clutter.GridLayout({ 
             orientation: Clutter.Orientation.VERTICAL,
-            column_spacing: 10,
-            row_spacing: 10 
+            column_spacing: COLUMN_SPACING,
+            row_spacing: ROW_SPACING 
         });
         this.grid = new St.Widget({ 
             x_expand: true,
@@ -116,13 +121,12 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         this.applicationsScrollBox = this._createScrollBox({
             x_expand: false,
             y_expand: false,
-            x_fill:false,
-            y_fill: false,
+            x_align: Clutter.ActorAlign.START,
             y_align: Clutter.ActorAlign.START,
             overlay_scrollbars: true,
             style_class: 'vfade'
         });   
-        this.applicationsScrollBox.style = "width:400px;";    
+        this.applicationsScrollBox.style = "width:410px;";    
   
         this.applicationsScrollBox.add_actor(this.applicationsBox);
         this.subMainBox.add(this.applicationsScrollBox);
@@ -134,7 +138,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
             y_align: Clutter.ActorAlign.END,
             vertical: true
         });
-        this.weatherBox.style = "width:400px;"; 
+        this.weatherBox.style = "width:410px;"; 
         this._weatherItem = new MW.WeatherSection();
         this._weatherItem.style = "border-radius:4px; padding: 10px; margin: 0px 25px 25px 25px;";
         this._weatherItem.connect("clicked", ()=> this.leftClickMenu.close());
@@ -158,8 +162,8 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
 
         layout = new Clutter.GridLayout({ 
             orientation: Clutter.Orientation.VERTICAL,
-            column_spacing: 10,
-            row_spacing: 10 
+            column_spacing: COLUMN_SPACING,
+            row_spacing: ROW_SPACING
         });
         this.shortcutsGrid = new St.Widget({ 
             x_expand: true,
@@ -214,7 +218,8 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         else{
             this.activeCategory = _("All Programs");
             this.activeCategoryType = Constants.CategoryType.ALL_PROGRAMS;
-            this.displayAllApps();   
+            let isGridLayout = true;
+            this.displayAllApps(isGridLayout);   
         }
     }
 
@@ -290,6 +295,11 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
             this.subMainBox.add(this.weatherBox);
     }
 
+    displayCategoryAppList(appList){
+        this._clearActorsFromBox();
+        this._displayAppList(appList);
+    }
+    
     _clearActorsFromBox(box) {
         if(this.subMainBox.contains(this.weatherBox)){
             this.subMainBox.remove_actor(this.weatherBox);
@@ -300,13 +310,17 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
     _displayAppList(apps, isFavoriteMenuItem = false, differentGrid = null){  
         let grid = differentGrid ? differentGrid : this.grid;  
         grid.remove_all_children();
-        super._displayAppGridList(apps, 3, isFavoriteMenuItem, differentGrid);
+        super._displayAppGridList(apps, COLUMN_COUNT, isFavoriteMenuItem, differentGrid);
         let favsLabel = new PopupMenu.PopupMenuItem(differentGrid ? _("Shortcuts") : _(this.activeCategory), {
             hover: false,
             can_focus: false
         });  
+        favsLabel.remove_actor(favsLabel._ornamentLabel)
+        favsLabel.actor.style = "padding-left: 10px;";
+        if(differentGrid)
+            favsLabel.actor.style += "padding-top: 20px;";
         favsLabel.actor.add_style_pseudo_class = () => { return false;};
-        favsLabel.actor.add(this._createHorizontalSeparator(Constants.SEPARATOR_STYLE.LONG));
+        favsLabel.actor.add(this._createHorizontalSeparator(Constants.SEPARATOR_STYLE.MAX));
         favsLabel.label.style = 'font-weight: bold;';
         differentGrid ? this.applicationsBox.insert_child_at_index(favsLabel.actor, 2) : this.applicationsBox.insert_child_at_index(favsLabel.actor, 0);
         this._displayAppIcons();

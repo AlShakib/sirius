@@ -46,7 +46,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         this._searchBoxChangedId = this.searchBox.connect('changed', this._onSearchBoxChanged.bind(this));
         this._searchBoxKeyPressId = this.searchBox.connect('key-press-event', this._onSearchBoxKeyPress.bind(this));
         this._searchBoxKeyFocusInId = this.searchBox.connect('key-focus-in', this._onSearchBoxKeyFocusIn.bind(this));
-        if(this._settings.get_enum('searchbar-location-redmond') === Constants.SearchbarLocation.TOP){
+        if(this._settings.get_enum('searchbar-default-top-location') === Constants.SearchbarLocation.TOP){
             this.searchBox.actor.style ="margin: 0px 10px 10px 10px;";
             this.mainBox.add(this.searchBox.actor);
             let horizontalSep = this._createHorizontalSeparator(Constants.SEPARATOR_STYLE.MAX);
@@ -76,11 +76,9 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         });
 
         this.applicationsScrollBox = this._createScrollBox({
-            x_fill: true,
-            y_fill: false,
             y_align: Clutter.ActorAlign.START,
             overlay_scrollbars: true,
-            style_class: 'vfade'
+            style_class: 'small-vfade'
         });  
 
         let rightPanelWidth = this._settings.get_int('right-panel-width');
@@ -100,18 +98,17 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
             y_expand: true,
             y_align: Clutter.ActorAlign.FILL
         });
-        this.subMainBox.add(this.leftBox);
+        
+        let horizonalFlip = this._settings.get_boolean("enable-horizontal-flip");
+        this.subMainBox.add(horizonalFlip ? this.rightBox : this.leftBox);  
         this.subMainBox.add(this._createVerticalSeparator());
-        this.subMainBox.add(this.rightBox);
+        this.subMainBox.add(horizonalFlip ? this.leftBox : this.rightBox);
 
         this.categoriesScrollBox = this._createScrollBox({
-            x_fill: true,
-            y_fill: false,
             x_expand: true,
             y_expand: true,
             y_align: Clutter.ActorAlign.START,
-            y_align: Clutter.ActorAlign.START,
-            style_class: 'apps-menu vfade left-scroll-area-small',
+            style_class: 'apps-menu small-vfade left-scroll-area-small',
             overlay_scrollbars: true
         });
         this.leftBox.add(this.categoriesScrollBox);   
@@ -124,7 +121,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
             this.leftBox.add(this.activities.actor)
         }
 
-        if(this._settings.get_enum('searchbar-location-redmond') === Constants.SearchbarLocation.BOTTOM){
+        if(this._settings.get_enum('searchbar-default-top-location') === Constants.SearchbarLocation.BOTTOM){
             let horizontalSep = this._createHorizontalSeparator(Constants.SEPARATOR_STYLE.MAX);
             horizontalSep.style = "margin-top: 6px;";
             this.mainBox.add(horizontalSep);
@@ -140,7 +137,8 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
 
     setDefaultMenuView(){
         super.setDefaultMenuView();
-        this.categoryDirectories.values().next().value.activate();
+        this.categoryDirectories.values().next().value.displayAppList();
+        this.activeMenuItem = this.categoryDirectories.values().next().value;
     }
     
     reload() {
@@ -168,7 +166,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
 
         super.loadCategories();
         for(let categoryMenuItem of this.categoryDirectories.values()){
-            categoryMenuItem.actor.style = "padding-top: 10px; padding-bottom: 10px; margin: 0; spacing: 0;";
+            categoryMenuItem.actor.style = "padding-top: 8px; padding-bottom: 8px; margin: 0; spacing: 0;";
             categoryMenuItem.actor.remove_actor(categoryMenuItem._icon);
             if(categoryMenuItem._arrowIcon)
                 categoryMenuItem.actor.remove_actor(categoryMenuItem._arrowIcon);

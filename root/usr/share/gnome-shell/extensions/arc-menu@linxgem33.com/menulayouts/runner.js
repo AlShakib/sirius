@@ -88,8 +88,6 @@ var createMenu =  class extends BaseMenuLayout.BaseLayout{
         this.applicationsScrollBox = this._createScrollBox({
             x_expand: true,
             y_expand: true,
-            x_fill: true,
-            y_fill: false,
             y_align: Clutter.ActorAlign.START,
             x_align: Clutter.ActorAlign.START,
             overlay_scrollbars: true,

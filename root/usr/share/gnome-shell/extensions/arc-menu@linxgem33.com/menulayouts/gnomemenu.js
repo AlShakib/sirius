@@ -61,11 +61,9 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
             vertical: true
         });
         this.applicationsScrollBox = this._createScrollBox({
-            x_fill: true,
-            y_fill: false,
             y_align: Clutter.ActorAlign.START,
             overlay_scrollbars: true,
-            style_class: 'vfade'
+            style_class: 'small-vfade'
         }); 
 
         let rightPanelWidth = this._settings.get_int('right-panel-width');
@@ -84,17 +82,17 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
             vertical: true,
             style_class: 'left-box'
         });
-        this.subMainBox.add(this.leftBox);
+        
+        let horizonalFlip = this._settings.get_boolean("enable-horizontal-flip");
+        this.subMainBox.add(horizonalFlip ? this.rightBox : this.leftBox);  
         this.subMainBox.add(this._createVerticalSeparator());
-        this.subMainBox.add(this.rightBox);
+        this.subMainBox.add(horizonalFlip ? this.leftBox : this.rightBox);
 
         this.categoriesScrollBox = this._createScrollBox({
             x_expand: true,
             y_expand: true,
-            x_fill: true,
-            y_fill: false,
             y_align: Clutter.ActorAlign.START,
-            style_class: 'apps-menu vfade left-scroll-area',
+            style_class: 'apps-menu small-vfade left-scroll-area',
             overlay_scrollbars: true
         });
 
@@ -113,7 +111,8 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
 
     setDefaultMenuView(){
         super.setDefaultMenuView();
-        this.categoryDirectories.values().next().value.activate();
+        this.categoryDirectories.values().next().value.displayAppList();
+        this.activeMenuItem = this.categoryDirectories.values().next().value;
     }
 
     reload() {
@@ -142,7 +141,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         super.loadCategories();
 
         for(let categoryMenuItem of this.categoryDirectories.values()){
-            categoryMenuItem.actor.style = "padding-top: 10px; padding-bottom: 10px;";
+            categoryMenuItem.actor.style = "padding-top: 8px; padding-bottom: 8px;";
             categoryMenuItem.actor.remove_actor(categoryMenuItem._icon);
         }
     }

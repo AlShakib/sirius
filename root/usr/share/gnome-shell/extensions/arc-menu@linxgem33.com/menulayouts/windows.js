@@ -33,6 +33,10 @@ const PopupMenu = imports.ui.popupMenu;
 const Utils =  Me.imports.utils;
 const _ = Gettext.gettext;
 
+const COLUMN_SPACING = 10;
+const ROW_SPACING = 10;
+const COLUMN_COUNT = 5;
+
 var createMenu = class extends BaseMenuLayout.BaseLayout{
     constructor(mainButton) {
         super(mainButton, {
@@ -55,14 +59,12 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         this.favoritesButton = new MW.FavoritesButton(this);
         this.favoritesButton.actor.y_expand = true;
         this.favoritesButton.actor.y_align= Clutter.ActorAlign.START;
-        this.actionsBox.add(this.favoritesButton.actor, {
-            margin:5
-        });
+        this.favoritesButton.actor.margin = 5;
+        this.actionsBox.add(this.favoritesButton.actor);
         let userButton = new MW.CurrentUserButton(this);
         userButton.actor.expand = false;
-        this.actionsBox.add(userButton.actor, {
-            margin:5
-        });
+        userButton.actor.margin = 5;
+        this.actionsBox.add(userButton.actor);
         let path = GLib.get_user_special_dir(imports.gi.GLib.UserDirectory.DIRECTORY_DOCUMENTS);
         if (path != null){
             let placeInfo = new MW.PlaceInfo(Gio.File.new_for_path(path), _("Documents"));
@@ -71,14 +73,12 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         }
         let settingsButton = new MW.SettingsButton(this);
         settingsButton.actor.expand = false;
-        this.actionsBox.add(settingsButton.actor, {
-            margin:5
-        });
+        settingsButton.actor.margin = 5;
+        this.actionsBox.add(settingsButton.actor);
         let powerButton = new MW.PowerButton(this);
         powerButton.actor.expand = false;
-        this.actionsBox.add(powerButton.actor, {
-            margin:5
-        });
+        powerButton.actor.margin = 5;
+        this.actionsBox.add(powerButton.actor);
 
         this.subMainBox = new St.BoxLayout({
             x_expand: true,
@@ -109,8 +109,8 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
 
         let layout = new Clutter.GridLayout({ 
             orientation: Clutter.Orientation.VERTICAL,
-            column_spacing: 10,
-            row_spacing: 10 
+            column_spacing: COLUMN_SPACING,
+            row_spacing: ROW_SPACING 
         });
         this.grid = new St.Widget({ 
             x_expand: true,
@@ -122,8 +122,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         this.applicationsScrollBox = this._createScrollBox({
             x_expand: false,
             y_expand: false,
-            x_fill: false,
-            y_fill: false,
+            x_align: Clutter.ActorAlign.START,
             y_align: Clutter.ActorAlign.START,
             overlay_scrollbars: true,
             style_class: 'vfade'
@@ -169,10 +168,8 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         this.favoritesScrollBox = this._createScrollBox({
             x_expand: true, 
             y_expand: true,
-            x_fill: true,
-            y_fill: false,
             y_align: Clutter.ActorAlign.START,
-            style_class: 'vfade',
+            style_class: 'small-vfade',
             overlay_scrollbars: true,
             reactive:true
         });   
@@ -295,7 +292,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
     }
 
     _displayAppList(apps) {
-        super._displayAppGridList(apps, 5);
+        super._displayAppGridList(apps, COLUMN_COUNT);
     }
 
     displayFavorites() {

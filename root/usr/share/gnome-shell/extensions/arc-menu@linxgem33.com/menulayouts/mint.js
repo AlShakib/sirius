@@ -48,11 +48,9 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         this.actionsScrollBox = new St.ScrollView({
             x_expand: false,
             y_expand: false,
-            x_fill: true,
-            y_fill: false,
             y_align: Clutter.ActorAlign.START,
             overlay_scrollbars: true,
-            style_class: 'vfade'
+            style_class: 'small-vfade'
         });   
         this.actionsScrollBox.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.EXTERNAL);
         this.actionsBox = new St.BoxLayout({ 
@@ -79,12 +77,16 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         this.mainBox.add(this.rightMenuBox);
 
         this.searchBox = new MW.SearchBox(this);
-        this.searchBox.actor.style = "margin: 10px 20px 10px 0px; padding-top: 0.0em; padding-bottom: 0.5em;padding-left: 0.0em;padding-right: 0.0em;";
         this._searchBoxChangedId = this.searchBox.connect('changed', this._onSearchBoxChanged.bind(this));
         this._searchBoxKeyPressId = this.searchBox.connect('key-press-event', this._onSearchBoxKeyPress.bind(this));
         this._searchBoxKeyFocusInId = this.searchBox.connect('key-focus-in', this._onSearchBoxKeyFocusIn.bind(this));
-        this.rightMenuBox.add(this.searchBox.actor);
-
+        if(this._settings.get_enum('searchbar-default-top-location') === Constants.SearchbarLocation.TOP){
+            this.searchBox.actor.style = "margin: 10px 20px 10px 0px; padding-top: 0.0em; padding-bottom: 0.5em;padding-left: 0.0em;padding-right: 0.0em;";
+            this.rightMenuBox.add(this.searchBox.actor);
+        }
+        else
+            this.rightMenuBox.style = "margin-top: 10px;";
+        
         //Sub Main Box -- stores left and right box
         this.subMainBox= new St.BoxLayout({
             vertical: false,
@@ -107,11 +109,9 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         });
 
         this.applicationsScrollBox = this._createScrollBox({
-            x_fill: true,
-            y_fill: false,
             y_align: Clutter.ActorAlign.START,
             overlay_scrollbars: true,
-            style_class: 'vfade'
+            style_class: 'small-vfade'
         });   
 
         let rightPanelWidth = this._settings.get_int('right-panel-width');
@@ -130,17 +130,16 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
             style_class: 'left-box'
         });
 
-        this.subMainBox.add(this.leftBox);
+        let horizonalFlip = this._settings.get_boolean("enable-horizontal-flip");
+        this.subMainBox.add(horizonalFlip ? this.rightBox : this.leftBox);  
         this.subMainBox.add(this._createVerticalSeparator());
-        this.subMainBox.add(this.rightBox);
+        this.subMainBox.add(horizonalFlip ? this.leftBox : this.rightBox);
 
         this.categoriesScrollBox = this._createScrollBox({
             x_expand: true, 
             y_expand: false,
-            x_fill: true,
-            y_fill: false,
             y_align: Clutter.ActorAlign.START,
-            style_class: 'apps-menu vfade left-scroll-area',
+            style_class: 'apps-menu small-vfade left-scroll-area',
             overlay_scrollbars: true
         });
 
@@ -148,7 +147,10 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         this.categoriesBox = new St.BoxLayout({ vertical: true });
         this.categoriesScrollBox.add_actor( this.categoriesBox);  
         this.categoriesScrollBox.clip_to_allocation = true;
-
+        if(this._settings.get_enum('searchbar-default-top-location') === Constants.SearchbarLocation.BOTTOM){
+            this.searchBox.actor.style = "margin: 10px 10px 0px 10px; padding-left: 0.4em;padding-right: 0.4em;";
+            this.rightMenuBox.add(this.searchBox.actor);
+        }
         this.loadFavorites();
         this.loadPinnedShortcuts();
         this.loadCategories();
@@ -162,7 +164,8 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
    
     setDefaultMenuView(){
         super.setDefaultMenuView();
-        this.categoryDirectories.values().next().value.activate();
+        this.categoryDirectories.values().next().value.displayAppList();
+        this.activeMenuItem = this.categoryDirectories.values().next().value;
     }
 
     _reload() {
@@ -217,27 +220,13 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         }
         pinnedApps.push(_("Terminal"), "utilities-terminal", "org.gnome.Terminal.desktop");
         pinnedApps.push(_("Settings"), "emblem-system-symbolic", "gnome-control-center.desktop");
-        let software = '';
-        if(GLib.find_program_in_path('gnome-software')){
-            software = 'org.gnome.Software.desktop';
-        }
-        else if(GLib.find_program_in_path('pamac-manager')){
-            software = 'pamac-manager.desktop';
-        }
-        else if(GLib.find_program_in_path('io.elementary.appcenter')){
-            software = 'io.elementary.appcenter.desktop';
-        }
-        else if(GLib.find_program_in_path('snap-store')){
-            software = 'snap-store_ubuntu-software.desktop';
-        }
-        else{
-            software = null;
-        }
+
+        let software = Utils.findSoftwareManager();
         if(software)
             pinnedApps.push(_("Software"), 'system-software-install-symbolic', software);
-        else{
+        else
             pinnedApps.push(_("Documents"), "ArcMenu_Documents", "ArcMenu_Documents");
-        }
+        
         pinnedApps.push(_("Files"), "system-file-manager", "org.gnome.Nautilus.desktop");
         pinnedApps.push(_("Log Out"), "application-exit-symbolic", "ArcMenu_LogOut");
         pinnedApps.push(_("Lock"), "changes-prevent-symbolic", "ArcMenu_Lock");
