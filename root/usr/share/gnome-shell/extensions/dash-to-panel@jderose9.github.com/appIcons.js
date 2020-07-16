@@ -150,7 +150,7 @@ var taskbarAppIcon = Utils.defineClass({
         
         this._container = new St.Widget({ style_class: 'dtp-container', layout_manager: new Clutter.BinLayout() });
         this._dotsContainer = new St.Widget({ layout_manager: new Clutter.BinLayout() });
-        this._dtpIconContainer = new St.Widget({ layout_manager: new Clutter.BinLayout(), style: getIconContainerStyle() });
+        this._dtpIconContainer = new St.Widget({ layout_manager: new Clutter.BinLayout(), style: this.getIconContainerStyle() });
 
         this.actor.remove_actor(this._iconContainer);
         
@@ -181,7 +181,7 @@ var taskbarAppIcon = Utils.defineClass({
         this._container.add_child(this._dotsContainer);
         this.actor.set_child(this._container);
 
-        if (Panel.checkIfVertical()) {
+        if (panel.checkIfVertical()) {
             this.actor.set_width(panel.geom.w);
         }
 
@@ -208,9 +208,13 @@ var taskbarAppIcon = Utils.defineClass({
             }
             
             this._titleWindowChangeId = 0;
+            this._minimizedWindowChangeId = 0;
         } else {
             this._titleWindowChangeId = this.window.connect('notify::title', 
                                                 Lang.bind(this, this._updateWindowTitle));
+
+            this._minimizedWindowChangeId = this.window.connect('notify::minimized',
+                                                Lang.bind(this, this._updateWindowTitleStyle));
         }
         
         this._scrollEventId = this.actor.connect('scroll-event', this._onMouseScroll.bind(this));
@@ -246,6 +250,7 @@ var taskbarAppIcon = Utils.defineClass({
             Me.settings.connect('changed::group-apps-label-font-size', Lang.bind(this, this._updateWindowTitleStyle)),
             Me.settings.connect('changed::group-apps-label-font-weight', Lang.bind(this, this._updateWindowTitleStyle)),
             Me.settings.connect('changed::group-apps-label-font-color', Lang.bind(this, this._updateWindowTitleStyle)),
+            Me.settings.connect('changed::group-apps-label-font-color-minimized', Lang.bind(this, this._updateWindowTitleStyle)),
             Me.settings.connect('changed::group-apps-label-max-width', Lang.bind(this, this._updateWindowTitleStyle)),
             Me.settings.connect('changed::group-apps-use-fixed-width', Lang.bind(this, this._updateWindowTitleStyle)),
             Me.settings.connect('changed::group-apps-underline-unfocused', Lang.bind(this, this._settingsChangeRefresh))
@@ -306,6 +311,9 @@ var taskbarAppIcon = Utils.defineClass({
 
         if(this._titleWindowChangeId)
             this.window.disconnect(this._titleWindowChangeId);
+
+        if(this._minimizedWindowChangeId)
+            this.window.disconnect(this._minimizedWindowChangeId);
 
         if (this._windowEnteredMonitorId) {
             Utils.DisplayWrapper.getScreen().disconnect(this._windowEnteredMonitorId);
@@ -474,8 +482,12 @@ var taskbarAppIcon = Utils.defineClass({
     _updateWindowTitleStyle: function() {
         if (this._windowTitle) {
             let useFixedWidth = Me.settings.get_boolean('group-apps-use-fixed-width');
-            let variableWidth = !useFixedWidth || Panel.checkIfVertical() || this.dtpPanel.taskbar.fullScrollView;
+            let variableWidth = !useFixedWidth || this.dtpPanel.checkIfVertical() || this.dtpPanel.taskbar.fullScrollView;
             let fontWeight = Me.settings.get_string('group-apps-label-font-weight');
+            let fontScale = Me.desktopSettings.get_double('text-scaling-factor');
+            let fontColor = this.window.minimized ?
+                            Me.settings.get_string('group-apps-label-font-color-minimized') :
+                            Me.settings.get_string('group-apps-label-font-color');
             let scaleFactor = Utils.getScaleFactor();
             let maxLabelWidth = Me.settings.get_int('group-apps-label-max-width') * scaleFactor;
 
@@ -485,10 +497,10 @@ var taskbarAppIcon = Utils.defineClass({
             this._windowTitle.clutter_text.natural_width_set = useFixedWidth;
             this._windowTitle.set_width(variableWidth ? -1 : maxLabelWidth + TITLE_RIGHT_PADDING * scaleFactor);
 
-            this._windowTitle.set_style('font-size: ' + Me.settings.get_int('group-apps-label-font-size') + 'px;' +
+            this._windowTitle.set_style('font-size: ' + Me.settings.get_int('group-apps-label-font-size') * fontScale + 'px;' +
                                         'font-weight: ' + fontWeight + ';' +
                                         (useFixedWidth ? '' : 'max-width: ' + maxLabelWidth + 'px;') + 
-                                        'color: ' + Me.settings.get_string('group-apps-label-font-color'));
+                                        'color: ' + fontColor);
         }
     },
 
@@ -525,7 +537,7 @@ var taskbarAppIcon = Utils.defineClass({
                     let bgSvg = '/img/highlight_stacked_bg';
 
                     if (pos == DOT_POSITION.LEFT || pos == DOT_POSITION.RIGHT) {
-                        bgSvg += (Panel.checkIfVertical() ? '_2' : '_3');
+                        bgSvg += (this.dtpPanel.checkIfVertical() ? '_2' : '_3');
                     }
 
                     inlineStyle += "background-image: url('" + Me.path + bgSvg + ".svg');" + 
@@ -564,7 +576,7 @@ var taskbarAppIcon = Utils.defineClass({
         let padding = getIconPadding();
         let margin = Me.settings.get_int('appicon-margin');
         
-        this.actor.set_style('padding:' + (Panel.checkIfVertical() ? margin + 'px 0' : '0 ' + margin + 'px;'));
+        this.actor.set_style('padding:' + (this.dtpPanel.checkIfVertical() ? margin + 'px 0' : '0 ' + margin + 'px;'));
         this._iconContainer.set_style('padding: ' + padding + 'px;');
     },
 
@@ -577,7 +589,7 @@ var taskbarAppIcon = Utils.defineClass({
         }
 
         if (!this._menu) {
-            this._menu = new taskbarSecondaryMenu(this);
+            this._menu = new taskbarSecondaryMenu(this, this.dtpPanel);
             this._menu.connect('activate-window', Lang.bind(this, function (menu, window) {
                 this.activateWindow(window, Me.settings);
             }));
@@ -1212,23 +1224,22 @@ var taskbarAppIcon = Utils.defineClass({
 
     getAppIconInterestingWindows: function(isolateMonitors) {
         return getInterestingWindows(this.app, this.dtpPanel.monitor, isolateMonitors);
-    }
+    },
 
+    getIconContainerStyle: function() {
+        let style = 'padding: ';
+        let isVertical = this.dtpPanel.checkIfVertical();
+    
+        if (Me.settings.get_boolean('group-apps')) {
+            style += (isVertical ? '0;' : '0 ' + DEFAULT_PADDING_SIZE + 'px;');
+        } else {
+            style += (isVertical ? '' : '0 ') + DEFAULT_PADDING_SIZE + 'px;';
+        }
+    
+        return style;
+    }
 });
 taskbarAppIcon.prototype.scaleAndFade = taskbarAppIcon.prototype.undoScaleAndFade = () => {};
-
-function getIconContainerStyle() {
-    let style = 'padding: ';
-    let isVertical = Panel.checkIfVertical();
-
-    if (Me.settings.get_boolean('group-apps')) {
-        style += (isVertical ? '0;' : '0 ' + DEFAULT_PADDING_SIZE + 'px;');
-    } else {
-        style += (isVertical ? '' : '0 ') + DEFAULT_PADDING_SIZE + 'px;';
-    }
-
-    return style;
-}
 
 function minimizeWindow(app, param, monitor){
     // Param true make all app windows minimize
@@ -1392,13 +1403,13 @@ var taskbarSecondaryMenu = Utils.defineClass({
     Extends: AppDisplay.AppIconMenu,
     ParentConstrParams: [[0]],
 
-    _init: function(source) {
+    _init: function(source, panel) {
         // Damm it, there has to be a proper way of doing this...
         // As I can't call the parent parent constructor (?) passing the side
         // parameter, I overwite what I need later
         this.callParent('_init', source);
 
-        let side = Panel.getPosition();
+        let side = panel.getPosition();
         // Change the initialized side where required.
         this._arrowSide = side;
         this._boxPointer._arrowSide = side;
@@ -1533,7 +1544,7 @@ function ItemShowLabel()  {
     let labelWidth = this.label.get_width();
     let labelHeight = this.label.get_height();
 
-    let position = Panel.getPosition();
+    let position = this._dtpPanel.getPosition();
     let labelOffset = node.get_length('-x-offset');
 
     let xOffset = Math.floor((itemWidth - labelWidth) / 2);
@@ -1596,7 +1607,7 @@ function ItemShowLabel()  {
 var ShowAppsIconWrapper = Utils.defineClass({
     Name: 'DashToPanel.ShowAppsIconWrapper',
 
-    _init: function() {
+    _init: function(dtpPanel) {
         this.realShowAppsIcon = new Dash.ShowAppsIcon();
 
         Utils.wrapActor(this.realShowAppsIcon);
@@ -1627,6 +1638,7 @@ var ShowAppsIconWrapper = Utils.defineClass({
         this._menuManager = new PopupMenu.PopupMenuManager(this.actor);
         this._menuTimeoutId = 0;
 
+        this.realShowAppsIcon._dtpPanel = dtpPanel;
         Taskbar.extendDashItemContainer(this.realShowAppsIcon);
 
         let customIconPath = Me.settings.get_string('show-apps-icon-file');
@@ -1687,14 +1699,14 @@ var ShowAppsIconWrapper = Utils.defineClass({
     setShowAppsPadding: function() {
         let padding = getIconPadding(); 
         let sidePadding = Me.settings.get_int('show-apps-icon-side-padding');
-        let isVertical = Panel.checkIfVertical();
+        let isVertical = this.realShowAppsIcon._dtpPanel.checkIfVertical();
 
         this.actor.set_style('padding:' + (padding + (isVertical ? sidePadding : 0)) + 'px ' + (padding + (isVertical ? 0 : sidePadding)) + 'px;');
     },
 
     createMenu: function() {
         if (!this._menu) {
-            this._menu = new MyShowAppsIconMenu(this.actor);
+            this._menu = new MyShowAppsIconMenu(this.actor, this.realShowAppsIcon._dtpPanel);
             this._menu.connect('open-state-changed', Lang.bind(this, function(menu, isPoppedUp) {
                 if (!isPoppedUp)
                     this._onMenuPoppedDown();
@@ -1743,7 +1755,7 @@ Signals.addSignalMethods(ShowAppsIconWrapper.prototype);
 var MyShowAppsIconMenu = Utils.defineClass({
     Name: 'DashToPanel.ShowAppsIconMenu',
     Extends: taskbarSecondaryMenu,
-    ParentConstrParams: [[0]],
+    ParentConstrParams: [[0], [1]],
 
     _dtpRedisplay: function() {
         this.removeAll();
