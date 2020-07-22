@@ -270,3 +270,6 @@ bat
 
 # GNU Image Manipulation Program
 gimp
+
+# Client to update dynamic DNS host entries
+ddclient
