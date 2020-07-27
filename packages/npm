@@ -18,3 +18,6 @@ firebase-admin
 
 # simple, compliant file streaming module for node
 node-static
+
+# Generates TOC for markdown files of local git repo.
+doctoc
