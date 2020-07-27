@@ -4,7 +4,24 @@
 
 ## Table of Contents
 
-[[_TOC_]]
+- [Screenshot](#screenshot)
+- [What's included](#what-s-included)
+- [Getting Started](#getting-started)
+  * [Running the script](#running-the-script)
+- [Customization](#customization)
+  * [`home.edit` and `root.edit`](#-homeedit--and--rootedit-)
+    + [The `source` file](#the--source--file)
+  * [Add new file to system](#add-new-file-to-system)
+  * [Add new package to package list](#add-new-package-to-package-list)
+    + [Package list file](#package-list-file)
+  * [Add new gnome shell extensions](#add-new-gnome-shell-extensions)
+  * [Add new fonts](#add-new-fonts)
+  * [Add new themes](#add-new-themes)
+  * [Add or modify gsettings value](#add-or-modify-gsettings-value)
+  * [Logs](#logs)
+- [Contributing](#contributing)
+- [Thanks to](#thanks-to)
+- [License](#license)
 
 ## Screenshot
 
