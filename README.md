@@ -129,8 +129,8 @@ To run this script, you will need
 
 Clone this repository
 
-```bas
-git clone https://gitlab.com/AlShakib/sirius.git
+```bash
+git clone https://github.com/AlShakib/sirius.git
 ```
 
 Change current directory to the repository
