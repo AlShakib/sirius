@@ -6,3 +6,6 @@ com.skype.Client
 
 # Zoom - Video Conferencing, Web Conferencing, Webinars, Screen Sharing
 us.zoom.Zoom
+
+# A permissions manager for Flatpak
+com.github.tchx84.Flatseal
