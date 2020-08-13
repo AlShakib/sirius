@@ -4,7 +4,16 @@ csync is a rclone wrapper that pulls files from remote and pushes files to remot
 
 ## Table of Contents
 
-[[_TOC_]]
+- [csync - A rclone wrapper](#csync---a-rclone-wrapper)
+  - [Table of Contents](#table-of-contents)
+  - [Usages](#usages)
+  - [Options](#options)
+    - [push](#push)
+    - [pull](#pull)
+    - [show config](#show-config)
+    - [remove config <config_number>](#remove-config-config_number)
+    - [add \<name\>:\<local>:\<remote>](#add-%5Cname%5C%5Clocal%5Cremote)
+      - [Configuration file](#configuration-file)
 
 ## Usages
 

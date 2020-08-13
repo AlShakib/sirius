@@ -1,10 +1,14 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
 # ytdl - A youtube-dl wrapper
 
 `ytdl` is a `youtube-dl` wrapper that downloads videos and audios from the [YouTube](https://youtube.com). All you have to do is `ytdl <youtube_video_url>` or `ytdl <text_file_that_contains_url>` 
 
 ## Table of Contents
 
-[[_TOC_]]
+- [ytdl - A youtube-dl wrapper](#ytdl---a-youtube-dl-wrapper)
+  - [Table of Contents](#table-of-contents)
+  - [Prerequisite](#prerequisite)
+  - [Usages](#usages)
 
 ## Prerequisite
 

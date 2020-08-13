@@ -4,7 +4,10 @@
 
 ## Table of Contents
 
-[[_TOC_]]
+- [ssdl - Sunday Suspense downloader](#ssdl---sunday-suspense-downloader)
+  - [Table of Contents](#table-of-contents)
+  - [Prerequisite](#prerequisite)
+  - [Usages](#usages)
 
 ## Prerequisite
 
