@@ -30,7 +30,7 @@
 ## What's included
 
 - Apps:
-   - [IBus Avro](https://gitlab.com/AlShakib/ibus-avro)
+   - [IBus Avro](https://github.com/AlShakib/ibus-avro)
    - [Telegram Desktop](https://desktop.telegram.org/)
    - [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli)
    - [youtube-dl](https://youtube-dl.org)
