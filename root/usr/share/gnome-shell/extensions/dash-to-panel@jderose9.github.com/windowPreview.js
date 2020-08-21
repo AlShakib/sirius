@@ -325,7 +325,7 @@ var PreviewMenu = Utils.defineClass({
         let l = Math.max(windows.length, currentPreviews.length);
 
         for (let i = 0; i < l; ++i) {
-            if (currentPreviews[i] && windows[i] && windows[i] != currentPreviews[i].window) {
+            if (currentPreviews[i] && windows[i]) {
                 currentPreviews[i].assignWindow(windows[i], this.opened);
             } else if (!currentPreviews[i]) {
                 this._addNewPreview(windows[i]);
@@ -346,7 +346,6 @@ var PreviewMenu = Utils.defineClass({
             if (currentIndex < 0) {
                 this._addNewPreview(windows[i]);
             } else {
-                currentPreviews[currentIndex].cancelAnimateOut();
                 currentPreviews[currentIndex].assignWindow(windows[i]);
                 currentPreviews.splice(currentIndex, 1);
 
@@ -819,6 +818,7 @@ var Preview = Utils.defineClass({
             _assignWindowClone();
         }
 
+        this._cancelAnimateOut();
         this._removeWindowSignals();
         this.window = window;
         this._needsCloseButton = window.can_close() && !Utils.checkIfWindowHasTransient(window);
@@ -833,15 +833,6 @@ var Preview = Utils.defineClass({
 
             Utils.stopAnimations(this);
             Utils.animate(this, tweenOpts);
-        }
-    },
-
-    cancelAnimateOut: function() {
-        if (this.animatingOut) {
-            this.animatingOut = false;
-
-            Utils.stopAnimations(this);
-            Utils.animate(this, getTweenOpts({ opacity: 255 }));
         }
     },
 
@@ -911,6 +902,15 @@ var Preview = Utils.defineClass({
         return Clutter.EVENT_STOP;
     },
 
+    _cancelAnimateOut: function() {
+        if (this.animatingOut) {
+            this.animatingOut = false;
+
+            Utils.stopAnimations(this);
+            Utils.animate(this, getTweenOpts({ opacity: 255, width: this.cloneWidth, height: this.cloneHeight }));
+        }
+    },
+
     _showContextMenu: function(e) {
         let coords = e.get_coords();
         let currentWorkspace = this._previewMenu.peekInitialWorkspaceIndex < 0 ? 
@@ -948,7 +948,9 @@ var Preview = Utils.defineClass({
 
     _updateHeader: function() {
         if (headerHeight) {
-            let iconTextureSize = headerHeight / scaleFactor * .6;
+            let iconTextureSize = Me.settings.get_boolean('window-preview-use-custom-icon-size') ? 
+                                  Me.settings.get_int('window-preview-custom-icon-size') : 
+                                  headerHeight / scaleFactor * .6;
             let icon = this._previewMenu.getCurrentAppIcon().app.create_icon_texture(iconTextureSize);
             let workspaceIndex = '';
             let workspaceStyle = null;

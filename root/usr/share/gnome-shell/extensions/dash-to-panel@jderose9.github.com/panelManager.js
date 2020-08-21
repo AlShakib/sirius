@@ -558,7 +558,8 @@ var dtpPanelManager = Utils.defineClass({
 
         this._workspacesViews.forEach(wv => Main.layoutManager.overviewGroup.add_actor(wv.actor));
 
-        if (Config.PACKAGE_VERSION > '3.36.3') {
+        if (this._syncWorkspacesFullGeometry) {
+            //gnome-shell 3.36.4
             if (this._fullGeometry)
                 this._syncWorkspacesFullGeometry();
             if (this._actualGeometry)
@@ -817,7 +818,7 @@ function newUpdatePanelBarrier(panel) {
 
 function _newLookingGlassResize() {
     let primaryMonitorPanel = Utils.find(global.dashToPanel.panels, p => p.monitor == Main.layoutManager.primaryMonitor);
-    let topOffset = primaryMonitorPanel.getPosition() == St.Side.TOP ? primaryMonitorPanel.size : 32;
+    let topOffset = primaryMonitorPanel.getPosition() == St.Side.TOP ? primaryMonitorPanel.dtpSize + 8 : 32;
 
     this._oldResize();
     Utils.wrapActor(this);

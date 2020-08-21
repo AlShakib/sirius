@@ -47,6 +47,7 @@ const PanelMenu = imports.ui.panelMenu;
 const St = imports.gi.St;
 const GLib = imports.gi.GLib;
 const Meta = imports.gi.Meta;
+const Pango = imports.gi.Pango;
 const DND = imports.ui.dnd;
 const Shell = imports.gi.Shell;
 const PopupMenu = imports.ui.popupMenu;
@@ -161,14 +162,14 @@ var dtpPanel = Utils.defineClass({
 
             panelBoxes.forEach(p => this[p] = Main.panel[p]);
 
-            this._leftBox.remove_child(this.statusArea.activities.container);
-            this.panel.actor.add_child(this.statusArea.activities.container);
+            ['activities', 'aggregateMenu', 'dateMenu'].forEach(b => {
+                let container = this.statusArea[b].container;
+                let parent = container.get_parent();
 
-            this._rightBox.remove_child(this.statusArea.aggregateMenu.container);
-            this.panel.actor.add_child(this.statusArea.aggregateMenu.container);
-
-            this._centerBox.remove_child(this.statusArea.dateMenu.container);
-            this.panel.actor.add_child(this.statusArea.dateMenu.container);
+                container._dtpOriginalParent = parent;
+                parent ? parent.remove_child(container) : null;
+                this.panel.actor.add_child(container);
+            });
         }
 
         // Create a wrapper around the real showAppsIcon in order to add a popupMenu. Most of 
@@ -178,20 +179,8 @@ var dtpPanel = Utils.defineClass({
 
         this.panel.actor._delegate = this;
         
-        if (position == St.Side.TOP) {
-            this.panel._leftCorner = this.panel._leftCorner || new Panel.PanelCorner(St.Side.LEFT);
-            this.panel._rightCorner = this.panel._rightCorner || new Panel.PanelCorner(St.Side.RIGHT);
-        }
-
-        Utils.wrapActor(this.panel._leftCorner || 0);
-        Utils.wrapActor(this.panel._rightCorner || 0);
         Utils.wrapActor(this.statusArea.activities);
 
-        if (isStandalone && position == St.Side.TOP) {
-            this.panel.actor.add_child(this.panel._leftCorner.actor);
-            this.panel.actor.add_child(this.panel._rightCorner.actor);
-        }
-        
         this.add_child(this.panel.actor);
 
         if (Main.panel._onButtonPress || Main.panel._tryDragWindow) {
@@ -233,6 +222,17 @@ var dtpPanel = Utils.defineClass({
         });
 
         if (this.geom.position == St.Side.TOP) {
+            this.panel._leftCorner = this.panel._leftCorner || new Panel.PanelCorner(St.Side.LEFT);
+            this.panel._rightCorner = this.panel._rightCorner || new Panel.PanelCorner(St.Side.RIGHT);
+
+            Utils.wrapActor(this.panel._leftCorner || 0);
+            Utils.wrapActor(this.panel._rightCorner || 0);
+
+            if (this.isStandalone) {
+                this.panel.actor.add_child(this.panel._leftCorner.actor);
+                this.panel.actor.add_child(this.panel._rightCorner.actor);
+            }
+
             Main.overview._overview.insert_child_at_index(this._myPanelGhost, 0);
         } else {
             let overviewControls = Main.overview._overview._controls || Main.overview._controls;
@@ -326,7 +326,7 @@ var dtpPanel = Utils.defineClass({
             [
                 Utils.getStageTheme(), 
                 'changed', 
-                () => this._resetGeometry()
+                () => (this._resetGeometry(), this._setShowDesktopButtonStyle()),
             ],
             [
                 // sync hover after a popupmenu is closed
@@ -463,15 +463,15 @@ var dtpPanel = Utils.defineClass({
             ['vertical', 'horizontal', 'dashtopanelMainPanel'].forEach(c => this.panel.actor.remove_style_class_name(c));
 
             if (!Main.sessionMode.isLocked) {
-                this.panel.actor.remove_child(this.statusArea.activities.container);
-                this._leftBox.insert_child_at_index(this.statusArea.activities.container, 0);
+                [['activities', 0], ['aggregateMenu', -1], ['dateMenu', 0]].forEach(b => {
+                    let container = this.statusArea[b[0]].container;
+                    let originalParent = container._dtpOriginalParent;
+    
+                    this.panel.actor.remove_child(container);
+                    originalParent ? originalParent.insert_child_at_index(container, b[1]) : null;
+                    delete container._dtpOriginalParent;
+                });
 
-                this.panel.actor.remove_child(this.statusArea.dateMenu.container);
-                this._centerBox.insert_child_at_index(this.statusArea.dateMenu.container, 0);
-
-                this.panel.actor.remove_child(this.statusArea.aggregateMenu.container);
-                this._rightBox.add_child(this.statusArea.aggregateMenu.container);
-                
                 if (this.statusArea.appMenu) {
                     setMenuArrow(this.statusArea.appMenu._arrow, St.Side.TOP);
                     this._leftBox.add_child(this.statusArea.appMenu.container);
@@ -663,8 +663,14 @@ var dtpPanel = Utils.defineClass({
             ],
             [
                 Me.settings,
-                'changed::showdesktop-button-width',
-                () => this._setShowDesktopButtonSize()
+                [
+                    'changed::showdesktop-button-width',
+                    'changed::trans-use-custom-bg',
+                    'changed::desktop-line-use-custom-color',
+                    'changed::desktop-line-custom-color',
+                    'changed::trans-bg-color'
+                ],
+                () => this._setShowDesktopButtonStyle()
             ],
             [
                 Me.desktopSettings,
@@ -996,8 +1002,10 @@ var dtpPanel = Utils.defineClass({
 
                 let prevGroup = this._elementGroups[i - 1];
                 let nextGroup = this._elementGroups[i + 1];
-                let prevLimit = prevGroup && prevGroup.fixed ? prevGroup[this.varCoord.c2] : panelAlloc[this.varCoord.c1];
-                let nextLimit = nextGroup && nextGroup.fixed ? nextGroup[this.varCoord.c1] : panelAlloc[this.varCoord.c2];
+                let prevLimit = prevGroup && prevGroup.fixed ? prevGroup[this.varCoord.c2] : 
+                                    centeredMonitorGroup && group.index > centeredMonitorGroup.index ? centeredMonitorGroup[this.varCoord.c2] : panelAlloc[this.varCoord.c1];
+                let nextLimit = nextGroup && nextGroup.fixed ? nextGroup[this.varCoord.c1] : 
+                                    centeredMonitorGroup && group.index < centeredMonitorGroup.index ? centeredMonitorGroup[this.varCoord.c1] : panelAlloc[this.varCoord.c2];
 
                 if (group.position == Pos.STACKED_TL) {
                     allocateGroup(group, panelAlloc[this.varCoord.c1], nextLimit);
@@ -1210,6 +1218,11 @@ var dtpPanel = Utils.defineClass({
                 return !clockText.get_layout().is_ellipsized();
             };
 
+            if (clockText.ellipsize == Pango.EllipsizeMode.NONE) {
+                //on gnome-shell 3.36.4, the clockdisplay isn't ellipsize anymore, so set it back 
+                clockText.ellipsize = Pango.EllipsizeMode.END;
+            }
+
             if (!time) {
                 datetimeParts = datetime.split(' ');
                 time = datetimeParts.pop();
@@ -1246,11 +1259,12 @@ var dtpPanel = Utils.defineClass({
                             y_fill: true,
                             track_hover: true });
 
-            this._setShowDesktopButtonSize();
+            this._setShowDesktopButtonStyle();
 
             this._showDesktopButton.connect('button-press-event', () => this._onShowDesktopButtonPress());
             this._showDesktopButton.connect('enter-event', () => {
-                this._showDesktopButton.add_style_class_name('showdesktop-button-hovered');
+                this._showDesktopButton.add_style_class_name(this._getBackgroundBrightness() ?
+                            'showdesktop-button-light-hovered' : 'showdesktop-button-dark-hovered');
 
                 if (Me.settings.get_boolean('show-showdesktop-hover')) {
                     this._timeoutsHandler.add([T4, Me.settings.get_int('show-showdesktop-delay'), () => {
@@ -1261,7 +1275,8 @@ var dtpPanel = Utils.defineClass({
             });
             
             this._showDesktopButton.connect('leave-event', () => {
-                this._showDesktopButton.remove_style_class_name('showdesktop-button-hovered');
+                this._showDesktopButton.remove_style_class_name(this._getBackgroundBrightness() ?
+                            'showdesktop-button-light-hovered' : 'showdesktop-button-dark-hovered');
 
                 if (Me.settings.get_boolean('show-showdesktop-hover')) {
                     if (this._timeoutsHandler.getId(T4)) {
@@ -1283,15 +1298,27 @@ var dtpPanel = Utils.defineClass({
         }
     },
 
-    _setShowDesktopButtonSize: function() {
+    _setShowDesktopButtonStyle: function() {
+        let rgb = this._getBackgroundBrightness() ? "rgba(55, 55, 55, .2)" : "rgba(200, 200, 200, .2)";
+
+        let isLineCustom = Me.settings.get_boolean('desktop-line-use-custom-color');
+        rgb = isLineCustom ? Me.settings.get_string('desktop-line-custom-color') : rgb;
+
         if (this._showDesktopButton) {
             let buttonSize = Me.settings.get_int('showdesktop-button-width') + 'px;';
             let isVertical = this.checkIfVertical();
-            let sytle = isVertical ? 'border-top-width:1px;height:' + buttonSize : 'border-left-width:1px;width:' + buttonSize;
-            
+
+            let sytle = "border: 0 solid " + rgb + ";";
+            sytle += isVertical ? 'border-top-width:1px;height:' + buttonSize : 'border-left-width:1px;width:' + buttonSize;
+
             this._showDesktopButton.set_style(sytle);
             this._showDesktopButton[(isVertical ? 'x' : 'y') + '_expand'] = true;
         }
+    },
+
+    // _getBackgroundBrightness: return true if panel has a bright background color
+    _getBackgroundBrightness: function() {
+        return Utils.checkIfColorIsBright(this.dynamicTransparency.backgroundColorRgb);
     },
 
     _toggleWorkspaceWindows: function(hide, workspace) {
