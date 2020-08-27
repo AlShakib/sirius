@@ -273,3 +273,6 @@ gimp
 
 # Client to update dynamic DNS host entries
 ddclient
+
+# Yum-utils CLI compatibility layer
+dnf-utils
