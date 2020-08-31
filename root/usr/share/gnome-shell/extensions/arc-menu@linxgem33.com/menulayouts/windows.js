@@ -88,7 +88,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         });
         this.mainBox.add(this.subMainBox);
 
-        this.user = new MW.UserMenuIcon(this);
+        this.user = new MW.UserMenuIcon(this, 75);
         this.user.actor.x_expand = false;
         this.user.actor.y_expand = false;
         this.user.actor.x_align = Clutter.ActorAlign.CENTER;
@@ -145,6 +145,23 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         this.dummyCursor = new St.Widget({ width: 0, height: 0, opacity: 0 });
         Main.uiGroup.add_actor(this.dummyCursor);
         this.favoritesMenu = new PopupMenu.PopupMenu(this.dummyCursor, 0, St.Side.TOP);
+        this.favoritesMenu.connect('open-state-changed', (menu, open) => {
+            if(!open){
+                this.favoritesButton.fake_release();
+                this.favoritesButton.set_hover(false);
+            }
+            else{
+                if(this.menuButton.tooltipShowingID){
+                    GLib.source_remove(this.menuButton.tooltipShowingID);
+                    this.menuButton.tooltipShowingID = null;
+                    this.menuButton.tooltipShowing = false;
+                }
+                if(this.favoritesButton.tooltip){
+                    this.favoritesButton.tooltip.hide();
+                    this.menuButton.tooltipShowing = false;
+                }
+            }
+        });
         this.section = new PopupMenu.PopupMenuSection();
         this.favoritesMenu.addMenuItem(this.section);  
         
@@ -221,7 +238,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         this.favoritesMenu.actor.style_class = addStyle ? 'arc-menu-boxpointer': 'popup-menu-boxpointer';
         this.favoritesMenu.actor.add_style_class_name( addStyle ? 'arc-menu' : 'popup-menu');
         this.favoritesButton.tooltip.hide();
-        let themeNode = this.leftClickMenu.actor.get_theme_node();
+        let themeNode = this.arcMenu.actor.get_theme_node();
         let rise = themeNode.get_length('-arrow-rise');
         let backgroundColor = themeNode.get_color('-arrow-background-color');
         let shadeColor;
@@ -249,13 +266,13 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         let base = themeNode.get_length('-arrow-base');
         let borderWidth = themeNode.get_length('-arrow-border-width');
 
-        this.leftClickMenu.actor.get_allocation_box();
-        let [x, y] = this.leftClickMenu.actor.get_transformed_position();
-        if(this.leftClickMenu._arrowSide == St.Side.TOP)
+        this.arcMenu.actor.get_allocation_box();
+        let [x, y] = this.arcMenu.actor.get_transformed_position();
+        if(this.arcMenu._arrowSide == St.Side.TOP)
             y += rise + 1;
         else 
             y += 1;
-        if(this.leftClickMenu._arrowSide == St.Side.LEFT)
+        if(this.arcMenu._arrowSide == St.Side.LEFT)
             x= x+(borderRadius * 2) + rise + 1;
         else
             x = x+(borderRadius * 2);
@@ -308,9 +325,9 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
     }
 
     _displayAppIcons(){
+        this.activeMenuItem = this.grid.layout_manager.get_child_at(0, 0);
         this.applicationsBox.add(this.grid);
-        this.activeMenuItem = this.firstItem;
-        if(this.leftClickMenu.isOpen){
+        if(this.arcMenu.isOpen){
             this.mainBox.grab_key_focus();
         }
     }

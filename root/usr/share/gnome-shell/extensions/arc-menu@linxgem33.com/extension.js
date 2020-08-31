@@ -46,7 +46,10 @@ function init(metadata) {
 
 // Enable the extension
 function enable() {
-
+    if(imports.gi.Meta.is_wayland_compositor())
+        Me.metadata.isWayland = true;
+    else
+        Me.metadata.isWayland = false;
     let stylesheet = Utils.getStylesheet();
         
     let theme = St.ThemeContext.get_for_stage(global.stage).get_theme();
@@ -70,8 +73,8 @@ function enable() {
         if (extension.uuid === 'dash-to-panel@jderose9.github.com') {
             if(extension.state === 1){
                 this.set_DtD_DtP_State(Constants.EXTENSION.DTP, true);
-                let arcMenuPosition = settings.get_enum('arc-menu-placement');
-                if(arcMenuPosition == Constants.ARC_MENU_PLACEMENT.PANEL || arcMenuPosition == Constants.ARC_MENU_PLACEMENT.DTP){
+                let arcMenuPlacement = settings.get_enum('arc-menu-placement');
+                if(arcMenuPlacement == Constants.ArcMenuPlacement.PANEL || arcMenuPlacement == Constants.ArcMenuPlacement.DTP){
                     for (let i = settingsControllers.length - 1; i >= 0; --i) {
                         let sc = settingsControllers[i];
                         _disableButton(sc, 1);
@@ -86,8 +89,8 @@ function enable() {
             _disconnectDtdSignals();
             let state = extension.state === 1 ? true : false;
             this.set_DtD_DtP_State(Constants.EXTENSION.DTD, state);
-            let arcMenuPosition = settings.get_enum('arc-menu-placement');
-            if(arcMenuPosition == Constants.ARC_MENU_PLACEMENT.DTD){
+            let arcMenuPlacement = settings.get_enum('arc-menu-placement');
+            if(arcMenuPlacement == Constants.ArcMenuPlacement.DASH){
                 for (let i = settingsControllers.length - 1; i >= 0; --i) {
                     let sc = settingsControllers[i];
                     _disableButton(sc, 1);
@@ -168,8 +171,8 @@ function _disconnectDtdSignals() {
 }
 
 function _onArcMenuPlacementChange() {
-    let arcMenuPosition = settings.get_enum('arc-menu-placement');
-    if(arcMenuPosition == Constants.ARC_MENU_PLACEMENT.PANEL || arcMenuPosition == Constants.ARC_MENU_PLACEMENT.DTP){
+    let arcMenuPlacement = settings.get_enum('arc-menu-placement');
+    if(arcMenuPlacement == Constants.ArcMenuPlacement.PANEL || arcMenuPlacement == Constants.ArcMenuPlacement.DTP){
         _disconnectDtdSignals();
         _connectDtpSignals();
     }
@@ -208,17 +211,17 @@ function _getDockExtensions(){
 function _enableButtons() {
     let multiMonitor = settings.get_boolean('multi-monitor');
     dockExtension = _getDockExtensions();
-    let arcMenuPosition = settings.get_enum('arc-menu-placement');
-    if(arcMenuPosition == Constants.ARC_MENU_PLACEMENT.DTD && dockExtension){
+    let arcMenuPlacement = settings.get_enum('arc-menu-placement');
+    if(arcMenuPlacement == Constants.ArcMenuPlacement.DASH && dockExtension){
         this.set_DtD_DtP_State(Constants.EXTENSION.DTD, true);
         let panel = dockExtension.stateObj.dockManager; 
         if(panel){ 
             if(panel._allDocks.length){  
                 let iterLength = multiMonitor ? panel._allDocks.length : 1;
-                for(var i = 0; i < iterLength; i++){      
-                    if(!panel._allDocks[i].dash.arcMenuEnabled){
-                        let settingsController = new Controller.MenuSettingsController(settings, settingsControllers, panel, i == 0 ? true : false, Constants.ARC_MENU_PLACEMENT.DTD);
-                        settingsController.enableButtonInDash(i);
+                for(var index = 0; index < iterLength; index++){      
+                    if(!panel._allDocks[index].dash.arcMenuEnabled){
+                        let settingsController = new Controller.MenuSettingsController(settings, settingsControllers, panel, index, Constants.ArcMenuPlacement.DASH);
+                        settingsController.enableButtonInDash(index);
     
                         settingsController.bindSettingsChanges();
                         settingsControllers.push(settingsController); 
@@ -230,8 +233,8 @@ function _enableButtons() {
     else{
         let panelArray = global.dashToPanel ? global.dashToPanel.panels.map(pw => pw.panel || pw) : [Main.panel];
         let iterLength = multiMonitor ? panelArray.length : 1;
-        for(var i = 0; i < iterLength; i++){
-            let panel = panelArray[i];
+        for(var index = 0; index < iterLength; index++){
+            let panel = panelArray[index];
 
             if(global.dashToPanel) this.set_DtD_DtP_State(Constants.EXTENSION.DTP, true);
 
@@ -239,13 +242,13 @@ function _enableButtons() {
     
             if (panel.statusArea['arc-menu'])
                 continue;
-            else if (settingsControllers[i])
-                _disableButton(settingsControllers[i], 1); 
+            else if (settingsControllers[index])
+                _disableButton(settingsControllers[index], 1); 
     
             // Create a Menu Controller that is responsible for controlling
             // and managing the menu as well as the menu button.
         
-            let settingsController = new Controller.MenuSettingsController(settings, settingsControllers, panel, isMainPanel, Constants.ARC_MENU_PLACEMENT.PANEL);
+            let settingsController = new Controller.MenuSettingsController(settings, settingsControllers, panel, isMainPanel, Constants.ArcMenuPlacement.PANEL);
             
             if (!isMainPanel) {
                 panel._amDestroyId = panel.connect('destroy', () => extensionChangedId ? _disableButton(settingsController, 1) : null);

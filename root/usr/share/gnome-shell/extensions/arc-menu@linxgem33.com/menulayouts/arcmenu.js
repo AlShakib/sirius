@@ -82,13 +82,20 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         this.applicationsBox = new St.BoxLayout({ vertical: true });
         this.applicationsScrollBox.add_actor(this.applicationsBox);
 
-        this.leftBox.add(this._createHorizontalSeparator(Constants.SEPARATOR_STYLE.LONG));
+        this.navigateBox = new St.BoxLayout({ 
+            vertical: true,
+            x_expand: true, 
+            y_expand: true,
+            y_align: Clutter.ActorAlign.END
+        });
+        this.navigateBox.add(this._createHorizontalSeparator(Constants.SEPARATOR_STYLE.LONG));
         
         this.backButton = new MW.BackMenuItem(this);
-        this.leftBox.add(this.backButton.actor);
+        this.navigateBox.add(this.backButton.actor);
         
         this.viewProgramsButton = new MW.ViewAllPrograms(this);
-        this.leftBox.add(this.viewProgramsButton.actor);
+        this.navigateBox.add(this.viewProgramsButton.actor);
+        this.leftBox.add(this.navigateBox);
         if(this._settings.get_enum('searchbar-default-bottom-location') === Constants.SearchbarLocation.BOTTOM){
             this.searchBox.actor.style = "padding-top: 0.75em; padding-bottom: 0.25em; padding-left: 1em; padding-right: 0.25em; margin-right: .5em;";
             this.leftBox.add(this.searchBox.actor);
@@ -160,15 +167,15 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         this.placesManager = new PlaceDisplay.PlacesManager();
         for (let i = 0; i < Constants.SECTIONS.length; i++) {
             let id = Constants.SECTIONS[i];
-            this._sections[id] = new PopupMenu.PopupMenuSection({
+            this._sections[id] = new St.BoxLayout({
                 vertical: true
             });	
-            this.placesManager.connect(`${id}-updated`, () => {
+            this.placeManagerUpdatedID = this.placesManager.connect(`${id}-updated`, () => {
                 this._redisplayPlaces(id);
             });
 
             this._createPlaces(id);
-            this.externalDevicesBox.add(this._sections[id].actor);
+            this.externalDevicesBox.add(this._sections[id]);
         }
 
         //Add Application Shortcuts to menu (Software, Settings, Tweaks, Terminal)
@@ -332,7 +339,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
             if(!activeMenuItemSet){
                 activeMenuItemSet = true;  
                 this.activeMenuItem = item;
-                if(this.leftClickMenu.isOpen){
+                if(this.arcMenu.isOpen){
                     this.mainBox.grab_key_focus();
                 }
             }    

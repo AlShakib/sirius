@@ -5,6 +5,7 @@
 ![](https://gitlab.com/LinxGem33/Neon/raw/master/arcmenu-browser.png)
 
 -----
+
 ### Introduction
 
 Arc Menu is a Gnome shell extension designed to replace the standard menu found in Gnome 3 this application menu extension has  some added benefits over the standard menu found in Gnome 3, these include the long awaited search functionality as well as quick access to files on your system and also the current logged in user along with quick access to the software centre and system settings and other features which can be accessed from the settings menu.
@@ -16,6 +17,26 @@ Arc Menu is a Gnome shell extension designed to replace the standard menu found 
 This extension could be even better with your help! Any items in the issue tracker labelled **Help Needed** or **Good First Issue** are open for contribution. For more info, see the [Contributing Feature List](https://gitlab.com/LinxGem33/Arc-Menu/issues/54) for more details on current issues or features which need your help.
 
 ![image](/uploads/85b3cf3baea40163ffc5c115b7d7306e/image.png)  ![image](/uploads/d5b2fb82db8d2955923d327caef8e4aa/image.png)
+
+* For more information about contributing and code requirements please visit the [How to Contribute](https://gitlab.com/arcmenu-team/Arc-Menu/-/wikis/How-to-Contribute) wiki section.
+
+-----
+
+### Donation
+
+<details>
+<summary><b>Disclaimer..</b></summary>
+
+<p>
+
+*Disclaimer: all donations are non refundable so please take care at the time of donation that you donate the intended correct amount, thank you Arc Menu Team.*
+
+</p>
+</details>
+
+ArcMenu is provided free of charge. If it has improved your workflow, or you had a great support experience, feel free to say thanks by making a donation to the Project or developers. (If you would like your donation to go to a specific developer, you may mention it in the note field during payment)
+
+[![Donate via Paypal](https://gitlab.com/LinxGem33/Neon/-/raw/master/wiki%20screens/donate-button-alt.png)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=TV2Z7G9YZ745E&source=url)
 
 -----
 
@@ -45,7 +66,6 @@ This extension could be even better with your help! Any items in the issue track
        <a href="https://extensions.gnome.org/extension/1228/arc-menu/" >
     <img src="https://gitlab.com/LinxGem33/Neon/raw/master/artwork/get-it-ego.png" width="240" style="margin-left: 4px"/>
     </a>
-</p>
 
 -----
 
@@ -58,9 +78,23 @@ following [dependencies installed](https://gitlab.com/LinxGem33/Arc-Menu/wikis/A
 
 ### Wiki Guide
 
+
 If you have any issues with regard to Arc menu and your unsure of a certain feature or just want to know more about Arc menu, then the Arc menu wiki guide is a good place to start.
 
 Please refer to the Arc menu [Wiki Guide](https://gitlab.com/LinxGem33/Arc-Menu/wikis/Introduction) 
+
+
+**Click on the link to: View the [ArcMenu User Manual](https://gitlab.com/LinxGem33/Neon/-/raw/master/arc-menu-manual/arcmenu-user-manual.pdf) Online.**
+
+- **To Download the ArcMenu user manual: Please click on the PDF Icon below.**
+
+-----
+
+<p align="left">
+       <a href="https://gitlab.com/LinxGem33/Neon/-/raw/master/arc-menu-manual/arcmenu-user-manual.pdf?inline=false" >
+    <img src="https://gitlab.com/LinxGem33/Arc-Menu/uploads/1f75574db9da0a1d02e2db719869fffe/arcmenu-manual-icon.svg" width="140" style="margin-left: 4px"/>
+    </a>
+</p>
 
 -----
 
@@ -122,6 +156,27 @@ All ArcMenu's Image assets including wiki images, Icons and application Image as
 
 * **ARCH LINUX ![copyright2.svg](/uploads/c5f15274ae7fffddf1f2e3dcda5971d8/copyright2.svg)** - The stylized Arch Linux logo are recognised trademarks of Arch Linux, copyright 2002-2017 Judd Vinet and Aaron Griffin
 
+* **SOLUS** - name and logo is Copyright ![copyright2.svg](/uploads/c5f15274ae7fffddf1f2e3dcda5971d8/copyright2.svg) 2014-2018 by Solus Project
+
+* **KALI LINUX** - logo and name is part of ![copyright2.svg](/uploads/c5f15274ae7fffddf1f2e3dcda5971d8/copyright2.svg) OffSec Services Limited 2020
+
+* **PUREOS** - name and logo is developed by members of the Purism community
+
+* **RASPBERRY PI** ![copyright2.svg](/uploads/c5f15274ae7fffddf1f2e3dcda5971d8/copyright2.svg) - Logo and name is part of Raspberry Pi Foundation
+UK Registered Charity 1129409
+
+* **Gentoo Authors![copyright2.svg](/uploads/c5f15274ae7fffddf1f2e3dcda5971d8/copyright2.svg)** 2001–2020
+Gentoo is a trademark of the Gentoo Foundation, Inc.
+
+* **Voyager ![copyright2.svg](/uploads/c5f15274ae7fffddf1f2e3dcda5971d8/copyright2.svg) Linux**
+(name) and (logo)
+
+* **MXLinux![copyright2.svg](/uploads/c5f15274ae7fffddf1f2e3dcda5971d8/copyright2.svg)** 2020 -
+Linux - is the registered trademark of Linus Torvalds in the U.S. and other countries.
+
+* **Red Hat, Inc.![copyright2.svg](/uploads/c5f15274ae7fffddf1f2e3dcda5971d8/copyright2.svg)** Copyright 2020 
+(name) and (logo)
+
 </p>
 </details>
 
@@ -129,9 +184,28 @@ All ArcMenu's Image assets including wiki images, Icons and application Image as
 
 ### Credits
 
+**ArcMenu is developed and maintained by @AndrewZaech and @LinxGem33**
 
-Additional credits: This extension also leverages the work from [Giovanni Campagna ](https://git.gnome.org//browse/gnome-shell-extensions) gnome Application Menu used in [Gnome 3](https://www.gnome.org/) to allow the menu to be embedded in the Gnome main panel This extension also leverages some of the work from Zorin OS.
-This extension also leverages some code from the gnome-shell adapted to be used for ArcMenu and also uses adapted code from Dash to Panel's Utils.js to allow the ArcMenu to be used for different Gnome-shell versions.
+<details>
+<summary><b>Additional credits:</b></summary>
+
+<p>
+
+**Additional credits:** 
+
+* This extension leverages the work from [Giovanni Campagna ](https://git.gnome.org//browse/gnome-shell-extensions) gnome Application Menu to allow the menu to be embedded in the Gnome main panel.
+* This extension also leverages some of the design elements for the default menu layout (ArcMenu) from Zorin OS.
+* This extension also uses some code from gnome-shell adapted to be used for ArcMenu.
+* This extension also uses adapted code from Dash to Panel's Utils.js.
+* This extension also uses some code from gnome-shell-extensions package for use with external file sources adapted to be used for ArcMenu.
+
+</p>
+</details>
+
+<details>
+<summary><b>Current Active Developers</b></summary>
+
+<p>
 
 -----
 
@@ -149,6 +223,14 @@ Hi I'm LinxGem33 aka Andy and the founder of Arc menu, my role on the project is
 
 Hi, I’m Andrew. My role on the project is to design, create, and implement features for the ArcMenu extension. I’m also involved in the code review process and front-end work, as well as improving the UX of ArcMenu. I also work on performance improvements and bug fixes, and provide help to our users with any issues related to ArcMenu.
 
+</p>
+</details>
+
+<details>
+<summary><b>Top Project Contributors</b></summary>
+
+<p>
+
 -----
 
 ### Top Project Contributors
@@ -157,9 +239,25 @@ Hi, I’m Andrew. My role on the project is to design, create, and implement fea
 
 #### @[charlesg99](https://github.com/charlesg99) - **Project Contributor** - Developer 
 
+</p>
+</details>
+
+<details>
+<summary><b>Technical Advisors</b></summary>
+
+<p>
+
 -----
 
 ### Technical Advisors
+
+</p>
+</details>
+
+<details>
+<summary><b>Thanks to the following people for contributing via pull requests</b></summary>
+
+<p>
 
 -----
 
@@ -169,7 +267,7 @@ Hi, I’m Andrew. My role on the project is to design, create, and implement fea
 
 -----
 
-**@[fishears](https://github.com/fishears/Arc-Menu)** | **@[JasonLG1979](https://github.com/JasonLG1979)** | **@[itmitica](https://github.com/itmitica)** | **@[vikaig](https://gitlab.com/vikaig)** | **- @[MagneFire](https://gitlab.com/MagneFire)**
+**@[fishears](https://github.com/fishears/Arc-Menu)** | **@[JasonLG1979](https://github.com/JasonLG1979)** | **@[itmitica](https://github.com/itmitica)** | **@[vikaig](https://gitlab.com/vikaig)** | **@[MagneFire](https://gitlab.com/MagneFire)** | **@[tognee](https://gitlab.com/tognee)** | **@[hlechner](https://gitlab.com/hlechner)**
 
 -----
 
@@ -179,17 +277,28 @@ Hi, I’m Andrew. My role on the project is to design, create, and implement fea
 
 **@[JasonLG1979](https://github.com/JasonLG1979)**  | **@[lexruee](https://github.com/lexruee/Arc-Menu)**
 
+</p>
+</details>
+
 -----
 
 ### Translations
 
 -----
 
+<details>
+<summary><b>Disclaimer..</b></summary>
+
+<p>
+
 **Disclaimer..**
 
 *" Translations are not provided by the ArcMenu team members and may contain incorrect or inaccurate translations. The ArcMenu team relies on user contributions for translations. Therefore if you wish to correct or modify a translation that you feel is inaccurate please send a Merge Request with a brief description with the reason for any corrections. "*
 
 Kind regards - **ArcMenu Team**
+
+</p>
+</details>
 
 -----
 
@@ -203,7 +312,7 @@ Kind regards - **ArcMenu Team**
 
 -----
 
- **- @[AlexWayfer](https://gitlab.com/AlexWayfer) - Russian** | **- @[gkkulik](https://gitlab.com/gkkulik) - Silesian** | **- @[vikaig](https://gitlab.com/vikaig) - Ukrainian** | **- @[jordim](https://gitlab.com/jordim) - Catalan** | **- @[libreajans](https://gitlab.com/libreajans) - Turkish** |
+ **- @[AlexWayfer](https://gitlab.com/AlexWayfer) - Russian** | **- @[gkkulik](https://gitlab.com/gkkulik) - Silesian** | **- @[vikaig](https://gitlab.com/vikaig) - Ukrainian** | **- @[jordim](https://gitlab.com/jordim) - Catalan** | **- @[aylinux](https://gitlab.com/aylinux) - Turkish** |
  
 -----
 
@@ -215,4 +324,4 @@ Kind regards - **ArcMenu Team**
  
 -----
 
- **- @[stevendobay](https://gitlab.com/stevendobay) - Hungarian** |
+ **- @[stevendobay](https://gitlab.com/stevendobay) - Hungarian** | **- @[omeritzics](https://gitlab.com/omeritzics) - Hebrew** |

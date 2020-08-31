@@ -117,8 +117,15 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         this.categoriesScrollBox.add_actor(this.categoriesBox);
 
         if(this._settings.get_boolean('enable-activities-shortcut')){
+            this.activitiesBox = new St.BoxLayout({ 
+                vertical: true,
+                x_expand: true, 
+                y_expand: true,
+                y_align: Clutter.ActorAlign.END
+            });
             this.activities = new MW.ActivitiesMenuItem(this);
-            this.leftBox.add(this.activities.actor)
+            this.activitiesBox.add(this.activities.actor);
+            this.leftBox.add(this.activitiesBox);
         }
 
         if(this._settings.get_enum('searchbar-default-top-location') === Constants.SearchbarLocation.BOTTOM){
@@ -167,9 +174,9 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         super.loadCategories();
         for(let categoryMenuItem of this.categoryDirectories.values()){
             categoryMenuItem.actor.style = "padding-top: 8px; padding-bottom: 8px; margin: 0; spacing: 0;";
-            categoryMenuItem.actor.remove_actor(categoryMenuItem._icon);
+            categoryMenuItem.box.remove_actor(categoryMenuItem._icon);
             if(categoryMenuItem._arrowIcon)
-                categoryMenuItem.actor.remove_actor(categoryMenuItem._arrowIcon);
+                categoryMenuItem.box.remove_actor(categoryMenuItem._arrowIcon);
         }
     }
     

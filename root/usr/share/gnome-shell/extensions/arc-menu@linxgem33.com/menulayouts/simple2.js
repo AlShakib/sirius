@@ -46,7 +46,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         this.loadFavorites();
         this.loadCategories();
         this._display(); 
-        this.leftClickMenu.actor.style = 'max-height: ' + (this.leftClickMenu.actor.height + 250) + 'px;';
+        this.arcMenu.actor.style = 'max-height: ' + (this.arcMenu.actor.height + 250) + 'px;';
     }
 
     setDefaultMenuView(){
@@ -82,7 +82,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         super.loadCategories(MW.CategorySubMenuItem);
 
         for(let categoryMenuItem of this.categoryDirectories.values()){
-            categoryMenuItem._setParent(this.leftClickMenu);  
+            categoryMenuItem._setParent(this.arcMenu);  
             categoryMenuItem.isSimpleMenuItem = true;
         }
     }
@@ -91,12 +91,11 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         this._clearActorsFromBox();
         let isActiveMenuItemSet = false;
         for(let categoryMenuItem of this.categoryDirectories.values()){
-            this.mainBox.add_actor(categoryMenuItem.actor);	
-            this.mainBox.add_actor(categoryMenuItem.menu.actor);
+            this.arcMenu.addMenuItem(categoryMenuItem);
             if(!isActiveMenuItemSet){
                 isActiveMenuItemSet = true;
                 this.activeMenuItem = categoryMenuItem;
-                if(this.leftClickMenu.isOpen){
+                if(this.arcMenu.isOpen){
                     this.mainBox.grab_key_focus();
                 }
             }	 
@@ -127,7 +126,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
                     this.favoritesArray[i].actor.hide();
                 if(i==0){
                     this.activeMenuItem = this.favoritesArray[i];
-                    if(this.leftClickMenu.isOpen){
+                    if(this.arcMenu.isOpen){
                         this.mainBox.grab_key_focus();
                     }
                 }	   
@@ -178,7 +177,6 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
                     categoryMenuItem.menu.box.add(item.actor);
                 }
                 if(i==0){
-                    item.setFakeActive(true);
                     item.grabKeyFocus();
                 }
             }
@@ -186,7 +184,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
     }
 
     destroy(isReload){
-        this.leftClickMenu.actor.style = null;
+        this.arcMenu.actor.style = null;
         super.destroy(isReload);
     }
 }

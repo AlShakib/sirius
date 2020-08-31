@@ -52,8 +52,8 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         else
             this.activeCategory = _("All Programs");
 
-        this.leftClickMenu.actor.style = "-arrow-base:0px;-arrow-rise:0px; -boxpointer-gap: 0px;"; 
-        this.leftClickMenu.box.style = "padding-bottom:0px; padding-top:0px; margin:0px;";
+        this.arcMenu.actor.style = "-arrow-base:0px;-arrow-rise:0px; -boxpointer-gap: 0px;"; 
+        this.arcMenu.box.style = "padding-bottom:0px; padding-top:0px; margin:0px;";
         this.actionsBoxContainer = new St.BoxLayout({
             x_expand: false,
             y_expand: true,
@@ -141,12 +141,12 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         this.weatherBox.style = "width:410px;"; 
         this._weatherItem = new MW.WeatherSection();
         this._weatherItem.style = "border-radius:4px; padding: 10px; margin: 0px 25px 25px 25px;";
-        this._weatherItem.connect("clicked", ()=> this.leftClickMenu.close());
+        this._weatherItem.connect("clicked", ()=> this.arcMenu.close());
         this._clocksItem = new MW.WorldClocksSection();
         this._clocksItem.x_expand = true;
         this._clocksItem.x_align = Clutter.ActorAlign.FILL;
         this._clocksItem.style = "border-radius:4px; padding: 10px; margin: 0px 25px 25px 25px;";
-        this._clocksItem.connect("clicked", ()=> this.leftClickMenu.close());
+        this._clocksItem.connect("clicked", ()=> this.arcMenu.close());
 
         this.weatherBox.add(this._clocksItem);
         this.weatherBox.add(this._weatherItem);
@@ -196,8 +196,8 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         super.loadFavorites(isIconGrid);
     }
 
-    updateRunnerLocation(){       
-        let monitorIndex = Main.layoutManager.findIndexForActor(this._button.getWidget().actor);
+    updateLocation(){       
+        let monitorIndex = Main.layoutManager.findIndexForActor(this.menuButton.menuButtonWidget.actor);
         let scaleFactor = Main.layoutManager.monitors[monitorIndex].geometry_scale;
         let monitorWorkArea = Main.layoutManager.getWorkAreaForMonitor(monitorIndex);
 
@@ -217,9 +217,9 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         }
         else{
             this.activeCategory = _("All Programs");
-            this.activeCategoryType = Constants.CategoryType.ALL_PROGRAMS;
             let isGridLayout = true;
             this.displayAllApps(isGridLayout);   
+            this.activeCategoryType = Constants.CategoryType.ALL_PROGRAMS;
         }
     }
 
@@ -231,12 +231,12 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         addStyle ? this._clocksItem.add_style_class_name('arc-menu-action') : this._clocksItem.remove_style_class_name('arc-menu-action');
         addStyle ? this._weatherItem.add_style_class_name('arc-menu-action') : this._weatherItem.remove_style_class_name('arc-menu-action');
 
-        this.leftClickMenu.actor.style = "-arrow-base:0px; -arrow-rise:0px; -boxpointer-gap: " + gapAdjustment + "px;";
-        this.leftClickMenu.box.style = "padding-bottom:0px; padding-top:0px; margin:0px;";
+        this.arcMenu.actor.style = "-arrow-base:0px; -arrow-rise:0px; -boxpointer-gap: " + gapAdjustment + "px;";
+        this.arcMenu.box.style = "padding-bottom:0px; padding-top:0px; margin:0px;";
         for(let categoryMenuItem of this.categoryDirectories.values()){
             categoryMenuItem.updateStyle();	 
         }    
-        this.updateRunnerLocation();
+        this.updateLocation();
     }
 
     updateSearch(){
@@ -339,8 +339,8 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         if(this._weatherItem)
             this._weatherItem.destroy();
         
-        this.leftClickMenu.box.style = null;
-        this.leftClickMenu.actor.style = null;
+        this.arcMenu.box.style = null;
+        this.arcMenu.actor.style = null;
             
         super.destroy(isReload);
     }

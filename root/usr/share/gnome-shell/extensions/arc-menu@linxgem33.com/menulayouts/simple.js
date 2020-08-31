@@ -42,7 +42,7 @@ var createMenu =  class extends BaseMenuLayout.BaseLayout{
     }
     createLayout(){
         this.mainBox.style = null;
-        this.section = this._button.section;
+        this.section = this.menuButton.section;
         let actors = this.section.actor.get_children();
         for (let i = 0; i < actors.length; i++) {
             let actor = actors[i];
@@ -108,7 +108,7 @@ var createMenu =  class extends BaseMenuLayout.BaseLayout{
                     this.favoritesArray[i].actor.hide();
                 if(i==0){
                     this.activeMenuItem = this.favoritesArray[i];
-                    if(this.leftClickMenu.isOpen){
+                    if(this.arcMenu.isOpen){
                         this.mainBox.grab_key_focus();
                     }
                 }	   
@@ -173,7 +173,6 @@ var createMenu =  class extends BaseMenuLayout.BaseLayout{
                         item.menu.actor.get_parent().remove_actor(item.menu.actor);
                     }
                     categoryMenuItem.applicationsBox.add_actor(item.menu.actor);
-                    item._updateIcons();
                 }
             }
         }

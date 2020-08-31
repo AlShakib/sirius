@@ -40,13 +40,14 @@ const Utils =  Me.imports.utils;
 //This class handles the core functionality of all the menu layouts.
 //Each menu layout extends this class.
 var BaseLayout = class {
-    constructor(mainButton, layoutProperties) {
-        this._button = mainButton;
-        this._settings = mainButton._settings;
-        this.mainBox = mainButton.mainBox; 
-        this.appMenuManager = mainButton.appMenuManager;
-        this.subMenuManager = mainButton.subMenuManager;
-        this.leftClickMenu = mainButton.leftClickMenu;
+    constructor(menuButton, layoutProperties){
+        this.menuButton = menuButton;
+        this._settings = menuButton._settings;
+        this.mainBox = menuButton.mainBox; 
+        this.contextMenuManager = menuButton.contextMenuManager;
+        this.subMenuManager = menuButton.subMenuManager;
+        this.arcMenu = menuButton.arcMenu;
+        this.section = menuButton.section;
         this.layout = this._settings.get_enum('menu-layout');
         this.layoutProperties = layoutProperties;
         this._session = new GnomeSession.SessionManager();
@@ -86,7 +87,8 @@ var BaseLayout = class {
                 favoriteMenuItem._updateIcon();
             }
         }
-        this.newSearch._reset(); 
+        if(this.layoutProperties.Search)
+            this.newSearch._reset(); 
     }
 
     resetSearch(){
@@ -254,7 +256,7 @@ var BaseLayout = class {
                         let submenuItem = this.applicationsMap.get(subdir);
                         if (!submenuItem) {
                             submenuItem = new MW.CategorySubMenuItem(this, subdir);
-                            submenuItem._setParent(this.leftClickMenu);
+                            submenuItem._setParent(this.arcMenu);
                             let categoryMenuItem = this.categoryDirectories.get(categoryId);
                             categoryMenuItem.appList.push(subdir);
                             this.applicationsMap.set(subdir, submenuItem);
@@ -312,7 +314,7 @@ var BaseLayout = class {
             if(!isActiveMenuItemSet){
                 isActiveMenuItemSet = true;
                 this.activeMenuItem = categoryMenuItem;
-                if(this.leftClickMenu.isOpen){
+                if(this.arcMenu.isOpen){
                     this.mainBox.grab_key_focus();
                 }
             }	 
@@ -421,7 +423,7 @@ var BaseLayout = class {
                 placeInfo.icon = placeInfo.icon.to_string();
                 placeMenuItem = new MW.PlaceButtonItem(this, placeInfo);    
             }
-            else if(pinnedApps[i+2] == "ArcMenu_Suspend" || pinnedApps[i+2] == "ArcMenu_LogOut" || pinnedApps[i+2] == "ArcMenu_PowerOff"
+            else if(pinnedApps[i+2] == Constants.ArcMenu_SettingsCommand || pinnedApps[i+2] == "ArcMenu_Suspend" || pinnedApps[i+2] == "ArcMenu_LogOut" || pinnedApps[i+2] == "ArcMenu_PowerOff"
                     || pinnedApps[i+2] == "ArcMenu_Lock" || app){
                 placeMenuItem = new MW.ShortcutButtonItem(this, pinnedApps[i], pinnedApps[i+1], pinnedApps[i+2]);
             }
@@ -495,22 +497,15 @@ var BaseLayout = class {
     _updatePinnedAppsWebBrowser(pinnedApps){
         //Find the Default Web Browser, if found add to pinned apps list, if not found delete the placeholder.
         //Will only run if placeholder is found. Placeholder only found with default settings set.
-        if(pinnedApps[0]=="ArcMenu_WebBrowser")
-        {     
+        if(pinnedApps[0]=="ArcMenu_WebBrowser"){     
             let [res, stdout, stderr, status] = GLib.spawn_command_line_sync("xdg-settings get default-web-browser");
             let webBrowser = String.fromCharCode.apply(null, stdout);
             let browserName = webBrowser.split(".desktop")[0];
-            browserName+=".desktop";
+            browserName += ".desktop";
             this._app = appSys.lookup_app(browserName);
             if(this._app){
-                let appIcon = this._app.create_icon_texture(25);
-                let iconName = '';
-                if(appIcon.icon_name)
-                    iconName = appIcon.icon_name;
-                else if(appIcon.gicon)
-                    iconName = appIcon.gicon.to_string();
                 pinnedApps[0] = this._app.get_name();
-                pinnedApps[1] = iconName;
+                pinnedApps[1] = '';
                 pinnedApps[2] = this._app.get_id();
             }
             else{
@@ -534,7 +529,7 @@ var BaseLayout = class {
                 this.favoritesArray[i].actor.hide();
             if(i==0){
                 this.activeMenuItem = this.favoritesArray[i];
-                if(this.leftClickMenu.isOpen){
+                if(this.arcMenu.isOpen){
                     this.mainBox.grab_key_focus();
                 }
             }	   
@@ -542,34 +537,33 @@ var BaseLayout = class {
     }
 
     placesAddSeparator(id){
-        this._sections[id].box.add(this._createHorizontalSeparator(Constants.SEPARATOR_STYLE.SHORT));  
+        this._sections[id].add_actor(this._createHorizontalSeparator(Constants.SEPARATOR_STYLE.SHORT));  
     }
 
     _redisplayPlaces(id) {
-        if(this._sections[id].length>0){
+        if(this._sections[id].get_n_children() > 0){
             this.bookmarksShorctus = false;
             this.externalDevicesShorctus = false;
             this.networkDevicesShorctus = false;
-            this._sections[id].removeAll();
-            this._sections[id].box.destroy_all_children();
+            this._sections[id].destroy_all_children();
         }
         this._createPlaces(id);
     }
 
     _createPlaces(id) {
         let places = this.placesManager.get(id);
-        if(this.placesManager.get('network').length>0)
+        if(this.placesManager.get('network').length > 0)
             this.networkDevicesShorctus = true; 
-        if(this.placesManager.get('devices').length>0)
+        if(this.placesManager.get('devices').length > 0)
             this.externalDevicesShorctus=true;  
-        if(this.placesManager.get('bookmarks').length>0)
+        if(this.placesManager.get('bookmarks').length > 0)
             this.bookmarksShorctus = true;
 
-        if (this._settings.get_boolean('show-bookmarks')){
-            if(id=='bookmarks' && places.length>0){
+        if(this._settings.get_boolean('show-bookmarks')){
+            if(id === 'bookmarks' && places.length > 0){
                 for (let i = 0; i < places.length; i++){
-                    let item = new PlaceDisplay.PlaceMenuItem(places[i],this);
-                    this._sections[id].addMenuItem(item); 
+                    let item = new PlaceDisplay.PlaceMenuItem(places[i], this);
+                    this._sections[id].add_actor(item); 
                 } 
                 //create a separator if bookmark and software shortcut are both shown
                 if(this.bookmarksShorctus && this.softwareShortcuts){
@@ -577,38 +571,32 @@ var BaseLayout = class {
                 }
             }
         }
-        if (this._settings.get_boolean('show-external-devices')){
-            if(id== 'devices'){
+        if(this._settings.get_boolean('show-external-devices')){
+            if(id === 'devices'){
                 for (let i = 0; i < places.length; i++){
-                    let item = new PlaceDisplay.PlaceMenuItem(places[i],this);
-                    this._sections[id].addMenuItem(item); 
+                    let item = new PlaceDisplay.PlaceMenuItem(places[i], this);
+                    this._sections[id].add_actor(item); 
                 }
-                if((this.externalDevicesShorctus &&  !this.networkDevicesShorctus)  
-                    &&  (this.bookmarksShorctus || this.softwareShortcuts))
-                        this.placesAddSeparator(id);
+                if((this.externalDevicesShorctus && !this.networkDevicesShorctus) && (this.bookmarksShorctus || this.softwareShortcuts))
+                    this.placesAddSeparator(id);
             }
-            if(id== 'network'){
+            if(id === 'network'){
                 for (let i = 0; i < places.length; i++){
-                    let item = new PlaceDisplay.PlaceMenuItem(places[i],this);
-                    this._sections[id].addMenuItem(item); 
+                    let item = new PlaceDisplay.PlaceMenuItem(places[i], this);
+                    this._sections[id].add_actor(item); 
                 }
-                if(this.networkDevicesShorctus &&  (this.bookmarksShorctus || this.softwareShortcuts))
-                        this.placesAddSeparator(id);                        
+                if(this.networkDevicesShorctus && (this.bookmarksShorctus || this.softwareShortcuts))
+                    this.placesAddSeparator(id);
             }
         }
     }   
 
     setActiveCategory(category, setActive = true){
         this.activeMenuItem = category;
-        if(setActive){
-            category.setFakeActive(true);
-            if(this.leftClickMenu.isOpen){
-                this.activeMenuItem.actor.grab_key_focus();
-            }
-        }
-        else if(this.leftClickMenu.isOpen){
+        if(setActive && this.arcMenu.isOpen)
+            this.activeMenuItem.actor.grab_key_focus();
+        else if(this.arcMenu.isOpen)
             this.mainBox.grab_key_focus();
-        }
     }
 
     setFrequentAppsList(categoryMenuItem){
@@ -625,7 +613,11 @@ var BaseLayout = class {
             box = this.applicationsBox;
             this.activeCategoryType = -1;
         }
-        this.activeMenuItem = null;
+        let parent = box.get_parent();
+        if(parent instanceof St.ScrollView){
+            let scrollBoxAdj = parent.get_vscroll_bar().get_adjustment();
+            scrollBoxAdj.set_value(0);
+        }
         let actors = box.get_children();
         for (let i = 0; i < actors.length; i++) {
             let actor = actors[i];
@@ -671,26 +663,26 @@ var BaseLayout = class {
                 item = new MW.ApplicationMenuItem(this, app);
                 this.applicationsMap.set(app, item);
             }
-            if(item.actor.get_parent()){
+            if(item.actor.get_parent())
                 item.actor.get_parent().remove_actor(item.actor);
-            }
-            if (!item.actor.get_parent()) 
+
+            if(!item.actor.get_parent()) 
                 this.applicationsBox.add_actor(item.actor);
-            if(item instanceof MW.CategorySubMenuItem){
+
+            if(item instanceof MW.CategorySubMenuItem)
                 this.applicationsBox.add_actor(item.menu.actor);
-                item._updateIcons();
-            }
+
             if(!activeMenuItemSet){
                 activeMenuItemSet = true;  
                 this.activeMenuItem = item;
-                if(this.leftClickMenu.isOpen){
+                if(this.arcMenu.isOpen){
                     this.mainBox.grab_key_focus();
                 }
             }    
         }
     }
 
-    _displayAppGridList(apps, columns, isFavoriteMenuItem, differentGrid = null) {               
+    _displayAppGridList(apps, columns, isFavoriteMenuItem, differentGrid) {               
         let count = 0;
         let top = -1;
         let left = 0;
@@ -727,8 +719,7 @@ var BaseLayout = class {
                 if(!activeMenuItemSet && !differentGrid){
                     activeMenuItemSet = true;  
                     this.activeMenuItem = item;
-                    this.firstItem = item;
-                    if(this.leftClickMenu.isOpen){
+                    if(this.arcMenu.isOpen){
                         this.mainBox.grab_key_focus();
                     }
                 }
@@ -787,7 +778,7 @@ var BaseLayout = class {
         }            	
     }
 
-    _onMainBoxKeyPress(mainBox, event) {
+    _onMainBoxKeyPress(actor, event) {
         if (event.has_control_modifier()) {
             if(this.searchBox)
                 this.searchBox.grabKeyFocus();
@@ -800,7 +791,7 @@ var BaseLayout = class {
         switch (symbol) {
             case Clutter.KEY_BackSpace:
                 if(this.searchBox){
-                    if (!this.searchBox.hasKeyFocus()) {
+                    if (!this.searchBox.hasKeyFocus() && !this.searchBox.isEmpty()) {
                         this.searchBox.grabKeyFocus();
                         let newText = this.searchBox.getText().slice(0, -1);
                         this.searchBox.setText(newText);
@@ -813,42 +804,32 @@ var BaseLayout = class {
             case Clutter.KEY_Up:
             case Clutter.KEY_Down:
             case Clutter.KEY_Left:
-            case Clutter.KEY_Right:       
-                if(this.layoutProperties.Search && this.searchBox.hasKeyFocus() && this.newSearch._defaultResult){
-                    if(this.newSearch.actor.get_parent() && this.newSearch._highlightDefault){
-                        this.newSearch.highlightDefault(false);
-                        this.newSearch._defaultResult.actor.grab_key_focus();
-                        let appsScrollBoxAdj = this.applicationsScrollBox.get_vscroll_bar().get_adjustment();
-                        appsScrollBoxAdj.set_value(0);
-                        return Clutter.EVENT_PROPAGATE;
-                    }  
-                    else if(this.newSearch.actor.get_parent() && !this.newSearch._highlightDefault){
-                        this.newSearch.highlightDefault(true);
-                        this.newSearch._defaultResult.actor.grab_key_focus();
-                        let appsScrollBoxAdj = this.applicationsScrollBox.get_vscroll_bar().get_adjustment();
-                        appsScrollBoxAdj.set_value(0);
+            case Clutter.KEY_Right:
+                let direction;
+                if (symbol === Clutter.KEY_Down)
+                    direction = St.DirectionType.DOWN;
+                if (symbol === Clutter.KEY_Right)
+                    direction = St.DirectionType.RIGHT
+                if (symbol === Clutter.KEY_Up)
+                    direction = St.DirectionType.UP;
+                if (symbol === Clutter.KEY_Left)
+                    direction = St.DirectionType.LEFT;
+
+                if(this.layoutProperties.Search && this.searchBox.hasKeyFocus() && this.newSearch._defaultResult && this.newSearch.actor.get_parent()){
+                    this.newSearch.highlightDefault(!this.newSearch._highlightDefault);
+                    this.newSearch._defaultResult.actor.grab_key_focus();
+                    if(this.newSearch._highlightDefault)
                         return Clutter.EVENT_STOP;
-                    }              
+                    return actor.navigate_focus(global.stage.key_focus, direction, false);      
                 }
-                else if(this.activeMenuItem !== null && !this.activeMenuItem.actor.has_key_focus()){
+                else if(global.stage.key_focus === this.mainBox || (this.layoutProperties.Search && global.stage.key_focus === this.searchBox.actor)){
                     this.activeMenuItem.actor.grab_key_focus();
                     return Clutter.EVENT_STOP;
                 }
-                else if(this.activeMenuItem !== null){
-                    this.activeMenuItem.actor.grab_key_focus();
-                    return Clutter.EVENT_PROPAGATE;
-                }
-                else if(this.firstItem && this.layoutProperties.Search && this.searchBox.hasKeyFocus()){
-                    this.firstItem.actor.grab_key_focus();
-                    let appsScrollBoxAdj = this.applicationsScrollBox.get_vscroll_bar().get_adjustment();
-                    appsScrollBoxAdj.set_value(0);
-                    return Clutter.EVENT_STOP;
-                }
-                else{
-                    return Clutter.EVENT_PROPAGATE;
-                }
+                return actor.navigate_focus(global.stage.key_focus, direction, false);
             case Clutter.KEY_KP_Enter:
             case Clutter.KEY_Return:
+            case Clutter.KEY_Escape:
                 return Clutter.EVENT_PROPAGATE;
             default:
                 if (key.length != 0) {
@@ -865,39 +846,52 @@ var BaseLayout = class {
     destroy(isReload){
         if(this.applicationsMap){
             this.applicationsMap.forEach((value,key,map)=>{
-                value.destroy();
+                if(value && value.needsDestroy)
+                    value.destroy();
             });
             this.applicationsMap = null;
         }
 
         if(this.categoryDirectories){
             this.categoryDirectories.forEach((value,key,map)=>{
-                value.destroy();
+                if(value && value.needsDestroy)
+                    value.destroy();
             });
             this.categoryDirectories = null;    
         }
 
         if(this.favoritesArray){
-            for (let i = 0; i < this.favoritesArray.length; i++) {
-                this.favoritesArray[i].destroy();
+            for(let i = 0; i < this.favoritesArray.length; i++){
+                if(this.favoritesArray[i] && this.favoritesArray[i].needsDestroy)
+                    this.favoritesArray[i].destroy();
             }
             this.favoritesArray = null;
         }
 
-        if(this.network != null){
+        if(this.network){
             this.network.destroy();
             this.networkMenuItem.destroy();
         }
 
-        if(this.computer != null){
+        if(this.computer){
             this.computer.destroy();
             this.computerMenuItem.destroy();
         }
 
-        if(this.placesManager != null)
+        if(this.placesManager){
+            for(let id in this._sections){
+                this._sections[id].get_children().forEach((child) =>{
+                    child.destroy();
+                });
+            };
+            if(this.placeManagerUpdatedID){
+                this.placesManager.disconnect(this.placeManagerUpdatedID);
+                this.placeManagerUpdatedID = null;
+            }
             this.placesManager.destroy();
-
-        if(this.searchBox != null){
+        }
+            
+        if(this.searchBox){
             if (this._searchBoxChangedId > 0) {
                 this.searchBox.disconnect(this._searchBoxChangedId);
                 this._searchBoxChangedId = 0;
@@ -935,7 +929,10 @@ var BaseLayout = class {
             this.isRunning = false;
         }
        
-        this.mainBox.destroy_all_children();
+        this.mainBox.get_children().forEach((child) => {
+            if(child && child !== undefined && child !== null)
+                child.destroy();
+        });
     }
 
     _createScrollBox(params){

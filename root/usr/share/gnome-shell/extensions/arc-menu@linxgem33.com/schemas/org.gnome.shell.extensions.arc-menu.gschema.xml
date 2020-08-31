@@ -17,7 +17,10 @@
         <value value='13' nick='Runner'/>
         <value value='14' nick='Chromebook'/>
         <value value='15' nick='Raven'/>
-        <value value='16' nick='Tognee '/>
+        <value value='16' nick='Tognee'/>
+        <value value='17' nick='RavenExtended'/>
+        <value value='18' nick='Dashboard'/>
+        <value value='19' nick='Plasma'/>
     </enum>
     <enum id='org.gnome.shell.extensions.arc-menu.menu-hotkey'>
         <value value='0' nick='Undefined'/>
@@ -155,6 +158,11 @@
       <summary>Separate All Programs by a Character Listing</summary>
       <description>Separate All Programs by a Character Listing.</description>
     </key>
+    <key type="b" name="multi-lined-labels">
+      <default>true</default>
+      <summary>Multi-lined labels for large icon application grid layouts</summary>
+      <description>Multi-lined labels for large icon application grid layouts.</description>
+    </key>
     <key enum="org.gnome.shell.extensions.arc-menu.default-menu-view" name="default-menu-view">
       <default>'Pinned_Apps'</default>
       <summary>Set ArcMenu Layout Default View</summary>
@@ -204,6 +212,26 @@
       <default>false</default>
       <summary>Flip menu horizontally</summary>
       <description>Flip menu horizontally</description>
+    </key>
+    <key type="b" name="plasma-show-descriptions">
+      <default>false</default>
+      <summary>Plasma Menu Show Descriptions</summary>
+      <description>Plasma Menu Show Descriptions</description>
+    </key>
+    <key type="s" name="plasma-selected-color">
+      <default>"rgb(61, 174, 235)"</default>
+      <summary>Plasma Selected Item Color</summary>
+      <description>Plasma Selected Item Color.</description>
+    </key>
+    <key type="s" name="plasma-selected-background-color">
+      <default>"rgba(245, 245, 245, .05)"</default>
+      <summary>Plasma Selected Item Background Color</summary>
+      <description>Plasma Selected Item Background Color.</description>
+    </key>
+    <key type="b" name="plasma-enable-hover">
+      <default>true</default>
+      <summary>Plasma Menu Hover to activate item</summary>
+      <description>Plasma Menu Hover to activate item.</description>
     </key>
     <key type="b" name="reload-theme">
       <default>false</default>
@@ -457,13 +485,28 @@
     </key>
     <key type="s" name="menu-button-color">
       <default>'rgb(240,240,240)'</default>
-      <summary>Color for for the menu button icon</summary>
-      <description>Color for for the menu button icon.</description>
+      <summary>Color for the menu button icon</summary>
+      <description>Color for the menu button icon.</description>
     </key>
     <key type="s" name="menu-button-active-color">
+      <default>'rgb(240,240,240)'</default>
+      <summary>Active color for the menu button icon</summary>
+      <description>Active color for the menu button icon.</description>
+    </key>
+    <key type="s" name="menu-button-hover-color">
       <default>'rgb(214,214,214)'</default>
-      <summary>Active color for for the menu button icon</summary>
-      <description>Active for color for the menu button icon.</description>
+      <summary>Hover color for the menu button icon</summary>
+      <description>Hover color for the menu button icon.</description>
+    </key>
+    <key type="s" name="menu-button-hover-backgroundcolor">
+      <default>'rgba(238,238,236,0.1)'</default>
+      <summary>Hover background color for the menu button icon</summary>
+      <description>Hover background color for the menu button icon.</description>
+    </key>
+    <key type="s" name="menu-button-active-backgroundcolor">
+      <default>'rgba(238,238,236,0.18)'</default>
+      <summary>Active background color for the menu button icon</summary>
+      <description>Active background color for the menu button icon.</description>
     </key>
     <key name="extra-categories" type="a(ib)">
       <default>[(0, true), (1, true), (2, false), (3, false)]</default>
@@ -476,7 +519,7 @@
       <description>List of recently installed apps</description>
     </key>
     <key name="pinned-app-list" type="as">
-      <default>["ArcMenu_WebBrowser","WebBrowser", "WebBrowser","Terminal", "utilities-terminal", "org.gnome.Terminal.desktop",
+      <default>["ArcMenu_WebBrowser","WebBrowser", "WebBrowser","Terminal", "", "org.gnome.Terminal.desktop",
                 "Arc Menu Settings", "ArcMenu_ArcMenuIcon", "gnome-extensions prefs arc-menu@linxgem33.com"]</default>
       <summary>List of Apps Pinned to Menu</summary>
       <description>List of Apps Pinned to Menu</description>

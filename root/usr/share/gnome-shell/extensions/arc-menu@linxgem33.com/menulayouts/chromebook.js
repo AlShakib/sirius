@@ -119,9 +119,9 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
     }
 
     _displayAppIcons(){
+        this.activeMenuItem = this.grid.layout_manager.get_child_at(0, 0);
         this.applicationsBox.add(this.grid);
-        this.activeMenuItem = this.firstItem;
-        if(this.leftClickMenu.isOpen){
+        if(this.arcMenu.isOpen){
             this.mainBox.grab_key_focus();
         }
     }

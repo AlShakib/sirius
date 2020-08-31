@@ -166,8 +166,10 @@ var FrameBox = GObject.registerClass(class ArcMenu_FrameBox extends Gtk.Frame {
 });
 
 var FrameBoxRow = GObject.registerClass(class ArcMenu_FrameBoxRow extends Gtk.ListBoxRow {
-    _init() {
-        super._init({});
+    _init(params) {
+        super._init(params);
+        this.selectable = false;
+        this.activatable = false;
         this._grid = new Gtk.Grid({
             margin: 5,
             column_spacing: 20,
@@ -186,16 +188,87 @@ var FrameBoxRow = GObject.registerClass(class ArcMenu_FrameBoxRow extends Gtk.Li
     }
 });
 
+var StackListBox = GObject.registerClass(class ArcMenu_StackListBox extends Gtk.ListBox{
+    _init(widget, params){
+        super._init(params);
+        this.valign = Gtk.Align.FILL;
+        this.vexpand = true;
+        this.hexpand = false;
+        this.settingsFrameStack = widget.settingsFrameStack;
+        this.settingsListStack = widget.settingsListStack
+        this.connect("row-selected", (self, row) => {
+            if(row){
+                let listRow = row.get_children()[0];
+                let stackName = listRow.stackName;
+                this.settingsFrameStack.set_visible_child_name(stackName);
+                if(listRow.nextPage){
+                    widget.leftHeaderBox.add(widget.backButton);
+                    this.settingsListStack.set_visible_child_name(listRow.nextPage);
+                    this.settingsListStack.get_child_by_name(listRow.nextPage).listBox.selectFirstRow();
+                }
+            }
+        });
+        this.scrollWindow =  new Gtk.ScrolledWindow({
+            valign: Gtk.Align.FILL,
+            vexpand: true
+        });
+        this.scrollWindow.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC);
+        this.scrollWindow.add_with_viewport(this);
+        this.scrollWindow.listBox = this;
+    }
+
+    getRowAtIndex(index){
+        return this.get_row_at_index(index).get_children()[0];
+    }
+
+    getSelectedRow(){
+        return this.get_selected_row().get_children()[0];
+    }
+
+    selectFirstRow(){
+        this.select_row(this.get_row_at_index(0));
+    }
+
+    addRow(name, translateableName, iconName, nextPage){
+        let row = new Gtk.Grid({margin: 12, column_spacing: 10});
+        row.stackName = name;
+        row.translateableName = translateableName;
+        
+        let image = new Gtk.Image({ 
+            gicon: Gio.icon_new_for_string(iconName)
+        });
+
+        let label = new Gtk.Label({
+            label: translateableName,
+            halign: Gtk.Align.START,
+        });
+        row.add(image);
+        row.add(label);
+
+        if(nextPage){
+            row.nextPage = nextPage;
+            let image2 = new Gtk.Image({ 
+                gicon: Gio.icon_new_for_string('go-next-symbolic'),
+                halign: Gtk.Align.END,
+                hexpand: true
+            });
+            row.add(image2);
+        }
+
+        this.add(row);
+    }
+});
+
 var TileGrid = GObject.registerClass(class ArcMenu_TileGrid extends Gtk.FlowBox{
     _init(maxColumns) {
         super._init({
             row_spacing: 5,
             column_spacing: 5,
-            max_children_per_line: maxColumns,
             vexpand: true,
             hexpand: true,
-            valign: Gtk.Align.START,
+            valign: Gtk.Align.CENTER,
             halign: Gtk.Align.CENTER,
+            max_children_per_line: maxColumns,
             homogeneous: true,
             selection_mode: Gtk.SelectionMode.NONE
         });
@@ -220,7 +293,12 @@ var IconGrid = GObject.registerClass(class ArcMenu_IconGrid extends Gtk.FlowBox{
 
 var Tile = GObject.registerClass(class ArcMenu_Tile extends Gtk.Button{
     _init(name, file, width, height, layout) {
-        super._init();
+        super._init({
+            hexpand: false,
+            vexpand: false,
+            halign: Gtk.Align.CENTER,
+            valign: Gtk.Align.CENTER,
+        });
         let pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(file, width, height);
         this._image = new Gtk.Image({ pixbuf: pixbuf });
         this.name = name;
@@ -235,44 +313,70 @@ var Tile = GObject.registerClass(class ArcMenu_Tile extends Gtk.Button{
     }
 });
 
-var LayoutTile = GObject.registerClass(class ArcMenu_LayoutTile extends Gtk.Box{
+var LayoutTile = GObject.registerClass(class ArcMenu_LayoutTile extends FrameBox{
     _init(name, file, width, height, layout) {
-        super._init({orientation: Gtk.Orientation.HORIZONTAL});
+        super._init();
         this.name = name;
         this.layout = layout.layoutStyle;
-        this.info = "<b>"+ _(this.name) + "</b>\n\n" + _(layout.description)+ "\n\n" + _("Included Layouts") + ":";
+        this.info = "<b>"+ _(this.name) + "</b>\n\n" + _(layout.description) + "\n\n" + _("Included Layouts") + ":";
         
-        this._hbox = new Gtk.Box({ 
-            orientation: Gtk.Orientation.VERTICAL,
-            spacing: 10,
-            homogeneous: false,
+        this.box = new FrameBoxRow({ 
+            selectable: false,
+            activatable: false
         });
+        this.box._grid.row_spacing = 10;
 
         this.layoutList = "";
         this.layout.forEach((style) => {
             this.layoutList += "•   " + _(style.name) + "\n";
         });
 
-        let pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(file, width, height);
-        this._image = new Gtk.Image({ pixbuf: pixbuf });
-        this._hbox.add(this._image);
-
+        let pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(file, 75, 75);
+        this._image = new Gtk.Image({ 
+            hexpand: false,
+            halign: Gtk.Align.START,
+            pixbuf: pixbuf 
+        });
+        this.box._grid.attach(this._image, 0, 0, 1, 1);
+        let styleLabel = new Gtk.Label({
+            label: "<b>" + _(this.name) + " " + _("Menu Layouts") + "</b>",
+            use_markup: true,
+            hexpand: false,
+            halign: Gtk.Align.START,
+            wrap: true,
+        })
+        let descriptoinLabel = new Gtk.Label({
+            label: _(layout.description),
+            use_markup: true,
+            hexpand: true,
+            halign: Gtk.Align.START,
+            wrap: true,
+            xalign: 0
+        })
+        let iconImage = new Gtk.Image({
+            gicon: Gio.icon_new_for_string('go-next-symbolic'),
+        })
         this.layoutButton = new Gtk.Button({
             label: _(this.name),
-            halign: Gtk.Align.FILL,
+            image: iconImage,
+            always_show_image: true,
+            image_position: Gtk.PositionType.RIGHT,
+            halign: Gtk.Align.END,
+            valign: Gtk.Align.CENTER,
             hexpand: true,
+            vexpand: false,
             tooltip_text: _("Browse all") + " " + _(this.name)
         });
-        this._hbox.add(this.layoutButton);
+        this.box._grid.attach(this.layoutButton, 1, 0, 1, 1);
 
        
         this.infoButton = new InfoButton({
             tooltip_text: _(this.name) + " " + _("Information")
         });
-        this.add(this._hbox);
-
-        this.add(this.infoButton);
-        this.margin = 1;
-        this.spacing = 10;
+        this.box._grid.attach(Gtk.Separator.new(Gtk.Orientation.HORIZONTAL), 0, 1, 2, 1);
+        this.box._grid.attach(styleLabel, 0, 2, 1, 1);
+        this.box._grid.attach(descriptoinLabel, 0, 3, 1, 1);
+        
+        this.add(this.box);
    }
 });

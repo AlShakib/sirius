@@ -159,15 +159,15 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         this.placesManager = new PlaceDisplay.PlacesManager();
         for (let i = 0; i < Constants.SECTIONS.length; i++) {
             let id = Constants.SECTIONS[i];
-            this._sections[id] = new PopupMenu.PopupMenuSection({
+            this._sections[id] = new St.BoxLayout({
                 vertical: true
             });	
-            this.placesManager.connect(`${id}-updated`, () => {
+            this.placeManagerUpdatedID = this.placesManager.connect(`${id}-updated`, () => {
                 this._redisplayPlaces(id);
             });
 
             this._createPlaces(id);
-            this.externalDevicesBox.add(this._sections[id].actor);
+            this.externalDevicesBox.add(this._sections[id]);
         }
 
         //Add Application Shortcuts to menu (Software, Settings, Tweaks, Terminal)
@@ -246,9 +246,9 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
     }
 
     _displayAppIcons(){
+        this.activeMenuItem = this.grid.layout_manager.get_child_at(0, 0);
         this.applicationsBox.add(this.grid);
-        this.activeMenuItem = this.firstItem;
-        if(this.leftClickMenu.isOpen){
+        if(this.arcMenu.isOpen){
             this.mainBox.grab_key_focus();
         }
     }

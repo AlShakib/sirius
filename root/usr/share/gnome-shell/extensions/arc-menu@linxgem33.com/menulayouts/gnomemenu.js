@@ -100,8 +100,15 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         this.categoriesBox = new St.BoxLayout({ vertical: true });
         this.categoriesScrollBox.add_actor(this.categoriesBox);
 
+        this.activitiesBox = new St.BoxLayout({ 
+            vertical: true,
+            x_expand: true, 
+            y_expand: true,
+            y_align: Clutter.ActorAlign.END
+        });
         let activities = new MW.ActivitiesMenuItem(this);
-        this.leftBox.add(activities.actor);
+        this.activitiesBox.add(activities.actor);
+        this.leftBox.add(this.activitiesBox);
 
         this.loadFavorites();
         this.loadCategories();
@@ -142,7 +149,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
 
         for(let categoryMenuItem of this.categoryDirectories.values()){
             categoryMenuItem.actor.style = "padding-top: 8px; padding-bottom: 8px;";
-            categoryMenuItem.actor.remove_actor(categoryMenuItem._icon);
+            categoryMenuItem.box.remove_actor(categoryMenuItem._icon);
         }
     }
     

@@ -90,9 +90,15 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         this.applicationsBox = new St.BoxLayout({ vertical: true });
         this.applicationsScrollBox.add_actor(this.applicationsBox);
 
+        this.navigateBox = new St.BoxLayout({ 
+            vertical: true,
+            x_expand: true, 
+            y_expand: true,
+            y_align: Clutter.ActorAlign.END
+        });
         this.backButton = new MW.BackMenuItem(this);
-        this.appBox.add(this.backButton.actor);
-
+        this.navigateBox.add(this.backButton.actor);
+        this.appBox.add(this.navigateBox);
         if(this._settings.get_enum('searchbar-default-bottom-location') === Constants.SearchbarLocation.BOTTOM){
             this.searchBox.actor.style = (horizonalFlip ? "margin: 0px 10px 0px 15px;" : "margin: 0px 15px 0px 10px;") + "padding: 0.75em 0em 0.25em 0em;";
             this.appBox.add(this.searchBox.actor);
@@ -332,33 +338,12 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         this.activeCategoryType = Constants.CategoryType.CATEGORY_APP_LIST;
         this.backButton.actor.show();
     }
-    
-    displayFrequentApps(){
-        this._clearActorsFromBox();
-        this.backButton.actor.hide();
-        let mostUsed = Shell.AppUsage.get_default().get_most_used();
-        let appList = [];
-        for (let i = 0; i < mostUsed.length; i++) {
-            if (mostUsed[i] && mostUsed[i].get_app_info().should_show()){
-                let item = new MW.ApplicationMenuItem(this, mostUsed[i]);
-                item.forceLargeIcon();
-                appList.push(item);
-            }
-        }
-        let activeMenuItemSet = false;
-        for (let i = 0; i < appList.length; i++) {
-            let item = appList[i];
-            if(item.actor.get_parent())
-                item.actor.get_parent().remove_actor(item.actor);
-            if (!item.actor.get_parent()) 
-                this.applicationsBox.add_actor(item.actor);
-            if(!activeMenuItemSet){
-                activeMenuItemSet = true;  
-                this.activeMenuItem = item;
-                if(this.leftClickMenu.isOpen){
-                    this.mainBox.grab_key_focus();
-                }
-            }    
-        }
+
+    _onSearchBoxChanged(searchBox, searchString){  
+        super._onSearchBoxChanged(searchBox, searchString);  
+        if(!searchBox.isEmpty()){  
+            this.backButton.actor.hide();
+            this.activeCategoryType = Constants.CategoryType.SEARCH_RESULTS;   
+        }            
     }
 }

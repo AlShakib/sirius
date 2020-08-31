@@ -46,25 +46,44 @@ var SMALL_ICON_SIZE = 16;
 
 var ListSearchResult = class ArcMenu_ListSearchResult {
     constructor(provider, metaInfo, resultsView) {
-        this._button = resultsView._button;
-        this.searchType = this._button.layoutProperties.SearchType;
+        this._menuLayout = resultsView._menuLayout;
+        this.searchType = this._menuLayout.layoutProperties.SearchType;
+        let layoutProperties = this._menuLayout.layoutProperties;
         this._resultsView = resultsView;
         this.metaInfo = metaInfo;
         this.provider = provider;
-        this._settings = this._button._settings;
+        this._settings = this._menuLayout._settings;
         this._app = appSys.lookup_app(this.metaInfo['id']);
         this.layout = this._settings.get_enum('menu-layout');
 
         if(this.provider.id =='org.gnome.Nautilus.desktop')
-            this.menuItem = new MW.SearchResultItem(this._button, appSys.lookup_app(this.provider.id), this.metaInfo['description']);
+            this.menuItem = new MW.SearchResultItem(this._menuLayout, appSys.lookup_app(this.provider.id), this.metaInfo['description']);
         else if(this._app)
-            this.menuItem = new MW.SearchResultItem(this._button, this._app);
+            this.menuItem = new MW.SearchResultItem(this._menuLayout, this._app);
         else
-            this.menuItem = new MW.SearchResultItem(this._button);
+            this.menuItem = new MW.SearchResultItem(this._menuLayout);
         
         this.label = new St.Label({ 
             text: this.metaInfo['name'],
             x_expand: true,
+            y_expand: false,
+            y_align: Clutter.ActorAlign.CENTER 
+        });
+        let labelBox = new St.BoxLayout({
+            vertical:true,
+            y_align: Clutter.ActorAlign.CENTER 
+        });
+        labelBox.add(this.label);
+
+        let descriptionText = this._app ? this._app.get_description() : this.metaInfo['description'];
+        if(descriptionText)
+            descriptionText = descriptionText.split('\n')[0];
+
+        let descriptionLabel = new St.Label({ 
+            text: descriptionText,
+            x_expand: true,
+            y_expand: false,
+            x_align: Clutter.ActorAlign.START,
             y_align: Clutter.ActorAlign.CENTER 
         });
 
@@ -73,83 +92,47 @@ var ListSearchResult = class ArcMenu_ListSearchResult {
             if(this.layout !== Constants.MENU_LAYOUT.Elementary && this.layout !== Constants.MENU_LAYOUT.UbuntuDash)
                 iconSize = 24;
             this.menuItem.actor.style = "border-radius:4px;";
-            // An icon for, or thumbnail of, content
             let icon = this.metaInfo['createIcon'](iconSize);
-            if (icon)
-                this.menuItem.actor.add_child(icon); 
+            if(icon)
+                this.menuItem.box.add_child(icon);
             else
-                this.menuItem.actor.style = (iconSize == 32) ?  "border-radius:4px; padding: 12px 0px;":  "border-radius:4px; padding: 9px 0px;";
-
+                this.menuItem.box.style += (iconSize == 32) ? "padding: 6px 10px;" : "padding: 3px 10px;";
+            if(layoutProperties.isDashboard){
+                descriptionLabel.style = "font-weight: lighter;";
+                labelBox.vertical = false;
+                labelBox.style = "spacing:10px;";
+                if(descriptionText)
+                    labelBox.add(descriptionLabel);
+            }
             if(this._settings.get_boolean('krunner-show-details') && this.layout == Constants.MENU_LAYOUT.Raven){
                 this.menuItem.actor.style = "height:40px";
-                this.label.style = "font-weight: bold;";
+                descriptionLabel.style = "font-weight: lighter;";
     
-                let descriptionBox = new St.BoxLayout({
-                    vertical:true
-                });
                 if(icon) 
                     icon.icon_size = 32;
-                
-                let text = this.metaInfo['description'] ? this.metaInfo['description'] : null;
-                if(!text && this._app)
-                    text = this._app.get_description() ? this._app.get_description() : null;
-
+    
                 this.label.y_expand = true;
-                let descriptionLabel = new St.Label({ 
-                    text: text,
-                    x_align: Clutter.ActorAlign.START,
-                    x_expand: true,
-                    y_align: Clutter.ActorAlign.CENTER 
-                });
-                if(text){
-                    descriptionBox.add(this.label);
-                    descriptionBox.add(descriptionLabel);
-                    this.menuItem.actor.add_child(descriptionBox);
-                }
-                else{
-                    this.menuItem.actor.add_child(this.label);
-                }
+                if(descriptionText)
+                    labelBox.add(descriptionLabel);
             }
-            else if(this.layout == Constants.MENU_LAYOUT.Raven){
+            else if(this.layout == Constants.MENU_LAYOUT.Raven)
                 this.menuItem.actor.style = null;
-                this.menuItem.actor.add_child(this.label);
-            }
-            else{
-                this.menuItem.actor.add_child(this.label);
-            }    
         }
        
         else if(this.searchType == Constants.SearchType.LIST_VIEW){
-            if(this._settings.get_boolean('krunner-show-details') && this._settings.get_enum('menu-layout')==Constants.MENU_LAYOUT.Runner){
-                this.menuItem.actor.style = "height:40px";
-                this.label.style = "font-weight: bold;";
+            if((this._settings.get_boolean('krunner-show-details') && this._settings.get_enum('menu-layout') == Constants.MENU_LAYOUT.Runner) ||
+                (this._settings.get_boolean('plasma-show-descriptions') && this.layout == Constants.MENU_LAYOUT.Plasma)){
+                if(this.layout == Constants.MENU_LAYOUT.Runner)
+                    this.menuItem.actor.style = "height:40px";
+                descriptionLabel.style = "font-weight: lighter;";
     
-                let descriptionBox = new St.BoxLayout({
-                    vertical:true
-                });
-    
-                let icon = this.metaInfo['createIcon'](LARGE_ICON_SIZE);
-                if (icon){
-                    this.menuItem.actor.add_child(icon);   
-                }
+                let icon = this.metaInfo['createIcon'](this.layout == Constants.MENU_LAYOUT.Plasma ? MEDIUM_ICON_SIZE : LARGE_ICON_SIZE);
+                if (icon)
+                    this.menuItem.box.add_child(icon);   
                 
-                let text = this.metaInfo['description'] ? this.metaInfo['description'] : null;
-                if(!text && this._app)
-                    text = this._app.get_description() ? this._app.get_description() : null;
-
-                let descriptionLabel = new St.Label({ 
-                    text: text,
-                    x_align: Clutter.ActorAlign.START,
-                    x_expand: true
-                });
-                if(text){
-                    descriptionBox.add(this.label);
-                    descriptionBox.add(descriptionLabel);
-                    this.menuItem.actor.add_child(descriptionBox);
-                }
-                else{
-                    this.menuItem.actor.add_child(this.label);
-                }
+                descriptionLabel.y_align = Clutter.ActorAlign.FILL;
+                if(descriptionText)
+                    labelBox.add(descriptionLabel);
             }
             else{
                 this.menuItem.actor.style = null;
@@ -158,17 +141,16 @@ var ListSearchResult = class ArcMenu_ListSearchResult {
                 let largeIcons = this._settings.get_boolean('enable-large-icons');
                 let icon = this.metaInfo['createIcon'](largeIcons ? MEDIUM_ICON_SIZE : SMALL_ICON_SIZE);
                 if (icon)
-                    this.menuItem.actor.add_child(icon);     
-                this.menuItem.actor.add_child(this.label);
+                    this.menuItem.box.add_child(icon);     
             }
         }
-
-        if (this.metaInfo['description'] &&  this.provider.appInfo.get_name() == "Calculator") {
+        this.menuItem.box.add_child(labelBox);
+        if(this.metaInfo['description'] && this.provider.appInfo.get_name() == "Calculator" && !labelBox.contains(descriptionLabel))
             this.label.text = this.metaInfo['name'] + "   " + this.metaInfo['description'];
-        }
+        
         this.menuItem.connect('activate', this.activate.bind(this));
         this.menuItem.label = this.label;
-        this.menuItem.description = this._app ? this._app.get_description() : this.metaInfo['description'];
+        this.menuItem.description = descriptionText;
     }
 
     activate() {
@@ -180,90 +162,108 @@ var ListSearchResult = class ArcMenu_ListSearchResult {
     }
 };Signals.addSignalMethods(ListSearchResult.prototype);
 
-var AppSearchResult = class  ArcMenu_AppSearchResult {
+var AppSearchResult = class ArcMenu_AppSearchResult {
     constructor(provider, metaInfo, resultsView) {
-        this._button = resultsView._button;
-        this.searchType = this._button.layoutProperties.SearchType;
+        this._menuLayout = resultsView._menuLayout;
+        this.searchType = this._menuLayout.layoutProperties.SearchType;
         let gridView = this.searchType == Constants.SearchType.GRID_VIEW;
         this.metaInfo = metaInfo;
         this.provider = provider;
-        this._settings = this._button._settings;
+        this._settings = this._menuLayout._settings;
         this.layout = this._settings.get_enum('menu-layout');
         this._resultsView = resultsView;
         this._app = appSys.lookup_app(this.metaInfo['id']);
         let iconSize;
         this.label = new St.Label({
             text: this._app ? this._app.get_name() : this.metaInfo['name'],
-            y_expand: gridView ? false : true,
+            y_expand: true,
             x_expand: true,
-            y_align: gridView ? Clutter.ActorAlign.END : Clutter.ActorAlign.CENTER, 
+            y_align: gridView ? Clutter.ActorAlign.CENTER : Clutter.ActorAlign.CENTER, 
             x_align: gridView ? Clutter.ActorAlign.CENTER : Clutter.ActorAlign.FILL
         });
 
         if(gridView && this._app)
-            this.menuItem = new MW.ApplicationMenuItem(this._button, this._app, gridView);
+            this.menuItem = new MW.ApplicationMenuItem(this._menuLayout, this._app, gridView);
         else if(this._app)
-            this.menuItem = new MW.SearchResultItem(this._button, this._app);
+            this.menuItem = new MW.SearchResultItem(this._menuLayout, this._app);
         else{
-            this.menuItem = new MW.SearchResultItem(this._button);
+            this.menuItem = new MW.SearchResultItem(this._menuLayout);
             if(gridView){
-                this.menuItem.actor.vertical = true;
+                this.menuItem.box.vertical = true;
+                this.menuItem.remove_child(this.menuItem._ornamentLabel);
                 if(this.layout == Constants.MENU_LAYOUT.Elementary || this.layout == Constants.MENU_LAYOUT.UbuntuDash){
-                    this.menuItem.actor.style ='border-radius:4px; padding: 5px; spacing: 0px; width:95px; height:95px;';
+                    this.menuItem.actor.style ='text-align: center; border-radius:4px; padding: 5px; spacing: 0px; width:95px; height:95px;';
+                    this.menuItem.box.style = 'padding: 0px; margin: 0px; spacing:0px;';
                     iconSize = 52;
                 }
+                else if(this._menuLayout.layoutProperties.isDashboard){
+                    this.menuItem.box.style = 'margin-top: 14px; padding: 5px; spacing: 0px; width:125px; height:125px;';
+                    iconSize = 80;
+                }
                 else {
-                    this.menuItem.actor.style ='border-radius:4px; padding: 5px; spacing: 0px; width:80px;height:80px;';
+                    this.menuItem.actor.style ='text-align: center; border-radius:4px; padding: 5px; spacing: 0px; width:80px;height:80px;';
+                    this.menuItem.box.style = 'padding: 0px; margin: 0px; spacing:0px;';
                     iconSize = 36;
                 } 
                 this.icon = this.metaInfo['createIcon'](iconSize);         
                 if(this.icon){
+                    if(this._settings.get_boolean('multi-lined-labels')){
+                        this.label.get_clutter_text().set_line_wrap(true);
+                    }
+                    else{
+                        this.icon.y_expand = true;
+                        this.label.y_align = Clutter.ActorAlign.CENTER;
+                        this.label.y_expand = false;
+                    }
                     this.icon.icon_size = iconSize;
-                    this.icon.y_align = Clutter.ActorAlign.CENTER;
                     this.icon.x_align = Clutter.ActorAlign.CENTER;
-                    this.menuItem.actor.add_child(this.icon);   
+                    this.icon.y_align = Clutter.ActorAlign.CENTER;
+                    this.menuItem.box.add_child(this.icon);
                 }
                 else{
                     if(this.layout == Constants.MENU_LAYOUT.Elementary || this.layout == Constants.MENU_LAYOUT.UbuntuDash)
                         this.menuItem.actor.style = "border-radius:4px; padding: 25px 0px;";
+                    else if(this._menuLayout.layoutProperties.isDashboard)
+                        this.menuItem.box.style = "padding: 30px 0px;";
                     else 
                         this.menuItem.actor.style = "border-radius:4px; padding: 20px 0px;";
                 } 
-                this.menuItem.actor.add_child(this.label);
+                this.menuItem.box.add_child(this.label);
             }
         }
         if(!gridView){
-            if(this._settings.get_boolean('krunner-show-details') && this._settings.get_enum('menu-layout') == Constants.MENU_LAYOUT.Runner){
-                this.menuItem.actor.style = "height:40px";
-                this.label.style = "font-weight: bold;";
-    
+            if((this._settings.get_boolean('krunner-show-details') && this._settings.get_enum('menu-layout') == Constants.MENU_LAYOUT.Runner) ||
+                (this._settings.get_boolean('plasma-show-descriptions') && this.layout == Constants.MENU_LAYOUT.Plasma)){
+                if(this.layout == Constants.MENU_LAYOUT.Runner)
+                    this.menuItem.actor.style = "height:40px";
+   
                 let descriptionBox = new St.BoxLayout({
                     vertical:true
                 });
     
                 this.icon = this.metaInfo['createIcon'](LARGE_ICON_SIZE);
                 if (this.icon){
-                    this.icon.icon_size = LARGE_ICON_SIZE;
-                    this.menuItem.actor.add_child(this.icon);   
+                    this.icon.icon_size = this.layout == Constants.MENU_LAYOUT.Plasma ? MEDIUM_ICON_SIZE : LARGE_ICON_SIZE;
+                    this.menuItem.box.add_child(this.icon);   
                 }      
     
-                let text = this.metaInfo['description'] ? this.metaInfo['description'] : null;
-                if(!text && this._app)
-                    text = this._app.get_description() ? this._app.get_description() : null;
-    
+                let descriptionText = this._app ? this._app.get_description() : this.metaInfo['description'];
+                if(descriptionText)
+                    descriptionText = descriptionText.split('\n')[0];
+
                 let descriptionLabel = new St.Label({ 
-                    text: text,
+                    text: descriptionText,
                     x_align: Clutter.ActorAlign.START,
-                    x_expand: true
+                    x_expand: true,
+                    style: "font-weight: lighter;"
                 });
-                if(text){
+                if(descriptionText){
                     descriptionBox.add(this.label);
                     descriptionBox.add(descriptionLabel);
-                    this.menuItem.actor.add_child(descriptionBox);
+                    this.menuItem.box.add_child(descriptionBox);
                 }
-                else{
-                    this.menuItem.actor.add_child(this.label);
-                }
+                else
+                    this.menuItem.box.add_child(this.label);
             }
             else{
                 this.menuItem.actor.style = null;
@@ -275,9 +275,9 @@ var AppSearchResult = class  ArcMenu_AppSearchResult {
                     this.icon.icon_size = largeIcons ? MEDIUM_ICON_SIZE : SMALL_ICON_SIZE;
                     this.icon.y_align = Clutter.ActorAlign.CENTER;
                     this.icon.x_align = Clutter.ActorAlign.CENTER;
-                    this.menuItem.actor.add_child(this.icon);   
+                    this.menuItem.box.add_child(this.icon);   
                 }
-                this.menuItem.actor.add_child(this.label);
+                this.menuItem.box.add_child(this.label);
             }
         }
         if(this.menuItem instanceof MW.SearchResultItem)
@@ -296,7 +296,7 @@ var SearchResultsBase = class ArcMenu_SearchResultsBase{
     constructor(provider, resultsView) {
         this.provider = provider;
         this._resultsView = resultsView;
-        this._button = resultsView._button;
+        this._menuLayout = resultsView._menuLayout;
         this._terms = [];
 
         this.actor = new St.BoxLayout({ 
@@ -347,10 +347,10 @@ var SearchResultsBase = class ArcMenu_SearchResultsBase{
             this.provider.activateResult(id, this._terms);
             if (result.metaInfo.clipboardText)
                 this._clipboard.set_text(St.ClipboardType.CLIPBOARD, result.metaInfo.clipboardText);
-            this._button.leftClickMenu.toggle();
+            this._menuLayout.arcMenu.toggle();
         }
         else{
-            this._button.leftClickMenu.toggle();
+            this._menuLayout.arcMenu.toggle();
             if (id.endsWith('.desktop')) {
                 let app = appSys.lookup_app(id);
                 app.open_new_window(-1);
@@ -443,17 +443,19 @@ var SearchResultsBase = class ArcMenu_SearchResultsBase{
 var ListSearchResults = class ArcMenu_ListSearchResults extends SearchResultsBase {
     constructor(provider, resultsView) {
         super(provider, resultsView);
-        this._button = resultsView._button;
-        this.searchType = this._button.layoutProperties.SearchType;
+        this._menuLayout = resultsView._menuLayout;
+        this.searchType = this._menuLayout.layoutProperties.SearchType;
         let gridView = this.searchType == Constants.SearchType.GRID_VIEW;
-        this._settings = this._button._settings;
+        this._settings = this._menuLayout._settings;
         this.layout = this._settings.get_enum('menu-layout');
 
         this._container = new St.BoxLayout({
             vertical: gridView ? false : true,
             x_align: Clutter.ActorAlign.FILL,
+            y_align: Clutter.ActorAlign.FILL,
             x_expand: true,
-            y_expand: true 
+            y_expand: true,
+            style_class: this._menuLayout.layoutProperties.isDashboard ? 'search-section-content' : null
         });
 
         if(gridView){
@@ -461,18 +463,21 @@ var ListSearchResults = class ArcMenu_ListSearchResults extends SearchResultsBas
                 this._container.vertical = true;
                 this._container.style = null;  
             }
+            else if(this._menuLayout.layoutProperties.isDashboard){
+                this._container.style = "padding: 10px; spacing: 6px; margin: 7px 20px;";
+            }
             else{
-                this._container.style = "padding: 10px; spacing: 6px;";
+                this._container.style = "padding: 10px 0px; spacing: 6px; margin: 0px 5px;";
             }
             this._resultDisplayBin.x_align = Clutter.ActorAlign.FILL;
         }
 
-        this.providerInfo = new ArcSearchProviderInfo(provider, this._button);
+        this.providerInfo = new ArcSearchProviderInfo(provider, this._menuLayout);
         this.providerInfo.connect('key-focus-in', this._keyFocusIn.bind(this));
         this.providerInfo.connect('activate', () => {
             this.providerInfo.animateLaunch();
             provider.launchSearch(this._terms);
-            this._button.leftClickMenu.toggle();
+            this._menuLayout.arcMenu.toggle();
         });
 
         this._container.add(this.providerInfo.actor);
@@ -481,11 +486,11 @@ var ListSearchResults = class ArcMenu_ListSearchResults extends SearchResultsBas
             vertical: true,
             x_expand: true,
             y_expand: true,
-            x_align: Clutter.ActorAlign.FILL 
+            x_align: Clutter.ActorAlign.FILL
         });
-
+        if(gridView && this.layout !== Constants.MENU_LAYOUT.Raven)
+            this._content.style = "spacing: 6px;"
         this._container.add(this._content);
-
         this._resultDisplayBin.set_child(this._container);
     }
 
@@ -525,10 +530,10 @@ var AppSearchResults = class ArcMenu_AppSearchResults extends SearchResultsBase 
       constructor(provider, resultsView) {
         super(provider, resultsView);
         this._parentContainer = resultsView.actor;
-        this._button = resultsView._button;
-        this.searchType = this._button.layoutProperties.SearchType;
+        this._menuLayout = resultsView._menuLayout;
+        this.searchType = this._menuLayout.layoutProperties.SearchType;
         let gridView = this.searchType == Constants.SearchType.GRID_VIEW;
-        this.layout = this._button._settings.get_enum('menu-layout');
+        this.layout = this._menuLayout._settings.get_enum('menu-layout');
 
         this._grid = new St.BoxLayout({
             vertical: gridView ? false : true 
@@ -538,6 +543,8 @@ var AppSearchResults = class ArcMenu_AppSearchResults extends SearchResultsBase 
             let spacing;
             if(this.layout == Constants.MENU_LAYOUT.Elementary || this.layout == Constants.MENU_LAYOUT.UbuntuDash)
                 spacing = 15;
+            else if(this._menuLayout.layoutProperties.isDashboard)
+                spacing = 30;
             else 
                 spacing = 10;
             this._grid.style = "padding: 0px 10px 10px 10px; spacing: " + spacing + "px;";   
@@ -577,11 +584,11 @@ var AppSearchResults = class ArcMenu_AppSearchResults extends SearchResultsBase 
 Signals.addSignalMethods(AppSearchResults.prototype);
 
 var SearchResults = class ArcMenu_SearchResults {
-    constructor(button) {
-        this._button = button;
-        this.searchType = this._button.layoutProperties.SearchType;
+    constructor(menuLayout) {
+        this._menuLayout = menuLayout;
+        this.searchType = this._menuLayout.layoutProperties.SearchType;
         let gridView = this.searchType == Constants.SearchType.GRID_VIEW;
-        this.layout = this._button._settings.get_enum('menu-layout');
+        this.layout = this._menuLayout._settings.get_enum('menu-layout');
 
         this.actor = new St.BoxLayout({ 
             vertical: true,
@@ -616,7 +623,7 @@ var SearchResults = class ArcMenu_SearchResults {
             y_expand: true  
         });
 
-        if(button._settings.get_boolean('enable-custom-arc-menu'))
+        if(menuLayout._settings.get_boolean('enable-custom-arc-menu'))
             this._statusText.style_class = 'arc-menu-status-text';
         else
             this._statusText.style_class = '';
@@ -650,9 +657,19 @@ var SearchResults = class ArcMenu_SearchResults {
 
         this._reloadRemoteProviders();
     }
+
+    setMaxDisplayedResults(rows) {
+        MAX_APPS_SEARCH_RESULTS_ROWS = rows;
+    }
+
     setStyle(style){
-        if(this._statusText)
-            this._statusText.style_class = style;
+        if(this._statusText){
+            if(this._menuLayout.layoutProperties.isDashboard)
+                this._statusText.style_class = "search-statustext";
+            else
+                this._statusText.style_class = style;
+        }
+            
     }
     destroy(){
         if (this._searchTimeoutId > 0) {
@@ -902,9 +919,11 @@ var SearchResults = class ArcMenu_SearchResults {
         if (!result || result === undefined || result === null)
             return;
         if (selected) {
-            result.actor.add_style_class_name('selected');
+            result.add_style_class_name('selected');
+            result.add_style_pseudo_class('selected');
         } else {
-            result.actor.remove_style_class_name('selected');
+            result.remove_style_class_name('selected');
+            result.remove_style_pseudo_class('selected');
         }
     }
 
@@ -921,35 +940,49 @@ var SearchResults = class ArcMenu_SearchResults {
 Signals.addSignalMethods(SearchResults.prototype);
 
 var ArcSearchProviderInfo = GObject.registerClass(class ArcMenu_ArcSearchProviderInfo extends MW.ArcMenuPopupBaseMenuItem{
-    _init(provider,button) {
-        super._init();
+    _init(provider, menuLayout) {
+        super._init(menuLayout);
         this.provider = provider;
-        this._button = button;
-        this.searchType = this._button.layoutProperties.SearchType;
+        this._menuLayout = menuLayout;
+        this.searchType = this._menuLayout.layoutProperties.SearchType;
         this.gridView = this.searchType == Constants.SearchType.GRID_VIEW;
-        this.layout = this._button._settings.get_enum('menu-layout');
-        this._settings = this._button._settings;
+        this.layout = this._menuLayout._settings.get_enum('menu-layout');
+        this._settings = this._menuLayout._settings;
+        this.description = this.provider.appInfo.get_description();
+        if(this.description)
+            this.description = this.description.split('\n')[0];
+
+        this.label = new St.Label({ 
+            text: provider.appInfo.get_name(),
+            x_align: Clutter.ActorAlign.START,
+            y_align: Clutter.ActorAlign.CENTER,
+            style: 'text-align: left;'
+        });
 
         if(this.gridView){
-            this.actor.x_align = Clutter.ActorAlign.FILL;
             this.actor.y_align = Clutter.ActorAlign.START;
-            this.actor.x_expand = false; 
+            this.box.x_expand = false; 
             this._content = new St.BoxLayout({ 
                 vertical: false,
-                vertical: false,
                 x_align: Clutter.ActorAlign.FILL,
-                y_align: Clutter.ActorAlign.START,
-                x_expand: true
+                y_align: Clutter.ActorAlign.CENTER,
+                x_expand: true,
+                style: "spacing: 5px;"
             });
-            this._content.style = "spacing: 5px;";
     
             let icon = new St.Icon({ 
                 icon_size: 32,
                 gicon: provider.appInfo.get_icon()
             });
             this._content.add_actor(icon);
-    
-            if(this.layout == Constants.MENU_LAYOUT.Elementary || this.layout == Constants.MENU_LAYOUT.UbuntuDash){
+
+            if(this._menuLayout.layoutProperties.isDashboard){
+                this.actor.style = null;
+                this.box.style = 'width: 240px;';
+                this.remove_child(this._ornamentLabel);
+                icon.icon_size = 32;
+            }
+            else if(this.layout == Constants.MENU_LAYOUT.Elementary || this.layout == Constants.MENU_LAYOUT.UbuntuDash){
                 this.actor.style = "border-radius:4px; spacing: 0px; width: 190px;";
                 icon.icon_size = 32;
             }
@@ -961,101 +994,99 @@ var ArcSearchProviderInfo = GObject.registerClass(class ArcMenu_ArcSearchProvide
                 this.actor.style = "border-radius:4px; spacing: 0px; width: 150px;";
                 icon.icon_size = 24;
             } 
-            this.label = new St.Label({ 
-                text: provider.appInfo.get_name() + ":",
-                x_align: Clutter.ActorAlign.START,
-                y_align: Clutter.ActorAlign.CENTER
-            });
+
             if(this._settings.get_boolean('krunner-show-details') && this.layout == Constants.MENU_LAYOUT.Raven){
                 this.actor.style = "height:40px";
                 this.label.style = 'font-weight: bold;';
-                let box = new St.BoxLayout({vertical:true});
+                this.label.y_expand = true;
                 icon.icon_size = 32;
-                let text = provider.appInfo.get_description() != null ? provider.appInfo.get_description() : '';
-    
+
                 let descriptionLabel = new St.Label({ 
-                    text: text,
+                    text: this.description,
                     x_align: Clutter.ActorAlign.START,
                     y_align: Clutter.ActorAlign.CENTER,
                     x_expand: true
                 });
-                this.label.y_expand = true;
-                box.add(this.label);
-                box.add(descriptionLabel);
-                this._content.add_actor(box);
+
+                if(this.description){
+                    let box = new St.BoxLayout({vertical:true});
+                    box.add(this.label);
+                    box.add(descriptionLabel);
+                    this._content.add_actor(box);
+                }
+                else
+                    this._content.add_actor(this.label);
+
                 this._content.remove_actor(icon);
             }
             else if(this.layout == Constants.MENU_LAYOUT.Raven){
                 this.actor.style = "height:25px";
+                this.label.style = 'font-weight: bold;';
                 this._content.remove_actor(icon);
                 this._content.add_actor(this.label);
             }
-            else{
+            else
                 this._content.add_actor(this.label);
-            }
     
             this.actor.vertical = false;
-            this.actor.add_child(this._content);
-            this._moreText="";
+            this.box.add_child(this._content);
+            this._moreText = "";
         }
         else{
-            this.label = new St.Label({ 
-                text: provider.appInfo.get_name() + ":",
-                 x_align: Clutter.ActorAlign.START,
-                 x_expand: true
-            });
+            this.label.style = 'font-weight: bold;';
+            this.label.x_expand = true;
             this.actor.x_fill = true;
             this.actor.y_fill = false;
             this.actor.x_align = Clutter.ActorAlign.FILL;
             this.actor.y_align = Clutter.ActorAlign.START;
             this.actor.x_expand = true; 
-            this._moreText="";
-            if(this._settings.get_boolean('krunner-show-details') && this._settings.get_enum('menu-layout')==Constants.MENU_LAYOUT.Runner){
-                this.actor.style = "height:40px";
-                this.label.style = 'font-weight: bold;';
-                let box = new St.BoxLayout({vertical:true});
-    
-                let text = provider.appInfo.get_description() != null ? provider.appInfo.get_description() : '';
-    
+            this._moreText = "";
+            if((this._settings.get_boolean('krunner-show-details') && this._settings.get_enum('menu-layout') == Constants.MENU_LAYOUT.Runner) ||
+                (this._settings.get_boolean('plasma-show-descriptions') && this.layout == Constants.MENU_LAYOUT.Plasma)){
+                if(this.layout == Constants.MENU_LAYOUT.Runner)
+                    this.actor.style = "height:40px";
+
                 let descriptionLabel = new St.Label({ 
-                    text: text,
+                    text: this.description,
                     x_align: Clutter.ActorAlign.START,
                     x_expand: true
                 });
-    
-                box.add(this.label);
-                box.add(descriptionLabel);
-                this.actor.add_child(box);
+
+                if(this.description){
+                    let box = new St.BoxLayout({vertical:true});
+                    box.add(this.label);
+                    box.add(descriptionLabel);
+                    this.box.add_actor(box);
+                }
+                else
+                    this.box.add_actor(this.label);
             }
             else{
                 this.actor.style = null;
-                this.label.style = null;
-                this.actor.add_child(this.label);
+                this.box.add_child(this.label);
             }
         }
-        this.description = this.provider.appInfo.get_description();
     }
     _onHover() {
-        if(this.actor.hover && this._button.newSearch._highlightDefault)
-            this._button.newSearch.highlightDefault(false);
+        if(this.actor.hover && this._menuLayout.newSearch._highlightDefault)
+            this._menuLayout.newSearch.highlightDefault(false);
         super._onHover();
     }
     animateLaunch() {
         let app = appSys.lookup_app(this.provider.appInfo.get_id());
     }
     setMoreCount(count) {
-        this._moreText= ngettext("%d more", "%d more", count).format(count);
+        this._moreText = ngettext("%d more", "%d more", count).format(count);
 
-        if(count>0){
+        if(count > 0){
             if(this.gridView){
                 if(this.layout == Constants.MENU_LAYOUT.Raven)
                     this.label.text = this.provider.appInfo.get_name() + " ("+ this._moreText+")";
                 else
-                    this.label.text = this.provider.appInfo.get_name() + "\n("+ this._moreText+")";
+                    this.label.text = this.provider.appInfo.get_name() + "\n"+ this._moreText;
             }
             else
                 this.label.text = this.provider.appInfo.get_name() + "  ("+ this._moreText+")";
         }           
     }
 });
-
