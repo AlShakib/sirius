@@ -753,8 +753,8 @@ set_misc_flags() {
   is_failed "Done" "Skipping: Adding cgroups exception for Fedora ${RELEASE_VER} is failed. See log for more info."
 
   # enable some apps to run on boot
-  print "Enabling httpd, mariadb, php-fpm, vnstat, docker and libvirtd to run on boot"
-  systemctl enable httpd mariadb php-fpm vnstat docker libvirtd &>> "${LOG_FILE}"
+  print "Enabling httpd, mariadb, php-fpm, vnstat, docker, libvirtd and jellyfin to run on boot"
+  systemctl enable httpd mariadb php-fpm vnstat docker libvirtd jellyfin &>> "${LOG_FILE}"
   is_failed "Done" "Skipping: Enabling is failed. See log for more info."
 
   # creating the docker group
