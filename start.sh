@@ -778,7 +778,7 @@ set_misc_flags() {
 
   # open 80, 443 and 8096 port
   print "Opening port 80, 443 and 8096"
-  firewall-cmd --quiet --add-service=http --add-service=https --add-port=8096/tcp --permanent &>> "${LOG_FILE}"
+  firewall-cmd --quiet --add-service=http --add-service=https --permanent &>> "${LOG_FILE}"
   firewall-cmd --quiet --add-port=8096/tcp --permanent &>> "${LOG_FILE}"
   firewall-cmd --quiet --reload &>> "${LOG_FILE}"
   is_failed "Done" "Skipping: Opening port 80 and 443 is failed. See log for more info."
