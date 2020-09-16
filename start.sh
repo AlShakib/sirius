@@ -776,12 +776,12 @@ set_misc_flags() {
   setsebool -P httpd_can_network_connect 1 &>> "${LOG_FILE}"
   is_failed "Done" "Skipping: Allowing httpd to make network connections is failed. See log for more info."
 
-  # open 80, 443 and 8096 port
-  print "Opening port 80, 443 and 8096"
+  # modifying firewall rules
+  print "Modifying firewall rules"
   firewall-cmd --quiet --add-service=http --add-service=https --permanent &>> "${LOG_FILE}"
-  firewall-cmd --quiet --add-port=8096/tcp --permanent &>> "${LOG_FILE}"
+  firewall-cmd --quiet --remove-port=1025-65535/udp --remove-port=1025-65535/tcp --permanent &>> "${LOG_FILE}"
   firewall-cmd --quiet --reload &>> "${LOG_FILE}"
-  is_failed "Done" "Skipping: Opening port 80 and 443 is failed. See log for more info."
+  is_failed "Done" "Skipping: Modifying firewall rules are failed. See log for more info."
 
   # Symlink vim as vi
   print "Symlink vim as vi"
