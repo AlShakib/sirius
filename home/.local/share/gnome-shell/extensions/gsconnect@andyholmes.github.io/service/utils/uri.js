@@ -44,12 +44,12 @@ const _urlRegexp = new RegExp(
  * pre-processing. It also makes an allowance for URIs passed from Gio.File
  * that always come in the form "sms:///".
  */
-let _smsParam = "[\\w.!~*'()-]+=(?:[\\w.!~*'()-]|%[0-9A-F]{2})*";
-let _telParam = ";[a-zA-Z0-9-]+=(?:[\\w\\[\\]/:&+$.!~*'()-]|%[0-9A-F]{2})+";
-let _lenientDigits = '[+]?(?:[0-9A-F*#().-]| (?! )|%20(?!%20))+';
-let _lenientNumber = _lenientDigits + '(?:' + _telParam + ')*';
+const _smsParam = "[\\w.!~*'()-]+=(?:[\\w.!~*'()-]|%[0-9A-F]{2})*";
+const _telParam = ";[a-zA-Z0-9-]+=(?:[\\w\\[\\]/:&+$.!~*'()-]|%[0-9A-F]{2})+";
+const _lenientDigits = '[+]?(?:[0-9A-F*#().-]| (?! )|%20(?!%20))+';
+const _lenientNumber = `${_lenientDigits}(?:${_telParam})*`;
 
-var _smsRegex = new RegExp(
+const _smsRegex = new RegExp(
     '^' +
     'sms:' +                                // scheme
     '(?:[/]{2,3})?' +                       // Gio.File returns ":///"
@@ -64,7 +64,7 @@ var _smsRegex = new RegExp(
     '$', 'g');                              // fragments (#foo) not allowed
 
 
-var _numberRegex = new RegExp(
+const _numberRegex = new RegExp(
     '^' +
     '(' + _lenientDigits + ')' +            // phone number digits
     '((?:' + _telParam + ')*)' +            // followed by optional parameters
@@ -77,7 +77,7 @@ var _numberRegex = new RegExp(
  * the position within @str where the URL was found.
  *
  * @param {string} str - the string to search
- * @returns {object[]} - the list of match objects, as described above
+ * @return {Object[]} the list of match objects, as described above
  */
 function findUrls(str) {
     _urlRegexp.lastIndex = 0;
@@ -100,7 +100,7 @@ function findUrls(str) {
  *
  * @param {string} str - The string to be modified
  * @param {string} [title] - An optional title (eg. alt text, tooltip)
- * @return {string} - the modified text
+ * @return {string} the modified text
  */
 function linkify(str, title = null) {
     let text = GLib.markup_escape_text(str, -1);
@@ -135,9 +135,8 @@ var SmsURI = class URI {
                     let [key, value] = param.split('=');
 
                     // add phone-context to beginning of
-                    if (key === 'phone-context' && value.startsWith('+')) {
+                    if (key === 'phone-context' && value.startsWith('+'))
                         return value + unescape(number);
-                    }
                 }
             }
 
@@ -149,20 +148,19 @@ var SmsURI = class URI {
                 let [key, value] = field.split('=');
 
                 if (key === 'body') {
-                    if (this.body) {
+                    if (this.body)
                         throw URIError('duplicate "body" field');
-                    }
 
-                    this.body = (value) ? decodeURIComponent(value) : undefined;
+                    this.body = value ? decodeURIComponent(value) : undefined;
                 }
             }
         }
     }
 
     toString() {
-        let uri = 'sms:' + this.recipients.join(',');
+        let uri = `sms:${this.recipients.join(',')}`;
 
-        return (this.body) ? uri + '?body=' + escape(this.body) : uri;
+        return this.body ? `${uri}?body=${escape(this.body)}` : uri;
     }
 };
 

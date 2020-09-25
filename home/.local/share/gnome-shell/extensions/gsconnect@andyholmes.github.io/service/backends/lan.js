@@ -4,7 +4,8 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
-const Core = imports.service.protocol.core;
+const Config = imports.config;
+const Core = imports.service.core;
 
 
 /**
@@ -15,43 +16,72 @@ const TRANSFER_MIN = 1739;
 const TRANSFER_MAX = 1764;
 
 
-/**
+/*
  * One-time check for Linux/FreeBSD socket options
  */
-var _LINUX_SOCKETS = false;
+var _LINUX_SOCKETS = true;
 
 try {
     // This should throw on FreeBSD
-    // https://github.com/freebsd/freebsd/blob/master/sys/netinet/tcp.h#L159
-    new Gio.Socket({
-        family: Gio.SocketFamily.IPV4,
-        protocol: Gio.SocketProtocol.TCP,
-        type: Gio.SocketType.STREAM
-    }).get_option(6, 5);
-
-    // Otherwise we can use Linux socket options
-    _LINUX_SOCKETS = true;
+    Gio.Socket.new(
+        Gio.SocketFamily.IPV4,
+        Gio.SocketType.STREAM,
+        Gio.SocketProtocol.TCP
+    ).get_option(6, 5);
 } catch (e) {
     _LINUX_SOCKETS = false;
 }
 
 
 /**
- * Lan.ChannelService consists of two parts.
+ * Configure a socket connection for the KDE Connect protocol.
+ *
+ * @param {Gio.SocketConnection} connection - The connection to configure
+ */
+function _configureSocket(connection) {
+    try {
+        if (_LINUX_SOCKETS) {
+            connection.socket.set_option(6, 4, 10); // TCP_KEEPIDLE
+            connection.socket.set_option(6, 5, 5);  // TCP_KEEPINTVL
+            connection.socket.set_option(6, 6, 3);  // TCP_KEEPCNT
+
+        // FreeBSD constants
+        // https://github.com/freebsd/freebsd/blob/master/sys/netinet/tcp.h#L159
+        } else {
+            connection.socket.set_option(6, 256, 10); // TCP_KEEPIDLE
+            connection.socket.set_option(6, 512, 5);  // TCP_KEEPINTVL
+            connection.socket.set_option(6, 1024, 3); // TCP_KEEPCNT
+        }
+
+        // Do this last because an error setting the keepalive options would
+        // result in a socket that never times out
+        connection.socket.set_keepalive(true);
+    } catch (e) {
+        debug(e, 'Configuring Socket');
+    }
+}
+
+
+/**
+ * Lan.ChannelService consists of two parts:
  *
  * The TCP Listener listens on a port and constructs a Channel object from the
  * incoming Gio.TcpConnection.
  *
  * The UDP Listener listens on a port for incoming JSON identity packets which
- * include the TCP port for connections, while the IP address is taken from the
- * UDP packet itself. We respond to incoming packets by opening a TCP connection
- * and broadcast outgoing packets to 255.255.255.255.
+ * include the TCP port, while the IP address is taken from the UDP packet
+ * itself. We respond by opening a TCP connection to that address.
  */
 var ChannelService = GObject.registerClass({
     GTypeName: 'GSConnectLanChannelService',
-    Implements: [Core.ChannelService],
     Properties: {
-        'name': GObject.ParamSpec.override('name', Core.ChannelService),
+        'certificate': GObject.ParamSpec.object(
+            'certificate',
+            'Certificate',
+            'The TLS certificate',
+            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            Gio.TlsCertificate.$gtype
+        ),
         'port': GObject.ParamSpec.uint(
             'port',
             'Port',
@@ -59,11 +89,11 @@ var ChannelService = GObject.registerClass({
             GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
             0,  GLib.MAXUINT16,
             DEFAULT_PORT
-        )
-    }
-}, class LanChannelService extends GObject.Object {
+        ),
+    },
+}, class LanChannelService extends Core.ChannelService {
 
-    _init(params) {
+    _init(params = {}) {
         super._init(params);
 
         // Track hosts we identify to directly, allowing them to ignore the
@@ -82,101 +112,106 @@ var ChannelService = GObject.registerClass({
     }
 
     get certificate() {
+        if (this._certificate === undefined)
+            this._certificate = null;
+
         return this._certificate;
     }
 
+    set certificate(certificate) {
+        if (this.certificate === certificate)
+            return;
+
+        this._certificate = certificate;
+        this.notify('certificate');
+    }
+
     get channels() {
-        if (this._channels === undefined) {
+        if (this._channels === undefined)
             this._channels = new Map();
-        }
 
         return this._channels;
     }
 
-    get name() {
-        return 'lan';
-    }
-
     get port() {
-        if (this._port === undefined) {
+        if (this._port === undefined)
             this._port = DEFAULT_PORT;
-        }
 
         return this._port;
     }
 
     set port(port) {
-        if (this.port !== port) {
-            this._port = port;
-            this.notify('port');
-        }
+        if (this.port === port)
+            return;
+
+        this._port = port;
+        this.notify('port');
     }
 
     _onNetworkChanged(monitor, network_available) {
-        if (this._networkAvailable !== network_available) {
-            this._networkAvailable = network_available;
-            this.broadcast();
-        }
+        if (this._networkAvailable === network_available)
+            return;
+
+        this._networkAvailable = network_available;
+        this.broadcast();
     }
 
     _initCertificate() {
+        if (GLib.find_program_in_path(Config.OPENSSL_PATH) === null) {
+            let error = new Error();
+            error.name = _('OpenSSL not found');
+            error.url = `${Config.PACKAGE_URL}/wiki/Error#openssl-not-found`;
+            throw error;
+        }
+
         let certPath = GLib.build_filenamev([
-            gsconnect.configdir,
-            'certificate.pem'
+            Config.CONFIGDIR,
+            'certificate.pem',
         ]);
         let keyPath = GLib.build_filenamev([
-            gsconnect.configdir,
-            'private.pem'
+            Config.CONFIGDIR,
+            'private.pem',
         ]);
 
         // Ensure a certificate exists with our id as the common name
-        try {
-            this._certificate = Gio.TlsCertificate.new_for_paths(
-                certPath,
-                keyPath,
-                this.service.id
-            );
-        } catch (e) {
-            e.name = 'CertificateError';
-            throw e;
-        }
+        this._certificate = Gio.TlsCertificate.new_for_paths(certPath, keyPath,
+            this.id);
 
-        // If the service id doesn't match the common name, this is probably a
-        // certificate from an earlier version and we need to set it now
-        if (this.service.settings.get_string('id') !== this._certificate.common_name) {
-            this.service.settings.set_string('id', this._certificate.common_name);
-        }
+        // If the service ID doesn't match the common name, this is probably a
+        // certificate from an older version and we should amend ours to match
+        if (this.id !== this._certificate.common_name)
+            this._id = this._certificate.common_name;
     }
 
     _initTcpListener() {
-        this._tcp = new Gio.SocketService();
-        this._tcp.add_inet_port(this.port, null);
+        try {
+            this._tcp = new Gio.SocketService();
+            this._tcp.add_inet_port(this.port, null);
+            this._tcp.connect('incoming', this._onIncomingChannel.bind(this));
+        } catch (e) {
+            this._tcp = null;
 
-        this._tcp.connect('incoming', this._onIncomingChannel.bind(this));
+            throw e;
+        }
     }
 
     async _onIncomingChannel(listener, connection) {
         try {
             let host = connection.get_remote_address().address.to_string();
 
-            // Decide whether we should try to accept this connection
-            if (!this._allowed.has(host) && !this.service.discoverable) {
-                connection.close_async(0, null, null);
-                return;
-            }
-
             // Create a channel
             let channel = new Channel({
                 backend: this,
                 certificate: this.certificate,
                 host: host,
-                port: DEFAULT_PORT
+                port: this.port,
             });
 
             // Accept the connection
             await channel.accept(connection);
             channel.identity.body.tcpHost = channel.host;
-            channel.identity.body.tcpPort = DEFAULT_PORT;
+            channel.identity.body.tcpPort = this.port;
+            channel.allowed = this._allowed.has(host);
 
             this.channel(channel);
         } catch (e) {
@@ -192,13 +227,12 @@ var ChannelService = GObject.registerClass({
         );
 
         try {
-            this._udp6 = new Gio.Socket({
-                family: Gio.SocketFamily.IPV6,
-                type: Gio.SocketType.DATAGRAM,
-                protocol: Gio.SocketProtocol.UDP,
-                broadcast: true
-            });
-            this._udp6.init(null);
+            this._udp6 = Gio.Socket.new(
+                Gio.SocketFamily.IPV6,
+                Gio.SocketType.DATAGRAM,
+                Gio.SocketProtocol.UDP
+            );
+            this._udp6.set_broadcast(true);
 
             // Bind the socket
             let inetAddr = Gio.InetAddress.new_any(Gio.SocketFamily.IPV6);
@@ -209,8 +243,8 @@ var ChannelService = GObject.registerClass({
             this._udp6_stream = new Gio.DataInputStream({
                 base_stream: new Gio.UnixInputStream({
                     fd: this._udp6.fd,
-                    close_fd: false
-                })
+                    close_fd: false,
+                }),
             });
 
             // Watch socket for incoming packets
@@ -228,13 +262,12 @@ var ChannelService = GObject.registerClass({
         }
 
         try {
-            this._udp4 = new Gio.Socket({
-                family: Gio.SocketFamily.IPV4,
-                type: Gio.SocketType.DATAGRAM,
-                protocol: Gio.SocketProtocol.UDP,
-                broadcast: true
-            });
-            this._udp4.init(null);
+            this._udp4 = Gio.Socket.new(
+                Gio.SocketFamily.IPV4,
+                Gio.SocketType.DATAGRAM,
+                Gio.SocketProtocol.UDP
+            );
+            this._udp4.set_broadcast(true);
 
             // Bind the socket
             let inetAddr = Gio.InetAddress.new_any(Gio.SocketFamily.IPV4);
@@ -245,8 +278,8 @@ var ChannelService = GObject.registerClass({
             this._udp4_stream = new Gio.DataInputStream({
                 base_stream: new Gio.UnixInputStream({
                     fd: this._udp4.fd,
-                    close_fd: false
-                })
+                    close_fd: false,
+                }),
             });
 
             // Watch input socket for incoming packets
@@ -257,10 +290,8 @@ var ChannelService = GObject.registerClass({
             this._udp4 = null;
 
             // We failed to get either an IPv4 or IPv6 socket to bind
-            if (this._udp6 === null) {
-                e.name = 'LanError';
+            if (this._udp6 === null)
                 throw e;
-            }
         }
     }
 
@@ -280,18 +311,18 @@ var ChannelService = GObject.registerClass({
 
         // Whether or not we peeked the address, we need to read the packet
         try {
-            if (socket === this._udp6) {
+            if (socket === this._udp6)
                 data = this._udp6_stream.read_line_utf8(null)[0];
-            } else {
+            else
                 data = this._udp4_stream.read_line_utf8(null)[0];
-            }
 
-            // Only process the packet if we succeeded in peeking the address
-            if (host !== undefined) {
-                packet = new Core.Packet(data);
-                packet.body.tcpHost = host;
-                this._onIdentity(packet);
-            }
+            // Discard the packet if we failed to peek the address
+            if (host === undefined)
+                return;
+
+            packet = new Core.Packet(data);
+            packet.body.tcpHost = host;
+            this._onIdentity(packet);
         } catch (e) {
             logError(e);
         }
@@ -302,15 +333,12 @@ var ChannelService = GObject.registerClass({
     async _onIdentity(packet) {
         try {
             // Bail if the deviceId is missing
-            if (!packet.body.hasOwnProperty('deviceId')) {
-                debug(`${packet.body.deviceName}: missing deviceId`);
+            if (!packet.body.hasOwnProperty('deviceId'))
                 return;
-            }
 
             // Silently ignore our own broadcasts
-            if (packet.body.deviceId === this.service.identity.body.deviceId) {
+            if (packet.body.deviceId === this.identity.body.deviceId)
                 return;
-            }
 
             debug(packet);
 
@@ -320,15 +348,14 @@ var ChannelService = GObject.registerClass({
                 certificate: this.certificate,
                 host: packet.body.tcpHost,
                 port: packet.body.tcpPort,
-                identity: packet
+                identity: packet,
             });
 
             // Check if channel is already open with this address
-            if (this.channels.has(channel.address)) {
+            if (this.channels.has(channel.address))
                 return;
-            } else {
-                this.channels.set(channel.address, channel);
-            }
+
+            this._channels.set(channel.address, channel);
 
             // Open a TCP connection
             let connection = await new Promise((resolve, reject) => {
@@ -367,14 +394,13 @@ var ChannelService = GObject.registerClass({
      */
     broadcast(address = null) {
         try {
-            if (!this._networkAvailable) {
+            if (!this._networkAvailable)
                 return;
-            }
 
             // Try to parse strings as <host>:<port>
             if (typeof address === 'string') {
                 let [host, port] = address.split(':');
-                port = parseInt(port) || DEFAULT_PORT;
+                port = parseInt(port) || this.port;
                 address = Gio.InetSocketAddress.new_from_string(host, port);
             }
 
@@ -388,34 +414,46 @@ var ChannelService = GObject.registerClass({
                 address = this._udp_address;
             }
 
-            // Set the tcpPort before broadcasting
-            this.service.identity.body.tcpPort = this.port;
+            // Broadcast on each open socket
+            if (this._udp6 !== null)
+                this._udp6.send_to(address, this.identity.serialize(), null);
 
-            if (this._udp6 !== null) {
-                this._udp6.send_to(address, `${this.service.identity}`, null);
-            }
-
-            if (this._udp4 !== null) {
-                this._udp4.send_to(address, `${this.service.identity}`, null);
-            }
+            if (this._udp4 !== null)
+                this._udp4.send_to(address, this.identity.serialize(), null);
         } catch (e) {
             debug(e, address);
-        } finally {
-            this.service.identity.body.tcpPort = undefined;
         }
     }
 
+    buildIdentity() {
+        // Chain-up, then add the TCP port
+        super.buildIdentity();
+        this.identity.body.tcpPort = this.port;
+    }
+
     start() {
+        if (this.active)
+            return;
+
         // Ensure a certificate exists
-        this._initCertificate();
+        if (this.certificate === null)
+            this._initCertificate();
 
         // Start TCP/UDP listeners
-        if (this._udp4 === null && this._udp6 === null) {
-            this._initUdpListener();
-        }
+        try {
+            if (this._tcp === null)
+                this._initTcpListener();
 
-        if (this._tcp === null) {
-            this._initTcpListener();
+            if (this._udp4 === null && this._udp6 === null)
+                this._initUdpListener();
+        } catch (e) {
+            // Known case of another application using the protocol defined port
+            if (e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.ADDRESS_IN_USE)) {
+                e.name = _('Port already in use');
+                e.url = `${Config.PACKAGE_URL}/wiki/Error#port-already-in-use`;
+            }
+
+            throw e;
         }
 
         // Monitor network changes
@@ -426,6 +464,9 @@ var ChannelService = GObject.registerClass({
                 this._onNetworkChanged.bind(this)
             );
         }
+
+        this._active = true;
+        this.notify('active');
     }
 
     stop() {
@@ -454,6 +495,12 @@ var ChannelService = GObject.registerClass({
             this._udp4.close();
             this._udp4 = null;
         }
+
+        for (let channel of this.channels.values())
+            channel.close();
+
+        this._active = false;
+        this.notify('active');
     }
 
     destroy() {
@@ -474,8 +521,7 @@ var ChannelService = GObject.registerClass({
  */
 var Channel = GObject.registerClass({
     GTypeName: 'GSConnectLanChannel',
-    Implements: [Core.Channel]
-}, class LanChannel extends GObject.Object {
+}, class LanChannel extends Core.Channel {
 
     _init(params) {
         super._init();
@@ -487,7 +533,10 @@ var Channel = GObject.registerClass({
     }
 
     get certificate() {
-        return this._certificate || null;
+        if (this._certificate === undefined)
+            this._certificate = null;
+
+        return this._certificate;
     }
 
     set certificate(certificate) {
@@ -495,17 +544,15 @@ var Channel = GObject.registerClass({
     }
 
     get peer_certificate() {
-        if (this._connection instanceof Gio.TlsConnection) {
+        if (this._connection instanceof Gio.TlsConnection)
             return this._connection.get_peer_certificate();
-        }
 
         return null;
     }
 
     get host() {
-        if (this._host === undefined) {
+        if (this._host === undefined)
             this._host = null;
-        }
 
         return this._host;
     }
@@ -516,11 +563,10 @@ var Channel = GObject.registerClass({
 
     get port() {
         if (this._port === undefined) {
-            if (this.identity && this.identity.body.tcpPort) {
+            if (this.identity && this.identity.body.tcpPort)
                 this._port = this.identity.body.tcpPort;
-            } else {
+            else
                 return DEFAULT_PORT;
-            }
         }
 
         return this._port;
@@ -530,24 +576,11 @@ var Channel = GObject.registerClass({
         this._port = port;
     }
 
-    _initSocket(connection) {
-        connection.socket.set_keepalive(true);
-
-        if (_LINUX_SOCKETS) {
-            connection.socket.set_option(6, 4, 10); // TCP_KEEPIDLE
-            connection.socket.set_option(6, 5, 5);  // TCP_KEEPINTVL
-            connection.socket.set_option(6, 6, 3);  // TCP_KEEPCNT
-        } else {
-            connection.socket.set_option(6, 256, 10); // TCP_KEEPIDLE
-            connection.socket.set_option(6, 512, 5);  // TCP_KEEPINTVL
-            connection.socket.set_option(6, 1024, 3); // TCP_KEEPCNT
-        }
-
-        return connection;
-    }
-
     /**
      * Handshake Gio.TlsConnection
+     *
+     * @param {Gio.TlsConnection} connection - A TLS connection
+     * @return {Promise} A promise for the operation
      */
     _handshake(connection) {
         return new Promise((resolve, reject) => {
@@ -568,6 +601,12 @@ var Channel = GObject.registerClass({
         });
     }
 
+    /**
+     * Authenticate a TLS connection.
+     *
+     * @param {Gio.TlsConnection} connection - A TLS connection
+     * @return {Promise} A promise for the operation
+     */
     async _authenticate(connection) {
         // Standard TLS Handshake
         await this._handshake(connection);
@@ -580,11 +619,11 @@ var Channel = GObject.registerClass({
         } else {
             let id = this.identity.body.deviceId;
             settings = new Gio.Settings({
-                settings_schema: gsconnect.gschema.lookup(
+                settings_schema: Config.GSCHEMA.lookup(
                     'org.gnome.Shell.Extensions.GSConnect.Device',
                     true
                 ),
-                path: `/org/gnome/shell/extensions/gsconnect/device/${id}/`
+                path: `/org/gnome/shell/extensions/gsconnect/device/${id}/`,
             });
         }
 
@@ -634,9 +673,11 @@ var Channel = GObject.registerClass({
      * Wrap the connection in Gio.TlsClientConnection and initiate handshake
      *
      * @param {Gio.TcpConnection} connection - The unauthenticated connection
-     * @return {Gio.TlsServerConnection} - The authenticated connection
+     * @return {Gio.TlsClientConnection} The authenticated connection
      */
-    _clientEncryption(connection) {
+    _encryptClient(connection) {
+        _configureSocket(connection);
+
         connection = Gio.TlsClientConnection.new(
             connection,
             connection.socket.remote_address
@@ -650,9 +691,11 @@ var Channel = GObject.registerClass({
      * Wrap the connection in Gio.TlsServerConnection and initiate handshake
      *
      * @param {Gio.TcpConnection} connection - The unauthenticated connection
-     * @return {Gio.TlsServerConnection} - The authenticated connection
+     * @return {Gio.TlsServerConnection} The authenticated connection
      */
-    _serverEncryption(connection) {
+    _encryptServer(connection) {
+        _configureSocket(connection);
+
         connection = Gio.TlsServerConnection.new(connection, this.certificate);
 
         // We're the server so we trust-on-first-use and verify after
@@ -668,13 +711,16 @@ var Channel = GObject.registerClass({
      * Read the identity packet from the new connection
      *
      * @param {Gio.SocketConnection} connection - An unencrypted socket
-     * @return {Gio.SocketConnection} - The connection after success
+     * @return {Promise} A promise for the operation
      */
     _receiveIdent(connection) {
         return new Promise((resolve, reject) => {
+            // In principle this disposable wrapper could buffer more than the
+            // identity packet, but in practice the remote device shouldn't send
+            // any more data until the TLS connection is negotiated.
             let stream = new Gio.DataInputStream({
                 base_stream: connection.input_stream,
-                close_base_stream: false
+                close_base_stream: false,
             });
 
             stream.read_line_async(
@@ -689,11 +735,10 @@ var Channel = GObject.registerClass({
                         this.identity = new Core.Packet(data);
 
                         // Reject connections without a deviceId
-                        if (!this.identity.body.deviceId) {
+                        if (!this.identity.body.deviceId)
                             throw new Error('missing deviceId');
-                        }
 
-                        resolve(connection);
+                        resolve();
                     } catch (e) {
                         reject(e);
                     }
@@ -706,22 +751,17 @@ var Channel = GObject.registerClass({
      * Write our identity packet to the new connection
      *
      * @param {Gio.SocketConnection} connection - An unencrypted socket
-     * @return {Gio.SocketConnection} - The connection after success
+     * @return {Promise} A promise for the operation
      */
     _sendIdent(connection) {
         return new Promise((resolve, reject) => {
-            this.service.identity.body.tcpPort = this.backend.port;
-
-            connection.output_stream.write_all_async(
-                `${this.service.identity}`,
+            connection.get_output_stream().write_all_async(
+                this.backend.identity.serialize(),
                 GLib.PRIORITY_DEFAULT,
                 this.cancellable,
                 (stream, res) => {
                     try {
-                        this.service.identity.body.tcpPort = undefined;
-
-                        stream.write_all_finish(res);
-                        resolve(connection);
+                        resolve(stream.write_all_finish(res));
                     } catch (e) {
                         reject(e);
                     }
@@ -736,16 +776,17 @@ var Channel = GObject.registerClass({
      * @param {Gio.TcpConnection} connection - The incoming connection
      */
     async accept(connection) {
+        debug(`${this.address} (${this.uuid})`);
+
         try {
-            debug(`${this.address} (${this.uuid})`);
+            this._connection = connection;
             this.backend.channels.set(this.address, this);
 
-            this._connection = this._initSocket(connection);
-            this._connection = await this._receiveIdent(this._connection);
-            this._connection = await this._clientEncryption(this._connection);
+            await this._receiveIdent(this._connection);
+            this._connection = await this._encryptClient(connection);
         } catch (e) {
             this.close();
-            return Promise.reject(e);
+            throw e;
         }
     }
 
@@ -755,16 +796,17 @@ var Channel = GObject.registerClass({
      * @param {Gio.SocketConnection} connection - The remote connection
      */
     async open(connection) {
+        debug(`${this.address} (${this.uuid})`);
+
         try {
-            debug(`${this.address} (${this.uuid})`);
+            this._connection = connection;
             this.backend.channels.set(this.address, this);
 
-            this._connection = this._initSocket(connection);
-            this._connection = await this._sendIdent(this._connection);
-            this._connection = await this._serverEncryption(this._connection);
+            await this._sendIdent(this._connection);
+            this._connection = await this._encryptServer(connection);
         } catch (e) {
             this.close();
-            return Promise.reject(e);
+            throw e;
         }
     }
 
@@ -772,227 +814,163 @@ var Channel = GObject.registerClass({
      * Close all streams associated with this channel, silencing any errors
      */
     close() {
-        if (this._closed === undefined) {
-            debug(`${this.address} (${this.uuid})`);
+        if (this.closed)
+            return;
 
-            this._closed = true;
-            this.backend.channels.delete(this.address);
+        debug(`${this.address} (${this.uuid})`);
+        this._closed = true;
+        this.notify('closed');
 
-            // Cancel any queued operations
-            this.cancellable.cancel();
+        this.backend.channels.delete(this.address);
+        this.cancellable.cancel();
 
-            // Close any streams
-            let streams = [
-                this.input_stream,
-                this.output_stream,
-                this._connection
-            ];
+        if (this._connection)
+            this._connection.close_async(GLib.PRIORITY_DEFAULT, null, null);
 
-            for (let stream of streams) {
+        if (this.input_stream)
+            this.input_stream.close_async(GLib.PRIORITY_DEFAULT, null, null);
+
+        if (this.output_stream)
+            this.output_stream.close_async(GLib.PRIORITY_DEFAULT, null, null);
+    }
+
+    async download(packet, target, cancellable = null) {
+        let openConnection = new Promise((resolve, reject) => {
+            let client = new Gio.SocketClient({enable_proxy: false});
+
+            let address = Gio.InetSocketAddress.new_from_string(
+                this.host,
+                packet.payloadTransferInfo.port
+            );
+
+            client.connect_async(address, cancellable, (client, res) => {
                 try {
-                    stream.close_async(0, null, null);
+                    resolve(client.connect_finish(res));
                 } catch (e) {
-                    // Silence errors
+                    reject(e);
+                }
+            });
+        });
+
+        let connection = await openConnection;
+        connection = await this._encryptClient(connection);
+        let source = connection.get_input_stream();
+
+        // Start the transfer
+        let transferredSize = await this._transfer(source, target, cancellable);
+
+        if (transferredSize !== packet.payloadSize) {
+            throw new Gio.IOErrorEnum({
+                code: Gio.IOErrorEnum.PARTIAL_INPUT,
+                message: 'Transfer incomplete',
+            });
+        }
+    }
+
+    async upload(packet, source, size, cancellable = null) {
+        // Start listening on the first available port between 1739-1764
+        let listener = new Gio.SocketListener();
+        let port = TRANSFER_MIN;
+
+        while (port <= TRANSFER_MAX) {
+            try {
+                listener.add_inet_port(port, null);
+                break;
+            } catch (e) {
+                if (port < TRANSFER_MAX) {
+                    port++;
+                    continue;
+                } else {
+                    throw e;
                 }
             }
         }
-    }
 
-    /**
-     * Attach to @device as the default channel used for packet exchange.
-     *
-     * @param {Device.Device} device - The device to attach to
-     */
-    attach(device) {
-        try {
-            // Detach any existing channel and avoid an unnecessary disconnect
-            if (device._channel && device._channel !== this) {
-                debug(`${device._channel.address} (${device._channel.uuid}) => ${this.address} (${this.uuid})`);
+        // Listen for the incoming connection
+        let acceptConnection = new Promise((resolve, reject) => {
+            listener.accept_async(
+                cancellable,
+                (listener, res, source_object) => {
+                    try {
+                        resolve(listener.accept_finish(res)[0]);
+                    } catch (e) {
+                        reject(e);
+                    }
+                }
+            );
+        });
 
-                let channel = device._channel;
-                channel.cancellable.disconnect(channel._id);
-                channel.close();
+        // Notify the device we're ready
+        packet.body.payloadHash = this.checksum;
+        packet.payloadSize = size;
+        packet.payloadTransferInfo = {port: port};
+        this.sendPacket(new Core.Packet(packet));
 
-                this._output_queue = channel._output_queue;
-            }
+        // Accept the connection and configure the channel
+        let connection = await acceptConnection;
+        connection = await this._encryptServer(connection);
+        let target = connection.get_output_stream();
 
-            // Attach the new channel and parse it's identity
-            device._channel = this;
-            this._id = this.cancellable.connect(device._setDisconnected.bind(device));
-            device._handleIdentity(this.identity);
+        // Start the transfer
+        let transferredSize = await this._transfer(source, target, cancellable);
 
-            // Setup streams for packet exchange
-            this.input_stream = new Gio.DataInputStream({
-                base_stream: this._connection.input_stream
+        if (transferredSize !== size) {
+            throw new Gio.IOErrorEnum({
+                code: Gio.IOErrorEnum.PARTIAL_INPUT,
+                message: 'Transfer incomplete',
             });
-            this.output_stream = this._connection.output_stream;
-
-            // Start listening for packets
-            this.receive(device);
-            device._setConnected();
-        } catch (e) {
-            logError(e);
-            this.close();
         }
     }
 
-    createTransfer(params) {
-        params = Object.assign(params, {
-            backend: this.backend,
-            certificate: this.certificate,
-            host: this.host
+    _transfer(source, target, cancellable) {
+        return new Promise((resolve, reject) => {
+            target.splice_async(
+                source,
+                (Gio.OutputStreamSpliceFlags.CLOSE_SOURCE |
+                 Gio.OutputStreamSpliceFlags.CLOSE_TARGET),
+                GLib.PRIORITY_DEFAULT,
+                cancellable,
+                (target, res) => {
+                    try {
+                        resolve(target.splice_finish(res));
+                    } catch (e) {
+                        reject(e);
+                    }
+                }
+            );
         });
-
-        return new Transfer(params);
-    }
-});
-
-
-/**
- * Lan Transfer
- */
-var Transfer = GObject.registerClass({
-    GTypeName: 'GSConnectLanTransfer'
-}, class Transfer extends Channel {
-
-    /**
-     * @param {object} params - Transfer parameters
-     * @param {Device.Device} params.device - The device that owns this transfer
-     * @param {Gio.InputStream} params.input_stream - The input stream (read)
-     * @param {Gio.OutputStream} params.output_stream - The output stream (write)
-     * @param {number} params.size - The size of the transfer in bytes
-     */
-    _init(params) {
-        super._init(params);
-
-        // The device tracks transfers it owns so they can be closed from the
-        // notification action.
-        this.device._transfers.set(this.uuid, this);
     }
 
-    /**
-     * Override to untrack the transfer UUID
-     */
-    close() {
-        this.device._transfers.delete(this.uuid);
-        super.close();
-    }
-
-    /**
-     * Connect to @port and read from the remote output stream into the local
-     * input stream.
-     *
-     * When finished the channel and local input stream will be closed whether
-     * or not the transfer succeeds.
-     *
-     * @return {boolean} - %true on success or %false on fail
-     */
-    async download() {
-        let result = false;
-
+    async rejectTransfer(packet) {
         try {
-            this._connection = await new Promise((resolve, reject) => {
-                // Connect
+            if (!packet || !packet.hasPayload())
+                return;
+
+            if (packet.payloadTransferInfo.port === undefined)
+                return;
+
+            let connection = await new Promise((resolve, reject) => {
                 let client = new Gio.SocketClient({enable_proxy: false});
 
-                // Use the address from GSettings with @port
                 let address = Gio.InetSocketAddress.new_from_string(
                     this.host,
-                    this.port
+                    packet.payloadTransferInfo.port
                 );
 
                 client.connect_async(address, null, (client, res) => {
                     try {
                         resolve(client.connect_finish(res));
                     } catch (e) {
-                        reject(e);
+                        resolve();
                     }
                 });
             });
-            this._connection = await this._initSocket(this._connection);
-            this._connection = await this._clientEncryption(this._connection);
-            this.input_stream = this._connection.get_input_stream();
 
-            // Start the transfer
-            result = await this.transfer();
+            connection = await this._encryptClient(connection);
+            connection.close_async(GLib.PRIORITY_DEFAULT, null, null);
         } catch (e) {
-            logError(e, this.device.name);
-        } finally {
-            this.close();
+            debug(e, this.device.name);
         }
-
-        return result;
-    }
-
-    /**
-     * Start listening on the first available port for an incoming connection,
-     * then send @packet with the payload transfer info. When the connection is
-     * accepted write to the remote input stream from the local output stream.
-     *
-     * When finished the channel and local output stream will be closed whether
-     * or not the transfer succeeds.
-     *
-     * @param {Core.Packet} packet - The packet describing the transfer
-     * @return {boolean} - %true on success or %false on fail
-     */
-    async upload(packet) {
-        let port = TRANSFER_MIN;
-        let result = false;
-
-        try {
-            // Start listening on the first available port between 1739-1764
-            let listener = new Gio.SocketListener();
-
-            while (port <= TRANSFER_MAX) {
-                try {
-                    listener.add_inet_port(port, null);
-                    this._port = port;
-                    break;
-                } catch (e) {
-                    if (port < TRANSFER_MAX) {
-                        port++;
-                        continue;
-                    } else {
-                        throw e;
-                    }
-                }
-            }
-
-            // Await the incoming connection
-            let connection = new Promise((resolve, reject) => {
-                listener.accept_async(
-                    this.cancellable,
-                    (listener, res, source_object) => {
-                        try {
-                            resolve(listener.accept_finish(res)[0]);
-                        } catch (e) {
-                            reject(e);
-                        }
-                    }
-                );
-            });
-
-            // Notify the device we're ready
-            packet.body.payloadHash = this.checksum;
-            packet.payloadSize = this.size;
-            packet.payloadTransferInfo = {port: port};
-            this.device.sendPacket(packet);
-
-            // Accept the connection and configure the channel
-            this._connection = await connection;
-            this._connection = await this._initSocket(this._connection);
-            this._connection = await this._serverEncryption(this._connection);
-            this.output_stream = this._connection.get_output_stream();
-
-            // Start the transfer
-            result = await this.transfer();
-        } catch (e) {
-            logError(e, this.device.name);
-        } finally {
-            this.close();
-        }
-
-        return result;
     }
 });
 
