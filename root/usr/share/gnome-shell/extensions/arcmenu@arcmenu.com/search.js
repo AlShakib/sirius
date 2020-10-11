@@ -1,10 +1,10 @@
 /*
- * Arc Menu - A traditional application menu for GNOME 3
+ * ArcMenu - A traditional application menu for GNOME 3
  *
- * Arc Menu Lead Developer and Maintainer
+ * ArcMenu Lead Developer and Maintainer
  * Andrew Zaech https://gitlab.com/AndrewZaech
  * 
- * Arc Menu Founder, Former Maintainer, and Former Graphic Designer
+ * ArcMenu Founder, Former Maintainer, and Former Graphic Designer
  * LinxGem33 https://gitlab.com/LinxGem33 - (No Longer Active)
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ var LARGE_ICON_SIZE = 36;
 var MEDIUM_ICON_SIZE = 25;
 var SMALL_ICON_SIZE = 16;
 
-var ListSearchResult = class ArcMenu_ListSearchResult {
+var ListSearchResult = class Arc_Menu_ListSearchResult {
     constructor(provider, metaInfo, resultsView) {
         this._menuLayout = resultsView._menuLayout;
         this.searchType = this._menuLayout.layoutProperties.SearchType;
@@ -97,13 +97,6 @@ var ListSearchResult = class ArcMenu_ListSearchResult {
                 this.menuItem.box.add_child(icon);
             else
                 this.menuItem.box.style += (iconSize == 32) ? "padding: 6px 10px;" : "padding: 3px 10px;";
-            if(layoutProperties.isDashboard){
-                descriptionLabel.style = "font-weight: lighter;";
-                labelBox.vertical = false;
-                labelBox.style = "spacing:10px;";
-                if(descriptionText)
-                    labelBox.add(descriptionLabel);
-            }
             if(this._settings.get_boolean('krunner-show-details') && this.layout == Constants.MENU_LAYOUT.Raven){
                 this.menuItem.actor.style = "height:40px";
                 descriptionLabel.style = "font-weight: lighter;";
@@ -162,7 +155,7 @@ var ListSearchResult = class ArcMenu_ListSearchResult {
     }
 };Signals.addSignalMethods(ListSearchResult.prototype);
 
-var AppSearchResult = class ArcMenu_AppSearchResult {
+var AppSearchResult = class Arc_Menu_AppSearchResult {
     constructor(provider, metaInfo, resultsView) {
         this._menuLayout = resultsView._menuLayout;
         this.searchType = this._menuLayout.layoutProperties.SearchType;
@@ -196,10 +189,6 @@ var AppSearchResult = class ArcMenu_AppSearchResult {
                     this.menuItem.box.style = 'padding: 0px; margin: 0px; spacing:0px;';
                     iconSize = 52;
                 }
-                else if(this._menuLayout.layoutProperties.isDashboard){
-                    this.menuItem.box.style = 'margin-top: 14px; padding: 5px; spacing: 0px; width:125px; height:125px;';
-                    iconSize = 80;
-                }
                 else {
                     this.menuItem.actor.style ='text-align: center; border-radius:4px; padding: 5px; spacing: 0px; width:80px;height:80px;';
                     this.menuItem.box.style = 'padding: 0px; margin: 0px; spacing:0px;';
@@ -223,8 +212,6 @@ var AppSearchResult = class ArcMenu_AppSearchResult {
                 else{
                     if(this.layout == Constants.MENU_LAYOUT.Elementary || this.layout == Constants.MENU_LAYOUT.UbuntuDash)
                         this.menuItem.actor.style = "border-radius:4px; padding: 25px 0px;";
-                    else if(this._menuLayout.layoutProperties.isDashboard)
-                        this.menuItem.box.style = "padding: 30px 0px;";
                     else 
                         this.menuItem.actor.style = "border-radius:4px; padding: 20px 0px;";
                 } 
@@ -292,7 +279,7 @@ var AppSearchResult = class ArcMenu_AppSearchResult {
     }
 
 };Signals.addSignalMethods(AppSearchResult.prototype);
-var SearchResultsBase = class ArcMenu_SearchResultsBase{
+var SearchResultsBase = class Arc_Menu_SearchResultsBase{
     constructor(provider, resultsView) {
         this.provider = provider;
         this._resultsView = resultsView;
@@ -440,7 +427,7 @@ var SearchResultsBase = class ArcMenu_SearchResultsBase{
     }
 };
 
-var ListSearchResults = class ArcMenu_ListSearchResults extends SearchResultsBase {
+var ListSearchResults = class Arc_Menu_ListSearchResults extends SearchResultsBase {
     constructor(provider, resultsView) {
         super(provider, resultsView);
         this._menuLayout = resultsView._menuLayout;
@@ -455,16 +442,13 @@ var ListSearchResults = class ArcMenu_ListSearchResults extends SearchResultsBas
             y_align: Clutter.ActorAlign.FILL,
             x_expand: true,
             y_expand: true,
-            style_class: this._menuLayout.layoutProperties.isDashboard ? 'search-section-content' : null
+            style_class: null
         });
 
         if(gridView){
             if(this.layout == Constants.MENU_LAYOUT.Raven){
                 this._container.vertical = true;
                 this._container.style = null;  
-            }
-            else if(this._menuLayout.layoutProperties.isDashboard){
-                this._container.style = "padding: 10px; spacing: 6px; margin: 7px 20px;";
             }
             else{
                 this._container.style = "padding: 10px 0px; spacing: 6px; margin: 0px 5px;";
@@ -526,7 +510,7 @@ var ListSearchResults = class ArcMenu_ListSearchResults extends SearchResultsBas
     }
 };
 Signals.addSignalMethods(ListSearchResults.prototype);
-var AppSearchResults = class ArcMenu_AppSearchResults extends SearchResultsBase {
+var AppSearchResults = class Arc_Menu_AppSearchResults extends SearchResultsBase {
       constructor(provider, resultsView) {
         super(provider, resultsView);
         this._parentContainer = resultsView.actor;
@@ -543,8 +527,6 @@ var AppSearchResults = class ArcMenu_AppSearchResults extends SearchResultsBase 
             let spacing;
             if(this.layout == Constants.MENU_LAYOUT.Elementary || this.layout == Constants.MENU_LAYOUT.UbuntuDash)
                 spacing = 15;
-            else if(this._menuLayout.layoutProperties.isDashboard)
-                spacing = 30;
             else 
                 spacing = 10;
             this._grid.style = "padding: 0px 10px 10px 10px; spacing: " + spacing + "px;";   
@@ -583,7 +565,7 @@ var AppSearchResults = class ArcMenu_AppSearchResults extends SearchResultsBase 
 };
 Signals.addSignalMethods(AppSearchResults.prototype);
 
-var SearchResults = class ArcMenu_SearchResults {
+var SearchResults = class Arc_Menu_SearchResults {
     constructor(menuLayout) {
         this._menuLayout = menuLayout;
         this.searchType = this._menuLayout.layoutProperties.SearchType;
@@ -664,10 +646,7 @@ var SearchResults = class ArcMenu_SearchResults {
 
     setStyle(style){
         if(this._statusText){
-            if(this._menuLayout.layoutProperties.isDashboard)
-                this._statusText.style_class = "search-statustext";
-            else
-                this._statusText.style_class = style;
+            this._statusText.style_class = style;
         }
             
     }
@@ -939,7 +918,7 @@ var SearchResults = class ArcMenu_SearchResults {
 };
 Signals.addSignalMethods(SearchResults.prototype);
 
-var ArcSearchProviderInfo = GObject.registerClass(class ArcMenu_ArcSearchProviderInfo extends MW.ArcMenuPopupBaseMenuItem{
+var ArcSearchProviderInfo = GObject.registerClass(class Arc_Menu_ArcSearchProviderInfo extends MW.ArcMenuPopupBaseMenuItem{
     _init(provider, menuLayout) {
         super._init(menuLayout);
         this.provider = provider;
@@ -976,13 +955,7 @@ var ArcSearchProviderInfo = GObject.registerClass(class ArcMenu_ArcSearchProvide
             });
             this._content.add_actor(icon);
 
-            if(this._menuLayout.layoutProperties.isDashboard){
-                this.actor.style = null;
-                this.box.style = 'width: 240px;';
-                this.remove_child(this._ornamentLabel);
-                icon.icon_size = 32;
-            }
-            else if(this.layout == Constants.MENU_LAYOUT.Elementary || this.layout == Constants.MENU_LAYOUT.UbuntuDash){
+            if(this.layout == Constants.MENU_LAYOUT.Elementary || this.layout == Constants.MENU_LAYOUT.UbuntuDash){
                 this.actor.style = "border-radius:4px; spacing: 0px; width: 190px;";
                 icon.icon_size = 32;
             }

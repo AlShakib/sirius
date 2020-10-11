@@ -1,10 +1,10 @@
 /*
- * Arc Menu - A traditional application menu for GNOME 3
+ * ArcMenu - A traditional application menu for GNOME 3
  *
- * Arc Menu Lead Developer and Maintainer
+ * ArcMenu Lead Developer and Maintainer
  * Andrew Zaech https://gitlab.com/AndrewZaech
  * 
- * Arc Menu Founder, Former Maintainer, and Former Graphic Designer
+ * ArcMenu Founder, Former Maintainer, and Former Graphic Designer
  * LinxGem33 https://gitlab.com/LinxGem33 - (No Longer Active)
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -61,12 +61,10 @@ function getMenuLayout(button, layout){
             return new MenuLayout.raven.createMenu(button);
         case Constants.MENU_LAYOUT.Tognee:
             return new MenuLayout.tognee.createMenu(button);
-        case Constants.MENU_LAYOUT.RavenExtended:
-            return new MenuLayout.ravenExtended.createMenu(button);
-        case Constants.MENU_LAYOUT.Dashboard:
-            return new MenuLayout.dashboard.createMenu(button);
         case Constants.MENU_LAYOUT.Plasma:
             return new MenuLayout.plasma.createMenu(button);
+        default:
+            return new MenuLayout.arcmenu.createMenu(button);    
     }
 }
 
@@ -393,7 +391,7 @@ function createStylesheet(settings){
 
         +"StScrollView .small-vfade{\n-st-vfade-offset: 44px;\n}\n\n"
 
-        +".arc-menu-button{\n-st-icon-style: symbolic;\nmin-height: 0px;\nmin-width: 0px;\nborder-radius: 26px;\npadding: 13px;\n}\n\n"
+        +".arc-menu-button{\n-st-icon-style: symbolic;\nmin-height: 0px;\nmin-width: 16px;\nborder-radius: 26px;\npadding: 13px;\n}\n\n"
 
         +".arc-menu-action{\nmargin: 1px;\nbackground-color: transparent;\nbox-shadow: none;\ncolor:" + menuForegroundColor + ";\nborder-width: 1px;\n"
                             +"border-color: transparent;\n}\n\n"
@@ -405,11 +403,6 @@ function createStylesheet(settings){
         +".arc-menu-menu-item-text-indicator{\nbackground-color: " + indicatorTextBackgroundColor + ";\n}\n\n"
 
         +tooltipStyle
-
-        +".arc-menu-dashboard .app-well-app .overview-icon{\ncolor: " + menuForegroundColor + ";\n}\n\n"
-        +".arc-menu-dashboard .app-well-app:focus .overview-icon{\ncolor: " + highlightForegroundColor + ";\nbackground-color:" + highlightColor + ";\n}\n\n"
-        +".arc-menu-dashboard .app-well-app:hover .overview-icon{\ncolor: " + highlightForegroundColor + ";\nbackground-color:" + highlightColor + ";\n}\n\n"
-        +".arc-menu-dashboard .search-statustext{\ncolor: " + menuForegroundColor + ";\n}\n\n"
 
         +".arc-menu{\n-boxpointer-gap: " + gapAdjustment + "px;\nmin-width: 15em;\ncolor: #D3DAE3;\nborder-image: none;\n"
                         +"box-shadow: none;\nfont-size:" + fontSize + "pt;\n}\n\n"

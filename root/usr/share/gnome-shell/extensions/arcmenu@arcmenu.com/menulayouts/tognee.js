@@ -1,10 +1,10 @@
 /*
- * Arc Menu - A traditional application menu for GNOME 3
+ * ArcMenu - A traditional application menu for GNOME 3
  *
- * Arc Menu Lead Developer and Maintainer
+ * ArcMenu Lead Developer and Maintainer
  * Andrew Zaech https://gitlab.com/AndrewZaech
  *
- * Arc Menu Founder, Former Maintainer, and Former Graphic Designer
+ * ArcMenu Founder, Former Maintainer, and Former Graphic Designer
  * LinxGem33 https://gitlab.com/LinxGem33 - (No Longer Active)
  *
  * tognee Layout Created By: tognee https://gitlab.com/tognee
@@ -139,7 +139,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
             overlay_scrollbars: true,
             style_class: 'small-vfade'
         });    
-        this.shortcutsScrollBox.set_policy(Gtk.PolicyType.EXTERNAL, Gtk.PolicyType.EXTERNAL);
+        this.shortcutsScrollBox.set_policy(St.PolicyType.EXTERNAL, St.PolicyType.EXTERNAL);
         this.shortcutsScrollBox.add_actor(this.shortcutsBox);
         this.quickBox.add(this.shortcutsScrollBox);
 
@@ -152,7 +152,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         
 
         //Add Application Shortcuts to menu (Software, Settings, Tweaks, Terminal)
-        let SOFTWARE_TRANSLATIONS = [_("Software"), _("Settings"), _("Tweaks"), _("Terminal"), _("Activities Overview"), _("Arc Menu Settings")];
+        let SOFTWARE_TRANSLATIONS = [_("Software"), _("Settings"), _("Tweaks"), _("Terminal"), _("Activities Overview"), _("ArcMenu Settings")];
         let applicationShortcuts = this._settings.get_value('application-shortcuts-list').deep_unpack();
         for(let i = 0; i < applicationShortcuts.length; i++){
             let applicationName = applicationShortcuts[i][0];
@@ -169,7 +169,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
             y_align: Clutter.ActorAlign.END,
             x_align: Clutter.ActorAlign.CENTER
         });
-        this.actionsScrollBox.set_policy(Gtk.PolicyType.EXTERNAL, Gtk.PolicyType.EXTERNAL);
+        this.actionsScrollBox.set_policy(St.PolicyType.EXTERNAL, St.PolicyType.EXTERNAL);
         this.actionsScrollBox.clip_to_allocation = true;
 
         //create new section for Power, Lock, Logout, Suspend Buttons
@@ -199,6 +199,12 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
             this.actionsBox.add(suspend.actor);
             sessionButtonVisible = true;
         }
+        if(this._settings.get_boolean('show-restart-button')){
+            let restart = new MW.RestartButton(this);
+            this._updateButtonSize(restart);
+            this.actionsBox.add(restart.actor);
+            sessionButtonVisible = true;
+        }      
         if(this._settings.get_boolean('show-power-button')){
             let power = new MW.PowerButton(this);
             this._updateButtonSize(power);

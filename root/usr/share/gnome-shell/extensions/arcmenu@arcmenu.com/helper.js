@@ -1,10 +1,10 @@
 /*
- * Arc Menu - A traditional application menu for GNOME 3
+ * ArcMenu - A traditional application menu for GNOME 3
  *
- * Arc Menu Lead Developer and Maintainer
+ * ArcMenu Lead Developer and Maintainer
  * Andrew Zaech https://gitlab.com/AndrewZaech
  * 
- * Arc Menu Founder, Former Maintainer, and Former Graphic Designer
+ * ArcMenu Founder, Former Maintainer, and Former Graphic Designer
  * LinxGem33 https://gitlab.com/LinxGem33 - (No Longer Active)
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -106,7 +106,7 @@ var MenuHotKeybinder = class {
                 let [bool,signal_id, detail] = GObject.signal_parse_name('overlay-key', global.display, true);
                 this.defaultOverlayKeyID = GObject.signal_handler_find(global.display, GObject.SignalMatchType.ID, signal_id, detail, null, null, null); 
     
-                //If signal ID found, block it and connect new 'overlay-key' to toggle arc menu.
+                //If signal ID found, block it and connect new 'overlay-key' to toggle ArcMenu.
                 if(this.defaultOverlayKeyID){
                     GObject.signal_handler_block(global.display, this.defaultOverlayKeyID);
                     this.overlayKeyID = global.display.connect('overlay-key', () => {
@@ -114,7 +114,7 @@ var MenuHotKeybinder = class {
                     });
                 }
                 else
-                    global.log("Arc Menu ERROR - Failed to set Super_L hotkey");
+                    global.log("ArcMenu ERROR - Failed to set Super_L hotkey");
             }
             else if(hotKeyPos === Constants.HOT_KEY.Super_R){
                 Main.wm.setCustomKeybindingHandler('panel-main-menu', Shell.ActionMode.NORMAL | Shell.ActionMode.OVERVIEW | Shell.ActionMode.POPUP,

@@ -1,10 +1,10 @@
 /*
- * Arc Menu - A traditional application menu for GNOME 3
+ * ArcMenu - A traditional application menu for GNOME 3
  *
- * Arc Menu Lead Developer and Maintainer
+ * ArcMenu Lead Developer and Maintainer
  * Andrew Zaech https://gitlab.com/AndrewZaech
  * 
- * Arc Menu Founder, Former Maintainer, and Former Graphic Designer
+ * ArcMenu Founder, Former Maintainer, and Former Graphic Designer
  * LinxGem33 https://gitlab.com/LinxGem33 - (No Longer Active)
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
             overlay_scrollbars: true,
             style_class: 'small-vfade'
         });   
-        this.actionsScrollBox.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.EXTERNAL);
+        this.actionsScrollBox.set_policy(St.PolicyType.NEVER, St.PolicyType.EXTERNAL);
         this.actionsBox = new St.BoxLayout({ 
             vertical: true
         });
@@ -61,7 +61,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         
         this.actionsScrollBox.style = "width:62px; margin: 10px 20px 0 20px;";
         this.actionsBox.style = this.actionsBoxStyle;
-        //check if custom arc menu is enabled
+        //check if custom ArcMenu is enabled
         if( this._settings.get_boolean('enable-custom-arc-menu'))
             this.actionsBox.add_style_class_name('arc-menu');
         

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="16mm"
+   height="16mm"
+   viewBox="0 0 16 16"
+   version="1.1"
+   id="svg8"
+   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)"
+   sodipodi:docname="restart.svg">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     inkscape:zoom="11.2"
+     inkscape:cx="24.580818"
+     inkscape:cy="29.491854"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     inkscape:document-rotation="0"
+     showgrid="false"
+     inkscape:window-width="1920"
+     inkscape:window-height="898"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       style="fill:#000000;stroke-width:0.0983141"
+       d="M 7.1352357,14.994514 C 4.7256008,14.671861 2.7803293,13.280916 1.7106274,11.11571 1.2128397,10.108123 1.0021277,9.1898367 1.0000134,8.0188209 0.99703871,6.3940042 1.494873,4.9459219 2.4663959,3.7531065 2.7257404,3.4346898 2.9816032,3.114483 3.0349808,3.0415354 3.1075834,2.9423172 2.952791,2.728458 2.4205206,2.1926107 1.2589826,1.0232721 1.3706499,0.91619511 3.7076304,0.95837591 6.0186374,1.0000846 5.8501405,0.81756827 5.8156764,3.2418453 5.78346,5.5089887 5.7669772,5.5303708 4.7948709,4.5669054 L 4.1693562,3.9469509 3.8164255,4.2869701 C 3.6223119,4.4739798 3.3040198,4.9110623 3.1091111,5.2582646 1.5471432,8.0406868 2.6177443,11.605978 5.4393101,13.018215 6.4384087,13.51828 7.1091043,13.655284 8.2894824,13.600429 9.3360938,13.551789 10.065415,13.33407 10.923172,12.814214 11.982951,12.171921 12.883259,11.054766 13.327359,9.8309595 13.615572,9.036727 13.678167,7.6141278 13.465003,6.702719 12.975773,4.6109571 11.190194,2.9003747 9.0825538,2.5043387 8.0969792,2.3191443 7.7049277,1.7442987 8.2286431,1.2522943 8.6309231,0.87437181 9.7052302,1.0524144 11.097991,1.7278267 13.521786,2.9032347 15,5.286476 15,8.0188209 15,9.65909 14.522073,11.050294 13.506778,12.36546 12.056609,14.243943 9.4774976,15.308148 7.1352357,14.994514 Z"
+       id="path24" />
+  </g>
+</svg>

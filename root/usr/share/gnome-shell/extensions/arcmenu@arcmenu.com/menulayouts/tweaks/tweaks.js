@@ -1,10 +1,10 @@
 /*
- * Arc Menu - A traditional application menu for GNOME 3
+ * ArcMenu - A traditional application menu for GNOME 3
  *
- * Arc Menu Lead Developer and Maintainer
+ * ArcMenu Lead Developer and Maintainer
  * Andrew Zaech https://gitlab.com/AndrewZaech
  * 
- * Arc Menu Founder, Former Maintainer, and Former Graphic Designer
+ * ArcMenu Founder, Former Maintainer, and Former Graphic Designer
  * LinxGem33 https://gitlab.com/LinxGem33 - (No Longer Active)
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ const SCHEMA_PATH = '/org/gnome/shell/extensions/arc-menu/';
 const GSET = 'gnome-shell-extension-tool';
 
 var TweaksDialog = GObject.registerClass(
-    class ArcMenu_TweaksDialog extends PW.DialogWindow {
+    class Arc_Menu_TweaksDialog extends PW.DialogWindow {
 
         _init(settings, parent, label) {
             this._settings = settings;
@@ -70,7 +70,7 @@ var TweaksDialog = GObject.registerClass(
                 this._loadRedmondMenuTweaks(vbox)
             else if(menuLayout == Constants.MENU_LAYOUT.UbuntuDash)
                 this._loadUbuntuDashTweaks(vbox);
-            else if(menuLayout == Constants.MENU_LAYOUT.Raven || menuLayout == Constants.MENU_LAYOUT.RavenExtended)
+            else if(menuLayout == Constants.MENU_LAYOUT.Raven)
                 this._loadRavenTweaks(vbox);
             else if(menuLayout == Constants.MENU_LAYOUT.Budgie)
                 this._loadBudgieMenuTweaks(vbox);
@@ -927,7 +927,7 @@ var TweaksDialog = GObject.registerClass(
             });
             let defaultLeftBoxCombo = new Gtk.ComboBoxText({ 
                 halign: Gtk.Align.END,
-                tooltip_text: _("Choose the default screen for Arc Menu") 
+                tooltip_text: _("Choose the default screen for ArcMenu") 
             });
             defaultLeftBoxCombo.append_text(_("Pinned Apps"));
             defaultLeftBoxCombo.append_text(_("Categories List"));

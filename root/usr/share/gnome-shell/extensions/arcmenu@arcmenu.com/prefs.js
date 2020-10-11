@@ -1,10 +1,10 @@
 /*
- * Arc Menu - A traditional application menu for GNOME 3
+ * ArcMenu - A traditional application menu for GNOME 3
  *
- * Arc Menu Lead Developer and Maintainer
+ * ArcMenu Lead Developer and Maintainer
  * Andrew Zaech https://gitlab.com/AndrewZaech
  * 
- * Arc Menu Founder, Former Maintainer, and Former Graphic Designer
+ * ArcMenu Founder, Former Maintainer, and Former Graphic Designer
  * LinxGem33 https://gitlab.com/LinxGem33 - (No Longer Active)
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ const GSET = 'gnome-shell-extension-tool';
 
 //Pinned Apps Page
 var MenuSettingsPinnedAppsPage = GObject.registerClass(
-    class ArcMenu_MenuSettingsPinnedAppsPage extends PW.NotebookPage {
+    class Arc_Menu_MenuSettingsPinnedAppsPage extends PW.NotebookPage {
         _init(settings) {
             super._init(_('Pinned Apps'));
             this._settings = settings;
@@ -281,7 +281,7 @@ var MenuSettingsPinnedAppsPage = GObject.registerClass(
 });
 //Dialog Window for Adding Apps to Pinned Apps List   
 var AddAppsToPinnedListWindow = GObject.registerClass(
-    class ArcMenu_AddAppsToPinnedListWindow extends PW.DialogWindow {
+    class Arc_Menu_AddAppsToPinnedListWindow extends PW.DialogWindow {
         _init(settings, parent, dialogType) {
             this._settings = settings;
             this._dialogType = dialogType;
@@ -331,7 +331,7 @@ var AddAppsToPinnedListWindow = GObject.registerClass(
                         searchResults.push([index, app]);
                     }
                 }
-                let arcMenuSettings = _("Arc Menu Settings").toLowerCase();
+                let arcMenuSettings = _("ArcMenu Settings").toLowerCase();
                 let index = arcMenuSettings.indexOf(pattern);
                 let showArcMenuSettings = false;
                 if (index != -1) {
@@ -437,7 +437,7 @@ var AddAppsToPinnedListWindow = GObject.registerClass(
                 this._loadCategories();
                 let defaultApplicationShortcutsFrame = new PW.FrameBox();
                 let defaultApplicationShortcuts = this._settings.get_default_value('application-shortcuts-list').deep_unpack();
-                defaultApplicationShortcuts.push([_("Arc Menu Settings"), Me.path + '/media/icons/arc-menu-symbolic.svg', Constants.ArcMenu_SettingsCommand]);
+                defaultApplicationShortcuts.push([_("ArcMenu Settings"), Me.path + '/media/icons/arc-menu-symbolic.svg', Constants.ArcMenu_SettingsCommand]);
                 defaultApplicationShortcuts.push([_("Run Command..."), "system-run-symbolic", "ArcMenu_RunCommand"]);
                 defaultApplicationShortcuts.push([_("Show All Applications"), "view-fullscreen-symbolic", "ArcMenu_ShowAllApplications"]);
                 
@@ -521,6 +521,7 @@ var AddAppsToPinnedListWindow = GObject.registerClass(
                 defaultApplicationShortcuts.push(["Lock", "changes-prevent-symbolic", "ArcMenu_Lock"]);
                 defaultApplicationShortcuts.push(["Log Out", "application-exit-symbolic", "ArcMenu_LogOut"]);
                 defaultApplicationShortcuts.push(["Power Off", "system-shutdown-symbolic", "ArcMenu_PowerOff"]);
+                defaultApplicationShortcuts.push(["Restart", Me.path + Constants.RESTART_ICON.Path, "ArcMenu_Restart"]);
                 defaultApplicationShortcuts.push(["Suspend", "media-playback-pause-symbolic", "ArcMenu_Suspend"]);
                 for(let i = 0;i < defaultApplicationShortcuts.length; i++) {
                     let frameRow = new PW.FrameBoxRow();
@@ -608,7 +609,7 @@ var AddAppsToPinnedListWindow = GObject.registerClass(
                     let frameRow = new PW.FrameBoxRow();
                     let icon;
                     if(i == -1){
-                        frameRow._name = _("Arc Menu Settings");
+                        frameRow._name = _("ArcMenu Settings");
                         icon = frameRow._icon = Me.path + '/media/icons/arc-menu-symbolic.svg';
                         frameRow._cmd = Constants.ArcMenu_SettingsCommand;
                     }
@@ -683,7 +684,7 @@ var AddAppsToPinnedListWindow = GObject.registerClass(
     
 //Dialog Window for Adding Custom Links to Pinned Apps List    
 var AddCustomLinkDialogWindow = GObject.registerClass(
-    class ArcMenu_AddCustomLinkDialogWindow extends PW.DialogWindow {
+    class Arc_Menu_AddCustomLinkDialogWindow extends PW.DialogWindow {
         _init(settings, parent, dialogType, isAppEdit=false, appArray=null) {
             this._settings = settings;
             this.newPinnedAppsArray=[];
@@ -807,7 +808,7 @@ var AddCustomLinkDialogWindow = GObject.registerClass(
 
 // General Settings Page
 var GeneralPage = GObject.registerClass(
-    class ArcMenu_GeneralPage extends PW.NotebookPage {
+    class Arc_Menu_GeneralPage extends PW.NotebookPage {
         _init(settings) {
             super._init(_('General'));
             this._settings = settings;
@@ -915,7 +916,7 @@ var GeneralPage = GObject.registerClass(
             this.menuKeybindingFrame = new PW.FrameBox();
             let menuHotkeyLabelRow = new PW.FrameBoxRow();
             let menuHotkeyLabel = new Gtk.Label({
-                label: _("Choose a Hotkey for Arc Menu"),
+                label: _("Choose a Hotkey for ArcMenu"),
                 use_markup: true,
                 xalign: 0,
                 hexpand: true
@@ -928,7 +929,7 @@ var GeneralPage = GObject.registerClass(
                 halign: Gtk.Align.CENTER,
                 hexpand: true,
                 draw_indicator: false,
-                tooltip_text: _("Set Arc Menu hotkey to Left Super Key")  
+                tooltip_text: _("Set ArcMenu hotkey to Left Super Key")  
             });   
             let rightButton = new Gtk.RadioButton({
                 label: _("Right Super Key"),
@@ -936,7 +937,7 @@ var GeneralPage = GObject.registerClass(
                 halign: Gtk.Align.CENTER,
                 hexpand: true,
                 draw_indicator: false,
-                tooltip_text: _("Set Arc Menu hotkey to Right Super Key")  
+                tooltip_text: _("Set ArcMenu hotkey to Right Super Key")  
             });   
             let customButton = new Gtk.RadioButton({
                 label: _("Custom Hotkey"),
@@ -944,7 +945,7 @@ var GeneralPage = GObject.registerClass(
                 halign: Gtk.Align.CENTER,
                 hexpand: true,
                 draw_indicator: false,
-                tooltip_text: _("Set a custom hotkey for Arc Menu")  
+                tooltip_text: _("Set a custom hotkey for ArcMenu")  
             });   
             this.undefinedButton = new Gtk.RadioButton({
                 label: _("None"),
@@ -952,7 +953,7 @@ var GeneralPage = GObject.registerClass(
                 halign: Gtk.Align.CENTER,
                 hexpand: true,
                 draw_indicator: false,
-                tooltip_text: _("Clear Arc Menu hotkey, use GNOME default")  
+                tooltip_text: _("Clear ArcMenu hotkey, use GNOME default")  
             });  
             switch (this._settings.get_enum('menu-hotkey')) {
                 case 0:
@@ -1031,7 +1032,7 @@ var GeneralPage = GObject.registerClass(
                 label: _("Modify Hotkey"),
                 halign: Gtk.Align.END,
                 hexpand: false,
-                tooltip_text: _("Create your own hotkey combination for Arc Menu")  
+                tooltip_text: _("Create your own hotkey combination for ArcMenu")  
             });   
             menuKeybindingRow.add(currentHotkeyLabel);
             menuKeybindingRow.add(shortcutCell);
@@ -1065,14 +1066,14 @@ var GeneralPage = GObject.registerClass(
         _createDisplayOnFrame(menuPlacementFrame){
             let menuPlacementRow = new PW.FrameBoxRow();
             let menuPlacementLabel = new Gtk.Label({
-                label: _("Display Arc Menu On"),
+                label: _("Display ArcMenu On"),
                 use_markup: true,
                 xalign: 0,
                 hexpand: true
             });
             let menuPlacementCombo = new Gtk.ComboBoxText({ 
                 halign: Gtk.Align.END,
-                tooltip_text: _("Choose where to place Arc Menu") 
+                tooltip_text: _("Choose where to place ArcMenu") 
             });
 
             let extensionStates = this._settings.get_value('dtp-dtd-state').deep_unpack();
@@ -1206,20 +1207,20 @@ var GeneralPage = GObject.registerClass(
 
             let menuPositionLeftButton = new Gtk.RadioButton({
                 label: _('Left'),
-                tooltip_text: extensionStates[Constants.EXTENSION.DTP] ? _("Position Arc Menu on the Left side of Dash to Panel")
-                                                                       : _("Position Arc Menu on the Left side of the Main Panel")
+                tooltip_text: extensionStates[Constants.EXTENSION.DTP] ? _("Position ArcMenu on the Left side of Dash to Panel")
+                                                                       : _("Position ArcMenu on the Left side of the Main Panel")
             });
             let menuPositionCenterButton = new Gtk.RadioButton({
                 label: _('Center'),
                 group: menuPositionLeftButton,
-                tooltip_text: extensionStates[Constants.EXTENSION.DTP] ? _("Position Arc Menu in the Center of Dash to Panel")
-                                                                       : _("Position Arc Menu in the Center of the Main Panel")
+                tooltip_text: extensionStates[Constants.EXTENSION.DTP] ? _("Position ArcMenu in the Center of Dash to Panel")
+                                                                       : _("Position ArcMenu in the Center of the Main Panel")
             });
             let menuPositionRightButton = new Gtk.RadioButton({
                 label: _('Right'),
                 group: menuPositionLeftButton,
-                tooltip_text: extensionStates[Constants.EXTENSION.DTP] ? _("Position Arc Menu on the Right side of Dash to Panel") 
-                                                                       : _("Position Arc Menu on the Right side of the Main Panel")
+                tooltip_text: extensionStates[Constants.EXTENSION.DTP] ? _("Position ArcMenu on the Right side of Dash to Panel") 
+                                                                       : _("Position ArcMenu on the Right side of the Main Panel")
             });
             // callback handlers for the radio buttons
             menuPositionLeftButton.connect('clicked', () => {
@@ -1271,7 +1272,7 @@ var GeneralPage = GObject.registerClass(
                 }),
                 digits: 0,round_digits: 0,hexpand: true,
                 value_pos: Gtk.PositionType.RIGHT,
-                tooltip_text: _("Adjust Arc Menu's menu alignment relative to Arc Menu's icon")
+                tooltip_text: _("Adjust ArcMenu's menu alignment relative to ArcMenu's icon")
             });
            // alignmentScale.connect('format-value', (scale, value) => { return value.toString() + 'px'; });
             alignmentScale.set_value(this._settings.get_int('menu-position-alignment'));
@@ -1284,7 +1285,7 @@ var GeneralPage = GObject.registerClass(
             //Multi-monitor
             let multiMonitorRow = new PW.FrameBoxRow();
             let multiMonitorLabel = new Gtk.Label({
-                label: _("Display Arc Menu on all monitors"),
+                label: _("Display ArcMenu on all monitors"),
                 use_markup: true,
                 xalign: 0,
                 hexpand: true
@@ -1292,7 +1293,7 @@ var GeneralPage = GObject.registerClass(
 
             let multiMonitorSwitch = new Gtk.Switch({ 
                 halign: Gtk.Align.END,
-                tooltip_text: _("Display Arc Menu on all monitors") 
+                tooltip_text: _("Display ArcMenu on all monitors") 
             });
             multiMonitorSwitch.set_active(this._settings.get_boolean('multi-monitor'));
             multiMonitorSwitch.connect('notify::active', (widget) => {
@@ -1335,7 +1336,7 @@ var GeneralPage = GObject.registerClass(
 });
 //Dialog Window for Custom Activities Hot Corner
 var ModifyHotCornerDialogWindow = GObject.registerClass(
-    class ArcMenu_ModifyHotCornerDialogWindow extends PW.DialogWindow {
+    class Arc_Menu_ModifyHotCornerDialogWindow extends PW.DialogWindow {
         _init(settings, parent) {
             this._settings = settings;
             this.addResponse = false;
@@ -1359,7 +1360,7 @@ var ModifyHotCornerDialogWindow = GObject.registerClass(
             });
             hotCornerActionCombo.append_text(_("GNOME Default"));
             hotCornerActionCombo.append_text(_("Disabled"));
-            hotCornerActionCombo.append_text(_("Toggle Arc Menu"));
+            hotCornerActionCombo.append_text(_("Toggle ArcMenu"));
             hotCornerActionCombo.append_text(_("Custom"));
             
             let customHotCornerFrame = new PW.FrameBox();
@@ -1512,7 +1513,7 @@ var ModifyHotCornerDialogWindow = GObject.registerClass(
 });
 //Dialog Window for Custom Hotkey
 var CustomHotkeyDialogWindow = GObject.registerClass(
-    class ArcMenu_CustomHotkeyDialogWindow extends PW.DialogWindow {
+    class Arc_Menu_CustomHotkeyDialogWindow extends PW.DialogWindow {
         _init(settings, parent) {
             this._settings = settings;
             this.addResponse = false;
@@ -1671,7 +1672,7 @@ function getIconPixbuf(filePath){
 }
 
 var ButtonAppearancePage = GObject.registerClass(
-    class ArcMenu_ButtonAppearancePage extends Gtk.ScrolledWindow {
+    class Arc_Menu_ButtonAppearancePage extends Gtk.ScrolledWindow {
         _init(settings) {
             super._init();
             this.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC);
@@ -2119,11 +2120,11 @@ var ButtonAppearancePage = GObject.registerClass(
 
 //Dialog Window for ArcMenu Icons
 var ArcMenuIconsDialogWindow = GObject.registerClass(
-    class ArcMenu_ArcMenuIconsDialogWindow extends PW.DialogWindow {
+    class Arc_Menu_ArcMenuIconsDialogWindow extends PW.DialogWindow {
         _init(settings, parent) {
             this._settings = settings;
             this.customIconPath = this._settings.get_string('custom-menu-button-icon');
-            super._init(_('Arc Menu Icons'), parent);
+            super._init(_('ArcMenu Icons'), parent);
             this.resize(550, 400);
         }
 
@@ -2229,7 +2230,7 @@ var ArcMenuIconsDialogWindow = GObject.registerClass(
             if(GLib.file_test(this.customIconPath, GLib.FileTest.IS_REGULAR))
                 fileChooserButton.set_filename(this.customIconPath);
             
-            this.stack.add_titled(arcMenuIconsBox, 'Arc Menu Icons', _('Arc Menu Icons'));
+            this.stack.add_titled(arcMenuIconsBox, 'ArcMenu Icons', _('ArcMenu Icons'));
             this.stack.add_titled(distroIconsBox, 'Distro Icons', _('Distro Icons'));
             this.stack.add_titled(customIconBox, 'Custom Icon', _('Custom Icon'));
 
@@ -2275,7 +2276,7 @@ var ArcMenuIconsDialogWindow = GObject.registerClass(
 
         setVisibleChild(){
             if(this._settings.get_enum('menu-button-icon') === Constants.MENU_BUTTON_ICON.Arc_Menu)
-                this.stack.set_visible_child_name('Arc Menu Icons');
+                this.stack.set_visible_child_name('ArcMenu Icons');
             else if(this._settings.get_enum('menu-button-icon') === Constants.MENU_BUTTON_ICON.Distro_Icon)
                 this.stack.set_visible_child_name('Distro Icons');
             else if(this._settings.get_enum('menu-button-icon') === Constants.MENU_BUTTON_ICON.Custom)
@@ -2284,7 +2285,7 @@ var ArcMenuIconsDialogWindow = GObject.registerClass(
 });
 
 var DistroIconsDisclaimerWindow = GObject.registerClass(
-    class ArcMenu_DistroIconsDisclaimerWindow extends Gtk.MessageDialog {
+    class Arc_Menu_DistroIconsDisclaimerWindow extends Gtk.MessageDialog {
         _init(settings, parent) {
             this._settings = settings;
             super._init({
@@ -2340,7 +2341,7 @@ var DistroIconsDisclaimerWindow = GObject.registerClass(
 });
 
 var MenuLayoutPage = GObject.registerClass(
-    class ArcMenu_MenuLayoutPage extends Gtk.Box {
+    class Arc_Menu_MenuLayoutPage extends Gtk.Box {
         _init(settings) {
             super._init({
                 orientation: Gtk.Orientation.VERTICAL,
@@ -2494,7 +2495,7 @@ var MenuLayoutPage = GObject.registerClass(
 });
 
 var MenuThemePage = GObject.registerClass(
-    class ArcMenu_MenuThemePage extends Gtk.ScrolledWindow {
+    class Arc_Menu_MenuThemePage extends Gtk.ScrolledWindow {
         _init(settings) {
             super._init();
             this.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC);
@@ -2543,7 +2544,7 @@ var MenuThemePage = GObject.registerClass(
             let overrideArcMenuSwitch = new Gtk.Switch({ 
                 halign: Gtk.Align.END,
                 valign: Gtk.Align.CENTER,
-                tooltip_text: _("Override the Arc Menu extension theme")
+                tooltip_text: _("Override the ArcMenu extension theme")
             });
             overrideArcMenuSwitch.set_active(this._settings.get_boolean('enable-custom-arc-menu'));
             overrideArcMenuSwitch.connect('notify::active', (widget) => {
@@ -2624,9 +2625,9 @@ var MenuThemePage = GObject.registerClass(
             }
         }
 });
-//Dialog Window for Arc Menu Customization    
+//Dialog Window for ArcMenu Customization    
 var MenuLayoutsWindow = GObject.registerClass(
-    class ArcMenu_MenuLayoutsWindow extends Gtk.Box {
+    class Arc_Menu_MenuLayoutsWindow extends Gtk.Box {
         _init(settings, stack) {
             super._init({
                 orientation: Gtk.Orientation.VERTICAL,
@@ -2667,12 +2668,12 @@ var MenuLayoutsWindow = GObject.registerClass(
         }
 });
 
-//Dialog Window for Arc Menu Customization    
+//Dialog Window for ArcMenu Customization    
 var MenuLayoutsDialog = GObject.registerClass({
     Signals: {
         'menu-layout-response': { param_types: [GObject.TYPE_INT] },
     },
-},  class ArcMenu_MenuLayoutsDialog extends Gtk.Box {
+},  class Arc_Menu_MenuLayoutsDialog extends Gtk.Box {
         _init(settings, parent, tile, title) {
             super._init({
                 orientation: Gtk.Orientation.VERTICAL,
@@ -2771,7 +2772,7 @@ var MenuLayoutsDialog = GObject.registerClass({
 });
 
 var MenuSettingsGeneralPage = GObject.registerClass(
-    class ArcMenu_MenuSettingsGeneralPage extends Gtk.ScrolledWindow {
+    class Arc_Menu_MenuSettingsGeneralPage extends Gtk.ScrolledWindow {
     _init(settings) {
         super._init();
         this.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC);
@@ -3018,7 +3019,7 @@ var MenuSettingsGeneralPage = GObject.registerClass(
 
         let tooltipSwitch = new Gtk.Switch({ 
             halign: Gtk.Align.END,
-            tooltip_text: _("Disable all tooltips in Arc Menu") 
+            tooltip_text: _("Disable all tooltips in ArcMenu") 
         });
         tooltipSwitch.set_active(this.disableTooltips);
         tooltipSwitch.connect('notify::active', (widget) => {
@@ -3202,7 +3203,7 @@ var MenuSettingsGeneralPage = GObject.registerClass(
 });
 
 var MenuSettingsFineTunePage = GObject.registerClass(
-    class ArcMenu_MenuSettingsFineTunePage extends Gtk.ScrolledWindow {
+    class Arc_Menu_MenuSettingsFineTunePage extends Gtk.ScrolledWindow {
     _init(settings) {
         super._init();
         this.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC);
@@ -3426,7 +3427,7 @@ var MenuSettingsFineTunePage = GObject.registerClass(
             }),
             digits: 0,round_digits: 0,hexpand: true,
             value_pos: Gtk.PositionType.RIGHT,
-            tooltip_text: _("Offset Arc Menu by 1px") +'\n' + _("Useful if you notice a 1px gap or overlap between Arc Menu and the panel")
+            tooltip_text: _("Offset ArcMenu by 1px") +'\n' + _("Useful if you notice a 1px gap or overlap between ArcMenu and the panel")
         });
         gapAdjustmentScale.connect('format-value', (scale, value) => { return value.toString() + 'px'; });
         gapAdjustmentScale.set_value(this.gapAdjustment);
@@ -3439,7 +3440,7 @@ var MenuSettingsFineTunePage = GObject.registerClass(
         let gapAdjustmentInfoButton = new PW.InfoButton();
         gapAdjustmentInfoButton.connect('clicked', ()=> {
             let dialog = new Gtk.MessageDialog({
-                text: "<b>" + _("Offset Arc Menu by 1px") + '</b>\n\n' + _('Useful if you notice a 1px gap or overlap between Arc Menu and the panel'),
+                text: "<b>" + _("Offset ArcMenu by 1px") + '</b>\n\n' + _('Useful if you notice a 1px gap or overlap between ArcMenu and the panel'),
                 use_markup: true,
                 buttons: Gtk.ButtonsType.OK,
                 message_type: Gtk.MessageType.OTHER,
@@ -3526,7 +3527,7 @@ var MenuSettingsFineTunePage = GObject.registerClass(
 });
 
 var MenuSettingsCategoriesPage = GObject.registerClass(
-    class ArcMenu_MenuSettingsCategoriesPage extends Gtk.ScrolledWindow {
+    class Arc_Menu_MenuSettingsCategoriesPage extends Gtk.ScrolledWindow {
     _init(settings) {
         super._init();
         this.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC);
@@ -3688,9 +3689,9 @@ var MenuSettingsCategoriesPage = GObject.registerClass(
     }
 });
 
-//Dialog Window for Arc Menu Customization    
+//Dialog Window for ArcMenu Customization    
 var ColorThemeDialogWindow = GObject.registerClass(
-    class ArcMenu_ColorThemeDialogWindow extends PW.DialogWindow {
+    class Arc_Menu_ColorThemeDialogWindow extends PW.DialogWindow {
         _init(settings, parent, themeName="") {
             this._settings = settings;
             this.addResponse = false;
@@ -3743,9 +3744,9 @@ var ColorThemeDialogWindow = GObject.registerClass(
         }
 });
 
-//Dialog Window for Arc Menu Customization    
+//Dialog Window for ArcMenu Customization    
 var ExportColorThemeDialogWindow = GObject.registerClass(
-    class ArcMenu_ExportColorThemeDialogWindow extends PW.DialogWindow {
+    class Arc_Menu_ExportColorThemeDialogWindow extends PW.DialogWindow {
 
         _init(settings, parent, themes=null) {
             this._settings = settings;
@@ -3861,9 +3862,9 @@ var ExportColorThemeDialogWindow = GObject.registerClass(
             return this.addResponse;
         }
 });
-//Dialog Window for Arc Menu Customization    
+//Dialog Window for ArcMenu Customization    
 var ManageColorThemeDialogWindow = GObject.registerClass(
-    class ArcMenu_ManageColorThemeDialogWindow extends PW.DialogWindow {
+    class Arc_Menu_ManageColorThemeDialogWindow extends PW.DialogWindow {
 
         _init(settings, parent) {
             this._settings = settings;
@@ -4015,13 +4016,13 @@ var ManageColorThemeDialogWindow = GObject.registerClass(
             return this.addResponse;
         }
 });
-//Dialog Window for Arc Menu Customization    
+//Dialog Window for ArcMenu Customization    
 var OverrideArcMenuThemeWindow = GObject.registerClass({
     Signals: {
         'menu-theme-response': { param_types: [GObject.TYPE_INT] },
     },
 },
-    class ArcMenu_OverrideArcMenuThemeWindow extends Gtk.Box {
+    class Arc_Menu_OverrideArcMenuThemeWindow extends Gtk.Box {
         _init(settings, parentBox) {
             super._init({
                 orientation: Gtk.Orientation.VERTICAL,
@@ -4066,7 +4067,7 @@ var OverrideArcMenuThemeWindow = GObject.registerClass({
             }
         }
         _createLayout(vbox) {         
-            //OVERRIDE ARC MENUS THEME-----------------------------
+            //OVERRIDE ArcMenuS THEME-----------------------------
             //OVERRIDE OPTIONS--------------------------------
             let customArcMenuOptionsFrame = new PW.FrameBox();
 
@@ -4666,7 +4667,7 @@ var OverrideArcMenuThemeWindow = GObject.registerClass({
 });
 
 var MenuSettingsShortcutDirectoriesPage = GObject.registerClass(
-    class ArcMenu_MenuSettingsShortcutDirectoriesPage extends Gtk.ScrolledWindow {
+    class Arc_Menu_MenuSettingsShortcutDirectoriesPage extends Gtk.ScrolledWindow {
     _init(settings) {
         super._init();
         this.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC);
@@ -4949,7 +4950,7 @@ var MenuSettingsShortcutDirectoriesPage = GObject.registerClass(
     }
 });
 var MenuSettingsShortcutApplicationsPage = GObject.registerClass(
-    class ArcMenu_MenuSettingsShortcutApplicationsPage extends Gtk.ScrolledWindow {
+    class Arc_Menu_MenuSettingsShortcutApplicationsPage extends Gtk.ScrolledWindow {
     _init(settings) {
         super._init();
         this.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC);
@@ -5230,7 +5231,7 @@ var MenuSettingsShortcutApplicationsPage = GObject.registerClass(
     }
 });
 var MenuSettingsShortcutSessionButtonsPage = GObject.registerClass(
-    class ArcMenu_MenuSettingsShortcutSessionButtonsPage extends Gtk.ScrolledWindow {
+    class Arc_Menu_MenuSettingsShortcutSessionButtonsPage extends Gtk.ScrolledWindow {
     _init(settings) {
         super._init();
         this.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC);
@@ -5298,6 +5299,23 @@ var MenuSettingsShortcutSessionButtonsPage = GObject.registerClass(
         logOffRow.add(logOffLabel);
         logOffRow.add(logOffButton);
 
+        //RESTART BUTTON
+        let restartRow = new PW.FrameBoxRow();
+        let restartLabel = new Gtk.Label({
+            label: _("Restart"),
+            use_markup: true,
+            xalign: 0,
+            hexpand: true
+        });
+        let restartButton = new Gtk.Switch();
+        if(this._settings.get_boolean('show-restart-button'))
+            restartButton.set_active(true);
+        restartButton.connect('notify::active', (widget) => {
+            this._settings.set_boolean('show-restart-button', widget.get_active());
+        });   
+        restartRow.add(restartLabel);
+        restartRow.add(restartButton);
+
         //POWER BUTTON
         let powerRow = new PW.FrameBoxRow();
         let powerLabel = new Gtk.Label({
@@ -5319,12 +5337,13 @@ var MenuSettingsShortcutSessionButtonsPage = GObject.registerClass(
         sessionButtonsFrame.add(suspendRow);
         sessionButtonsFrame.add(logOffRow);
         sessionButtonsFrame.add(lockRow);
+        sessionButtonsFrame.add(restartRow);
         sessionButtonsFrame.add(powerRow);
     }
 });
 
 var MenuSettingsShortcutExtrasPage = GObject.registerClass(
-    class ArcMenu_MenuSettingsShortcutExtrasPage extends Gtk.ScrolledWindow {
+    class Arc_Menu_MenuSettingsShortcutExtrasPage extends Gtk.ScrolledWindow {
     _init(settings) {
         super._init();
         this.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC);
@@ -5348,7 +5367,7 @@ var MenuSettingsShortcutExtrasPage = GObject.registerClass(
             hexpand: true
         });
         
-        let externalDeviceButton = new Gtk.Switch({tooltip_text:_("Show all connected external devices in Arc Menu")});
+        let externalDeviceButton = new Gtk.Switch({tooltip_text:_("Show all connected external devices in ArcMenu")});
         if(this._settings.get_boolean('show-external-devices'))
             externalDeviceButton.set_active(true);
         externalDeviceButton.connect('notify::active', (widget) => {
@@ -5368,7 +5387,7 @@ var MenuSettingsShortcutExtrasPage = GObject.registerClass(
             hexpand: true
         });
         
-        let bookmarksButton = new Gtk.Switch({tooltip_text:_("Show all Nautilus bookmarks in Arc Menu")});
+        let bookmarksButton = new Gtk.Switch({tooltip_text:_("Show all Nautilus bookmarks in ArcMenu")});
         if(this._settings.get_boolean('show-bookmarks'))
             bookmarksButton.set_active(true);
         bookmarksButton.connect('notify::active', (widget) => {
@@ -5385,13 +5404,13 @@ var MenuSettingsShortcutExtrasPage = GObject.registerClass(
 
 // Misc Page
 var MiscPage = GObject.registerClass(
-    class ArcMenu_MiscPage extends PW.NotebookPage {
+    class Arc_Menu_MiscPage extends PW.NotebookPage {
         _init(settings) {
             super._init(_('Misc'));
             this._settings = settings;
 
             let settingsHeaderLabel = new Gtk.Label({
-                label: "<b>" + _('Arc Menu Settings') +"</b>",
+                label: "<b>" + _('ArcMenu Settings') +"</b>",
                 use_markup: true,
                 xalign: 0,
                 hexpand: true
@@ -5401,7 +5420,7 @@ var MiscPage = GObject.registerClass(
             let importFrame = new PW.FrameBox();
             let importRow = new PW.FrameBoxRow();
             let importLabel = new Gtk.Label({
-                label: _("Export or Import Arc Menu Settings"),
+                label: _("Export or Import ArcMenu Settings"),
                 use_markup: true,
                 xalign: 0,
                 hexpand: true
@@ -5410,7 +5429,7 @@ var MiscPage = GObject.registerClass(
             let settingsImportInfoButton = new PW.InfoButton();
             settingsImportInfoButton.connect('clicked', ()=> {
                 let dialog = new Gtk.MessageDialog({
-                    text: "<b>" + _("Export or Import Arc Menu Settings") + '</b>\n\n' + _('Importing settings from file may replace ALL saved settings.\nThis includes all saved pinned apps.'),
+                    text: "<b>" + _("Export or Import ArcMenu Settings") + '</b>\n\n' + _('Importing settings from file may replace ALL saved settings.\nThis includes all saved pinned apps.'),
                     use_markup: true,
                     buttons: Gtk.ButtonsType.OK,
                     message_type: Gtk.MessageType.OTHER,
@@ -5426,7 +5445,7 @@ var MiscPage = GObject.registerClass(
                 label: _("Import from File"),
                 xalign:.5,
                 expand:true,
-                tooltip_text: _("Import Arc Menu settings from a file")  
+                tooltip_text: _("Import ArcMenu settings from a file")  
             });
             importButton.connect('clicked', ()=> {
                 this._showFileChooser(
@@ -5462,7 +5481,7 @@ var MiscPage = GObject.registerClass(
                 label: _("Export to File"),
                 xalign:.5,
                 expand:true,
-                tooltip_text: _("Export and save all your Arc Menu settings to a file")  
+                tooltip_text: _("Export and save all your ArcMenu settings to a file")  
             });
             exportButton.connect('clicked', ()=> {
                 
@@ -5538,7 +5557,7 @@ var MiscPage = GObject.registerClass(
                 label: _("Import Theme Preset"),
                 xalign:.5,
                 expand:true,
-                tooltip_text: _("Import Arc Menu Theme Presets from a file")  
+                tooltip_text: _("Import ArcMenu Theme Presets from a file")  
             });
             importColorPresetButton.connect('clicked', ()=> {
                 this._showFileChooser(
@@ -5581,7 +5600,7 @@ var MiscPage = GObject.registerClass(
                 label: _("Export Theme Preset"),
                 xalign:.5,
                 expand:true,
-                tooltip_text: _("Export and save your Arc Menu Theme Presets to a file")  
+                tooltip_text: _("Export and save your ArcMenu Theme Presets to a file")  
             });
             exportColorPresetButton.connect('clicked', ()=> {
                 let dialog = new ExportColorThemeDialogWindow(this._settings, this);
@@ -5653,7 +5672,7 @@ var MiscPage = GObject.registerClass(
 
 // About Page
 var AboutPage = GObject.registerClass(
-    class ArcMenu_AboutPage extends Gtk.ScrolledWindow {
+    class Arc_Menu_AboutPage extends Gtk.ScrolledWindow {
         _init(settings) {
             super._init();
             this.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC);
@@ -5706,7 +5725,7 @@ var AboutPage = GObject.registerClass(
                 activatable: false
             });
             let versionText = new Gtk.Label({
-                label: _('Arc Menu Version'),
+                label: _('ArcMenu Version'),
             });
             let versionInfo = new Gtk.Label({
                 label: releaseVersion + '',
@@ -5817,7 +5836,7 @@ var AboutPage = GObject.registerClass(
                 expand: false
             });
             let arcMenuLabel = new Gtk.Label({
-                label: '<span size="large"><b>' + _('Arc Menu') + '</b></span>',
+                label: '<span size="large"><b>' + _('ArcMenu') + '</b></span>',
                 use_markup: true,
                 vexpand: true,
                 valign: Gtk.Align.FILL
@@ -5848,7 +5867,7 @@ var AboutPage = GObject.registerClass(
                 pixbuf: pixbuf,
                 expand: false,
                 halign: Gtk.Align.CENTER,
-                tooltip_text: _("Donate to the Arc Menu Project")
+                tooltip_text: _("Donate to the ArcMenu Project")
             });
             let donateLinkButton = new Gtk.LinkButton({
                 image: donateImage,
@@ -5866,7 +5885,7 @@ var AboutPage = GObject.registerClass(
                 pixbuf: pixbuf,
                 expand: false,
                 halign: Gtk.Align.CENTER,
-                tooltip_text: _("Arc Menu GitLab Page")
+                tooltip_text: _("ArcMenu GitLab Page")
             });
             let projectLinkButton = new Gtk.LinkButton({
                 image: gitlabImage,
@@ -5963,9 +5982,9 @@ function createSeparator(){
     return separatorRow;
 }
 
-// Arc Menu Preferences Widget
+// ArcMenu Preferences Widget
 var ArcMenuPreferencesWidget = GObject.registerClass(
-class ArcMenu_ArcMenuPreferencesWidget extends Gtk.Box{
+class Arc_Menu_ArcMenuPreferencesWidget extends Gtk.Box{
     _init() {
         super._init({
             orientation: Gtk.Orientation.HORIZONTAL,
@@ -5977,7 +5996,7 @@ class ArcMenu_ArcMenuPreferencesWidget extends Gtk.Box{
 
         this.connect("realize", ()=> {
             let window = this.get_toplevel();
-            window.set_title(_("Arc Menu Settings"));
+            window.set_title(_("ArcMenu Settings"));
 
             this.leftHeaderBox = new Gtk.Box({
                 hexpand: true,
@@ -6063,13 +6082,13 @@ class ArcMenu_ArcMenuPreferencesWidget extends Gtk.Box{
             valign: Gtk.Align.END,
             label: _("Reset all..."),
             margin: 10,
-            tooltip_text: _('Reset all Arc Menu Settings to Default') 
+            tooltip_text: _('Reset all ArcMenu Settings to Default') 
         });
         let context = resetSettingsButton.get_style_context();
         context.add_class('suggested-action');
         resetSettingsButton.connect('clicked', (widget) => {
             let dialog = new Gtk.MessageDialog({
-                text: "<b>" + _("Restore Default Settings?") + '</b>\n' + _("All Arc Menu settings will be reset to the default value."),
+                text: "<b>" + _("Restore Default Settings?") + '</b>\n' + _("All ArcMenu settings will be reset to the default value."),
                 use_markup: true,
                 buttons: Gtk.ButtonsType.YES_NO,
                 message_type: Gtk.MessageType.WARNING,

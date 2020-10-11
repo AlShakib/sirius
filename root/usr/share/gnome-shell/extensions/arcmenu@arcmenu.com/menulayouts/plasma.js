@@ -1,10 +1,10 @@
 /*
- * Arc Menu - A traditional application menu for GNOME 3
+ * ArcMenu - A traditional application menu for GNOME 3
  *
- * Arc Menu Lead Developer and Maintainer
+ * ArcMenu Lead Developer and Maintainer
  * Andrew Zaech https://gitlab.com/AndrewZaech
  * 
- * Arc Menu Founder, Former Maintainer, and Former Graphic Designer
+ * ArcMenu Founder, Former Maintainer, and Former Graphic Designer
  * LinxGem33 https://gitlab.com/LinxGem33 - (No Longer Active)
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -146,7 +146,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         this.computerButton.connect("activate", () => this.displayComputerCategory() );
         this.grid.layout_manager.attach(this.computerButton, 2, 0, 1, 1);
 
-        this.leaveButton = new MW.PlasmaMenuItem(this, _("Power Off"), 'system-shutdown-symbolic');
+        this.leaveButton = new MW.PlasmaMenuItem(this, _("Leave"), 'system-shutdown-symbolic');
         this.leaveButton.connect("activate", () => this.displayPowerItems() );
         this.grid.layout_manager.attach(this.leaveButton, 3, 0, 1, 1);
         
@@ -177,7 +177,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
             this.mainBox.add(this.navigateBoxContainer);
         }
            
-        let SOFTWARE_TRANSLATIONS = [_("Software"), _("Settings"), _("Tweaks"), _("Terminal"), _("Activities Overview"), _("Arc Menu Settings")];
+        let SOFTWARE_TRANSLATIONS = [_("Software"), _("Settings"), _("Tweaks"), _("Terminal"), _("Activities Overview"), _("ArcMenu Settings")];
         let applicationShortcutsList = this._settings.get_value('application-shortcuts-list').deep_unpack();
         this.applicationShortcuts = [];
         for(let i = 0; i < applicationShortcutsList.length; i++){
@@ -387,9 +387,14 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         this.applicationsBox.add(this.logOut);
         
         this.applicationsBox.add(this.createLabelRow(_("System")));
+
         if(!this.suspend)
             this.suspend = new MW.PlasmaPowerItem(this, Constants.PowerType.SUSPEND, _("Suspend"), 'media-playback-pause-symbolic');
         this.applicationsBox.add(this.suspend);
+
+        if(!this.powerOff)
+            this.restart = new MW.PlasmaPowerItem(this, Constants.PowerType.RESTART, _("Restart..."), Me.path + Constants.RESTART_ICON.Path);
+        this.applicationsBox.add(this.restart);
 
         if(!this.powerOff)
             this.powerOff = new MW.PlasmaPowerItem(this, Constants.PowerType.POWEROFF, _("Power Off..."), 'system-shutdown-symbolic');

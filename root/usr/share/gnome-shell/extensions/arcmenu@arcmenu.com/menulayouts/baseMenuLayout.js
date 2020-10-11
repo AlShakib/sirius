@@ -1,10 +1,10 @@
 /*
- * Arc Menu - A traditional application menu for GNOME 3
+ * ArcMenu - A traditional application menu for GNOME 3
  *
- * Arc Menu Lead Developer and Maintainer
+ * ArcMenu Lead Developer and Maintainer
  * Andrew Zaech https://gitlab.com/AndrewZaech
  * 
- * Arc Menu Founder, Former Maintainer, and Former Graphic Designer
+ * ArcMenu Founder, Former Maintainer, and Former Graphic Designer
  * LinxGem33 https://gitlab.com/LinxGem33 - (No Longer Active)
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -28,13 +28,13 @@ const AppFavorites = imports.ui.appFavorites;
 const appSys = Shell.AppSystem.get_default();
 const ArcSearch = Me.imports.search;
 const Constants = Me.imports.constants;
-const GnomeSession = imports.misc.gnomeSession;
 const Gettext = imports.gettext.domain(Me.metadata['gettext-domain']);
 const Main = imports.ui.main;
 const MenuLayouts = Me.imports.menulayouts;
 const MW = Me.imports.menuWidgets;
 const PlaceDisplay = Me.imports.placeDisplay;
 const PopupMenu = imports.ui.popupMenu;
+const SystemActions = imports.misc.systemActions;
 const Utils =  Me.imports.utils;
 
 //This class handles the core functionality of all the menu layouts.
@@ -50,11 +50,10 @@ var BaseLayout = class {
         this.section = menuButton.section;
         this.layout = this._settings.get_enum('menu-layout');
         this.layoutProperties = layoutProperties;
-        this._session = new GnomeSession.SessionManager();
         this.isRunning = true;
         this._focusChild = null;
         this.shouldLoadFavorites = true;
-
+        this.systemActions = new SystemActions.getDefault();
         if(this.layoutProperties.Search){
             this.newSearch = new ArcSearch.SearchResults(this);    
         }
@@ -430,7 +429,7 @@ var BaseLayout = class {
                 placeMenuItem = new MW.ShortcutButtonItem(this, _("Trash"), '', "ArcMenu_Trash");
             }
             else if(pinnedApps[i+2] === Constants.ArcMenu_SettingsCommand || pinnedApps[i+2] === "ArcMenu_Suspend" || pinnedApps[i+2] === "ArcMenu_LogOut" || pinnedApps[i+2] === "ArcMenu_PowerOff"
-                    || pinnedApps[i+2] === "ArcMenu_Lock" || app){
+                    || pinnedApps[i+2] === "ArcMenu_Lock" || pinnedApps[i+2] === "ArcMenu_Restart" || app){
                 placeMenuItem = new MW.ShortcutButtonItem(this, pinnedApps[i], pinnedApps[i+1], pinnedApps[i+2]);
             }
             else if(pinnedApps[i+2].startsWith("ArcMenu_")){
@@ -952,7 +951,7 @@ var BaseLayout = class {
         panAction.connect('gesture-end', (action) => this.onPanEnd(action, scrollBox));
         scrollBox.add_action(panAction);
 
-        scrollBox.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC);
+        scrollBox.set_policy(St.PolicyType.NEVER, St.PolicyType.AUTOMATIC);
         scrollBox.clip_to_allocation = true;
 
         return scrollBox;

@@ -1,10 +1,10 @@
 /*
- * Arc Menu - A traditional application menu for GNOME 3
+ * ArcMenu - A traditional application menu for GNOME 3
  *
- * Arc Menu Lead Developer and Maintainer
+ * ArcMenu Lead Developer and Maintainer
  * Andrew Zaech https://gitlab.com/AndrewZaech
  * 
- * Arc Menu Founder, Former Maintainer, and Former Graphic Designer
+ * ArcMenu Founder, Former Maintainer, and Former Graphic Designer
  * LinxGem33 https://gitlab.com/LinxGem33 - (No Longer Active)
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -125,7 +125,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
             y_align: Clutter.ActorAlign.END,
             x_align: Clutter.ActorAlign.CENTER
         });	
-        this.sessionBox.style = "spacing: 16px;";
+        this.sessionBox.style = "spacing: 6px;";
 
         if(this._settings.get_boolean('show-logout-button')){
             let logout = new MW.LogoutButton( this);
@@ -138,6 +138,10 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         if(this._settings.get_boolean('show-suspend-button')){
             let suspend = new MW.SuspendButton( this);
             this.sessionBox.add(suspend.actor);
+        }
+        if(this._settings.get_boolean('show-restart-button')){
+            let restart = new MW.RestartButton(this);
+            this.sessionBox.add(restart.actor);
         }
         if(this._settings.get_boolean('show-power-button')){
             let power = new MW.PowerButton( this);
@@ -201,7 +205,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
                     placeMenuItem = new MW.ShortcutMenuItem(this, _("Software"), 'system-software-install-symbolic', software);
             }
             else if(pinnedApps[i+2] == Constants.ArcMenu_SettingsCommand || pinnedApps[i+2] == "ArcMenu_Suspend" || pinnedApps[i+2] == "ArcMenu_LogOut" || pinnedApps[i+2] == "ArcMenu_PowerOff"
-                    || pinnedApps[i+2] == "ArcMenu_Lock" || app){
+                    || pinnedApps[i+2] == "ArcMenu_Lock" || pinnedApps[i+2] === "ArcMenu_Restart" || app){
                 placeMenuItem = new MW.ShortcutMenuItem(this, pinnedApps[i], pinnedApps[i+1], pinnedApps[i+2]);
             }
             else if(pinnedApps[i+2] === "ArcMenu_Trash"){

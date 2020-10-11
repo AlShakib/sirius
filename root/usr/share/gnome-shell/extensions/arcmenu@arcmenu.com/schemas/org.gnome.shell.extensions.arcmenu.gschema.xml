@@ -18,9 +18,7 @@
         <value value='14' nick='Chromebook'/>
         <value value='15' nick='Raven'/>
         <value value='16' nick='Tognee'/>
-        <value value='17' nick='RavenExtended'/>
-        <value value='18' nick='Dashboard'/>
-        <value value='19' nick='Plasma'/>
+        <value value='17' nick='Plasma'/>
     </enum>
     <enum id='org.gnome.shell.extensions.arcmenu.menu-hotkey'>
         <value value='0' nick='Undefined'/>
@@ -100,8 +98,8 @@
     </key>
     <key enum="org.gnome.shell.extensions.arcmenu.arc-menu-placement" name="arc-menu-placement">
       <default>"Panel"</default>
-      <summary>Embed Arc Menu button into Dash instead of panel</summary>
-      <description>Embed Arc Menu button into Dash instead of panel</description>
+      <summary>Embed ArcMenu button into Dash instead of panel</summary>
+      <description>Embed ArcMenu button into Dash instead of panel</description>
     </key>
     <key type="b" name="enable-weather-widget-raven">
       <default>true</default>
@@ -330,13 +328,13 @@
     </key>
     <key type="b" name="enable-custom-arc-menu">
       <default>false</default>
-      <summary>Enable Custom Arc Menu Theme</summary>
-      <description>Enable Custom Arc Menu Theme.</description>
+      <summary>Enable Custom ArcMenu Theme</summary>
+      <description>Enable Custom ArcMenu Theme.</description>
     </key>
     <key type="b" name="enable-custom-arc-menu-layout">
       <default>false</default>
-      <summary>Enable Custom Arc Menu Layout</summary>
-      <description>Enable Custom Arc Menu Layout.</description>
+      <summary>Enable Custom ArcMenu Layout</summary>
+      <description>Enable Custom ArcMenu Layout.</description>
     </key>
     <key type="b" name="show-external-devices">
       <default>false</default>
@@ -363,6 +361,11 @@
       <summary>Show suspend button</summary>
       <description>Show suspend button.</description>
     </key>
+    <key type="b" name="show-restart-button">
+      <default>false</default>
+      <summary>Show restart button</summary>
+      <description>Show restart button.</description>
+    </key>
     <key type="b" name="show-power-button">
       <default>true</default>
       <summary>Show power button</summary>
@@ -386,7 +389,7 @@
     <key type="b" name="restore-activities-button">
       <default>false</default>
       <summary>Restore Activities Button in panel</summary>
-      <description>Restore Activities Button in panel. Used with "Hidden" Arc Menu icon setting</description>
+      <description>Restore Activities Button in panel. Used with "Hidden" ArcMenu icon setting</description>
     </key>
     <key type="b" name="disable-activities-button">
       <default>false</default>
@@ -400,23 +403,23 @@
     </key>
     <key name="menu-hotkey" enum="org.gnome.shell.extensions.arcmenu.menu-hotkey">
       <default>'Undefined'</default>
-      <summary>The menu hotkey to open the Arc Menu.</summary>
-      <description>The menu hotkey to open the Arc Menu.</description>
+      <summary>The menu hotkey to open the ArcMenu.</summary>
+      <description>The menu hotkey to open the ArcMenu.</description>
     </key>
     <key type="b" name="enable-menu-keybinding">
       <default>false</default>
-      <summary>Enable the keybinding for the Arc Menu.</summary>
-      <description>Enable the keybinding for the Arc Menu.</description>
+      <summary>Enable the keybinding for the ArcMenu.</summary>
+      <description>Enable the keybinding for the ArcMenu.</description>
     </key>
     <key type="s" name="menu-keybinding-text">
       <default>'&lt;Super&gt;x'</default>
-      <summary>Keybinding to open the Arc Menu.</summary>
-      <description>Keybinding to open the Arc Menu..</description>
+      <summary>Keybinding to open the ArcMenu.</summary>
+      <description>Keybinding to open the ArcMenu..</description>
     </key>
     <key type="as" name="menu-keybinding">
       <default><![CDATA[['<Super>x']]]></default>
-      <summary>Keybinding to open the Arc Menu.</summary>
-      <description>Keybinding to open the Arc Menu.</description>
+      <summary>Keybinding to open the ArcMenu.</summary>
+      <description>Keybinding to open the ArcMenu.</description>
     </key>
     <key name="position-in-panel" enum="org.gnome.shell.extensions.arcmenu.menu-position">
       <default>'Left'</default>
@@ -520,7 +523,7 @@
     </key>
     <key name="pinned-app-list" type="as">
       <default>["ArcMenu_WebBrowser","WebBrowser", "WebBrowser","Terminal", "", "org.gnome.Terminal.desktop",
-                "Arc Menu Settings", "ArcMenu_ArcMenuIcon", "gnome-extensions prefs arcmenu@arcmenu.com"]</default>
+                "ArcMenu Settings", "ArcMenu_ArcMenuIcon", "gnome-extensions prefs arcmenu@arcmenu.com"]</default>
       <summary>List of Apps Pinned to Menu</summary>
       <description>List of Apps Pinned to Menu</description>
     </key>
@@ -532,15 +535,15 @@
     <key name="directory-shortcuts-list" type="aas">
       <default>[["Home","ArcMenu_Home", "ArcMenu_Home"], ["Documents","ArcMenu_Documents", "ArcMenu_Documents"],["Downloads","ArcMenu_Downloads", "ArcMenu_Downloads"],
           ["Music","ArcMenu_Music", "ArcMenu_Music"],["Pictures","ArcMenu_Pictures", "ArcMenu_Pictures"],["Videos","ArcMenu_Videos", "ArcMenu_Videos"]]</default>
-      <summary>List of default directory paths used for links on the right side of Arc Menu</summary>
-      <description>List of default directory paths used for links on the right side of Arc Menu.</description>
+      <summary>List of default directory paths used for links on the right side of ArcMenu</summary>
+      <description>List of default directory paths used for links on the right side of ArcMenu.</description>
     </key>
     <key name="application-shortcuts-list" type="aas">
       <default>[["Software","system-software-install-symbolic", "ArcMenu_Software"], ["Settings","preferences-system-symbolic", "gnome-control-center.desktop"],
           ["Tweaks","org.gnome.tweaks-symbolic", "org.gnome.tweaks.desktop"],["Terminal","utilities-terminal-symbolic", "org.gnome.Terminal.desktop"],
           ["Activities Overview", "view-fullscreen-symbolic", "ArcMenu_ActivitiesOverview"]]</default>
-      <summary>List of default directory paths used for links on the right side of Arc Menu</summary>
-      <description>List of default directory paths used for links on the right side of Arc Menu.</description>
+      <summary>List of default directory paths used for links on the right side of ArcMenu</summary>
+      <description>List of default directory paths used for links on the right side of ArcMenu.</description>
     </key>
     <key name="ubuntu-dash-pinned-app-list" type="as">
       <default>[]</default>
@@ -568,7 +571,7 @@
       <description>Index of Mint Layout Pinned App Separator, 0 = none</description>
     </key>
     <key name="color-themes" type="aas">
-      <default>[['Arc Menu Theme', 'rgba(28, 28, 28, 0.98)', 'rgba(211, 218, 227, 1)', 'rgb(63,62,64)', 'rgba(238, 238, 236, 0.1)', 'rgba(255,255,255,1)', 'rgb(63,62,64)', '9', '0', '0', '0', '0', 'false'], 
+      <default>[['ArcMenu Theme', 'rgba(28, 28, 28, 0.98)', 'rgba(211, 218, 227, 1)', 'rgb(63,62,64)', 'rgba(238, 238, 236, 0.1)', 'rgba(255,255,255,1)', 'rgb(63,62,64)', '9', '0', '0', '0', '0', 'false'], 
       ['Dark Blue Theme', 'rgb(25,31,34)', 'rgb(189,230,251)', 'rgb(41,50,55)', 'rgb(41,50,55)', 'rgba(255,255,255,1)', 'rgb(41,50,55)', '9', '1', '5', '12', '24', 'true'], 
       ['Light Blue Theme', 'rgb(255,255,255)', 'rgb(51,51,51)', 'rgb(235,235,235)', 'rgba(189,230,251,0.9)', 'rgba(89,89,89,1)', 'rgba(189,230,251,0.9)', '9', '1', '5', '12', '24', 'true']]</default>
       <summary>List of color-themes</summary>

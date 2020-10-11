@@ -1,10 +1,10 @@
 /*
- * Arc Menu - A traditional application menu for GNOME 3
+ * ArcMenu - A traditional application menu for GNOME 3
  *
- * Arc Menu Lead Developer and Maintainer
+ * ArcMenu Lead Developer and Maintainer
  * Andrew Zaech https://gitlab.com/AndrewZaech
  * 
- * Arc Menu Founder, Former Maintainer, and Former Graphic Designer
+ * ArcMenu Founder, Former Maintainer, and Former Graphic Designer
  * LinxGem33 https://gitlab.com/LinxGem33 - (No Longer Active)
  * 
  * Budgie.js Layout Created By: MagneFire https://gitlab.com/MagneFire 
@@ -87,7 +87,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         this.applicationsScrollBox.style = "width: " + rightPanelWidth + "px;";
 
         // Disable horizontal scrolling, hide vertical scrollbar, but allow vertical scrolling.
-        this.applicationsScrollBox.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.EXTERNAL);
+        this.applicationsScrollBox.set_policy(St.PolicyType.NEVER, St.PolicyType.EXTERNAL);
 
         this.applicationsScrollBox.add_actor(this.applicationsBox);
         this.rightBox.add(this.applicationsScrollBox);

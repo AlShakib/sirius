@@ -1,10 +1,10 @@
 /*
- * Arc Menu - A traditional application menu for GNOME 3
+ * ArcMenu - A traditional application menu for GNOME 3
  *
- * Arc Menu Lead Developer and Maintainer
+ * ArcMenu Lead Developer and Maintainer
  * Andrew Zaech https://gitlab.com/AndrewZaech
  * 
- * Arc Menu Founder, Former Maintainer, and Former Graphic Designer
+ * ArcMenu Founder, Former Maintainer, and Former Graphic Designer
  * LinxGem33 https://gitlab.com/LinxGem33 - (No Longer Active)
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ const {GdkPixbuf, Gio, GLib, GObject, Gtk} = imports.gi;
 const Gettext = imports.gettext.domain(Me.metadata['gettext-domain']);
 const _ = Gettext.gettext;
 
-var Notebook = GObject.registerClass(class ArcMenu_Notebook extends Gtk.Notebook{
+var Notebook = GObject.registerClass(class Arc_Menu_Notebook extends Gtk.Notebook{
     _init() {
         super._init({
             margin_left: 0,
@@ -42,7 +42,7 @@ var Notebook = GObject.registerClass(class ArcMenu_Notebook extends Gtk.Notebook
     }
 });
 
-var NotebookPage = GObject.registerClass(class ArcMenu_NotebookPage extends Gtk.Box {
+var NotebookPage = GObject.registerClass(class Arc_Menu_NotebookPage extends Gtk.Box {
     _init(title) {
         super._init({
             orientation: Gtk.Orientation.VERTICAL,
@@ -62,7 +62,7 @@ var NotebookPage = GObject.registerClass(class ArcMenu_NotebookPage extends Gtk.
     }
 });
 
-var IconButton = GObject.registerClass(class ArcMenu_IconButton extends Gtk.Button {
+var IconButton = GObject.registerClass(class Arc_Menu_IconButton extends Gtk.Button {
     _init(params) {
         super._init();
         this._params = params;
@@ -84,7 +84,7 @@ var IconButton = GObject.registerClass(class ArcMenu_IconButton extends Gtk.Butt
     }
 });
 
-var InfoButton = GObject.registerClass(class ArcMenu_InfoButton extends Gtk.Button{
+var InfoButton = GObject.registerClass(class Arc_Menu_InfoButton extends Gtk.Button{
     _init(params) {
         super._init();
         this.halign = Gtk.Align.END;
@@ -100,7 +100,7 @@ var InfoButton = GObject.registerClass(class ArcMenu_InfoButton extends Gtk.Butt
 
 });
 
-var DialogWindow = GObject.registerClass(class ArcMenu_DialogWindow extends Gtk.Dialog {
+var DialogWindow = GObject.registerClass(class Arc_Menu_DialogWindow extends Gtk.Dialog {
     _init(title, parent) {
         super._init({
             title: title,
@@ -124,7 +124,7 @@ var DialogWindow = GObject.registerClass(class ArcMenu_DialogWindow extends Gtk.
     }
 });
 
-var FrameBox = GObject.registerClass(class ArcMenu_FrameBox extends Gtk.Frame {
+var FrameBox = GObject.registerClass(class Arc_Menu_FrameBox extends Gtk.Frame {
     _init() {
         super._init({ label_yalign: 0.50 });
         this._listBox = new Gtk.ListBox();
@@ -165,7 +165,7 @@ var FrameBox = GObject.registerClass(class ArcMenu_FrameBox extends Gtk.Frame {
     }
 });
 
-var FrameBoxRow = GObject.registerClass(class ArcMenu_FrameBoxRow extends Gtk.ListBoxRow {
+var FrameBoxRow = GObject.registerClass(class Arc_Menu_FrameBoxRow extends Gtk.ListBoxRow {
     _init(params) {
         super._init(params);
         this.selectable = false;
@@ -188,7 +188,7 @@ var FrameBoxRow = GObject.registerClass(class ArcMenu_FrameBoxRow extends Gtk.Li
     }
 });
 
-var StackListBox = GObject.registerClass(class ArcMenu_StackListBox extends Gtk.ListBox{
+var StackListBox = GObject.registerClass(class Arc_Menu_StackListBox extends Gtk.ListBox{
     _init(widget, params){
         super._init(params);
         this.valign = Gtk.Align.FILL;
@@ -259,7 +259,7 @@ var StackListBox = GObject.registerClass(class ArcMenu_StackListBox extends Gtk.
     }
 });
 
-var TileGrid = GObject.registerClass(class ArcMenu_TileGrid extends Gtk.FlowBox{
+var TileGrid = GObject.registerClass(class Arc_Menu_TileGrid extends Gtk.FlowBox{
     _init(maxColumns) {
         super._init({
             row_spacing: 5,
@@ -275,7 +275,7 @@ var TileGrid = GObject.registerClass(class ArcMenu_TileGrid extends Gtk.FlowBox{
     }
 });
 
-var IconGrid = GObject.registerClass(class ArcMenu_IconGrid extends Gtk.FlowBox{
+var IconGrid = GObject.registerClass(class Arc_Menu_IconGrid extends Gtk.FlowBox{
     _init() {
         super._init({
             max_children_per_line: 7,
@@ -291,7 +291,7 @@ var IconGrid = GObject.registerClass(class ArcMenu_IconGrid extends Gtk.FlowBox{
     }
 });
 
-var Tile = GObject.registerClass(class ArcMenu_Tile extends Gtk.Button{
+var Tile = GObject.registerClass(class Arc_Menu_Tile extends Gtk.Button{
     _init(name, file, width, height, layout) {
         super._init({
             hexpand: false,
@@ -313,7 +313,7 @@ var Tile = GObject.registerClass(class ArcMenu_Tile extends Gtk.Button{
     }
 });
 
-var LayoutTile = GObject.registerClass(class ArcMenu_LayoutTile extends FrameBox{
+var LayoutTile = GObject.registerClass(class Arc_Menu_LayoutTile extends FrameBox{
     _init(name, file, width, height, layout) {
         super._init();
         this.name = name;

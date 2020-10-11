@@ -1,10 +1,10 @@
 /*
- * Arc Menu - A traditional application menu for GNOME 3
+ * ArcMenu - A traditional application menu for GNOME 3
  *
- * Arc Menu Lead Developer and Maintainer
+ * ArcMenu Lead Developer and Maintainer
  * Andrew Zaech https://gitlab.com/AndrewZaech
  * 
- * Arc Menu Founder, Former Maintainer, and Former Graphic Designer
+ * ArcMenu Founder, Former Maintainer, and Former Graphic Designer
  * LinxGem33 https://gitlab.com/LinxGem33 - (No Longer Active)
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -106,6 +106,7 @@ var MenuSettingsController = class {
             this._settings.connect('changed::disable-recently-installed-apps', this._reload.bind(this)),
             this._settings.connect('changed::extra-categories', this._reload.bind(this)),
             this._settings.connect('changed::show-power-button', this._reload.bind(this)),
+            this._settings.connect('changed::show-restart-button', this._reload.bind(this)),
             this._settings.connect('changed::show-logout-button', this._reload.bind(this)),
             this._settings.connect('changed::show-lock-button', this._reload.bind(this)),
             this._settings.connect('changed::show-external-devices', this._reload.bind(this)),
@@ -238,7 +239,7 @@ var MenuSettingsController = class {
             this._menuButton._loadFavorites();
         //If the active category is Pinned Apps, redisplay the new Pinned Apps
         if(this._menuButton.MenuLayout && (this._menuButton.MenuLayout.activeCategoryType === Constants.CategoryType.PINNED_APPS || 
-                this._menuButton.MenuLayout.activeCategoryType === Constants.CategoryType.HOME_SCREEN || layout === Constants.MENU_LAYOUT.Dashboard))
+                this._menuButton.MenuLayout.activeCategoryType === Constants.CategoryType.HOME_SCREEN))
             this._menuButton._displayFavorites();  
     }
 
