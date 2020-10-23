@@ -282,3 +282,9 @@ jellyfin jellyfin-server jellyfin-web
 
 # Google Cloud SDK
 google-cloud-sdk
+
+# .NET Core 3.1 Software Development Kit
+dotnet-sdk-3.1
+
+# Development tools for Mono
+mono-devel
