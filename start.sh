@@ -241,11 +241,6 @@ add_repos() {
   dnf copr -y enable "zeno/scrcpy" &>> "${LOG_FILE}"
   is_failed "Done" "Skipping: zeno/scrcpy repo did not enable successfully. See log for more info."
 
-  # enable jellyfin repo
-  print "Enabling brianjmurrell/jellyfin copr repo"
-  dnf copr -y enable "brianjmurrell/jellyfin" &>> "${LOG_FILE}"
-  is_failed "Done" "Skipping: brianjmurrell/jellyfin repo did not enable successfully. See log for more info."
-
   # add rpmfusion repo
   print "Installing RPM Fusion repo"
   dnf install -y "https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-${RELEASE_VER}.noarch.rpm" \
@@ -753,8 +748,8 @@ set_misc_flags() {
   is_failed "Done" "Skipping: Adding cgroups exception for Fedora ${RELEASE_VER} is failed. See log for more info."
 
   # enable some apps to run on boot
-  print "Enabling httpd, mariadb, php-fpm, vnstat, docker, libvirtd and jellyfin to run on boot"
-  systemctl enable httpd mariadb php-fpm vnstat docker libvirtd jellyfin &>> "${LOG_FILE}"
+  print "Enabling httpd, mariadb, php-fpm, vnstat, docker and libvirtd to run on boot"
+  systemctl enable httpd mariadb php-fpm vnstat docker libvirtd &>> "${LOG_FILE}"
   is_failed "Done" "Skipping: Enabling is failed. See log for more info."
 
   # creating the docker group

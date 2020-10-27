@@ -277,9 +277,6 @@ ddclient
 # Yum-utils CLI compatibility layer
 dnf-utils
 
-# Jellyfin is a free software media system that puts you in control of managing and streaming your media.
-jellyfin jellyfin-server jellyfin-web
-
 # Google Cloud SDK
 google-cloud-sdk
 
