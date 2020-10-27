@@ -2,7 +2,7 @@
 
 HOSTNAME="sirius"
 OS_ID="fedora"
-RELEASE_VER="32"
+RELEASE_VER="33"
 RELEASE_VAR="workstation"
 CPU_ARCH="x86_64"
 RED='\033[0;31m'
@@ -779,7 +779,6 @@ set_misc_flags() {
   # modifying firewall rules
   print "Modifying firewall rules"
   firewall-cmd --quiet --add-service=http --add-service=https --permanent &>> "${LOG_FILE}"
-  firewall-cmd --quiet --remove-port=1025-65535/udp --remove-port=1025-65535/tcp --permanent &>> "${LOG_FILE}"
   firewall-cmd --quiet --reload &>> "${LOG_FILE}"
   is_failed "Done" "Skipping: Modifying firewall rules are failed. See log for more info."
 
