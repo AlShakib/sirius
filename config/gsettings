@@ -37,7 +37,7 @@ org.gnome.desktop.interface clock-format '12h'
 ## Gnome Tweak Tools ##
 
 # Enable all extensions
-org.gnome.shell enabled-extensions ['arc-menu@linxgem33.com', 'dash-to-panel@jderose9.github.com', 'InternetSpeedMeter@alshakib.dev', 'openweather-extension@jenslody.de', 'panel-osd@berend.de.schouwer.gmail.com', 'pomodoro@arun.codito.in', 'remove-dropdown-arrows@mpdeimos.com', 'status-area-horizontal-spacing@mathematical.coffee.gmail.com', 'TopIcons-git@phocean.net', 'user-theme@gnome-shell-extensions.gcampax.github.com', 'windowIsReady_Remover@nunofarruca@gmail.com', 'system-monitor@paradoxxx.zero.gmail.com', 'gsconnect@andyholmes.github.io']
+org.gnome.shell enabled-extensions ['arc-menu@linxgem33.com', 'dash-to-panel@jderose9.github.com', 'InternetSpeedMeter@alshakib.dev', 'openweather-extension@jenslody.de', 'pomodoro@arun.codito.in', 'remove-dropdown-arrows@mpdeimos.com', 'status-area-horizontal-spacing@mathematical.coffee.gmail.com', 'TopIcons-git@phocean.net', 'user-theme@gnome-shell-extensions.gcampax.github.com', 'windowIsReady_Remover@nunofarruca@gmail.com', 'system-monitor@paradoxxx.zero.gmail.com', 'gsconnect@andyholmes.github.io']
 
 # Set application theme to 'Plata-Lumine-Compact'
 org.gnome.desktop.interface gtk-theme 'Plata-Lumine-Compact'
