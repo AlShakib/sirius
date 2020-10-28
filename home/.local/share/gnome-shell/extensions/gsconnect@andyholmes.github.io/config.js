@@ -1,4 +1,4 @@
-var PACKAGE_VERSION = 43;
+var PACKAGE_VERSION = 44;
 var PACKAGE_URL = 'https://github.com/andyholmes/gnome-shell-extension-gsconnect';
 var PACKAGE_BUGREPORT = 'https://github.com/andyholmes/gnome-shell-extension-gsconnect/issues/new';
 var PACKAGE_DATADIR = '/usr/local/share/gnome-shell/extensions/gsconnect@andyholmes.github.io';
