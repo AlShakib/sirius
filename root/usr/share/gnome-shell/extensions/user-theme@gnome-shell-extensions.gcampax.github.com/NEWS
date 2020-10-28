@@ -1,3 +1,80 @@
+3.38.0
+======
+
+Translators:
+  Balázs Meskó [hu], Alan Mortensen [da], Juliano Camargo [pt], Tim Sabsch [de],
+  Milo Casagrande [it], Rūdolfs Mazurs [lv]
+
+3.37.92
+=======
+
+Translators:
+  Nathan Follens [nl], Zander Brown [en_GB], Aurimas Černius [lt],
+  Marek Černocký [cs], Changwoo Ryu [ko], Dušan Kazik [sk]
+
+3.37.91
+=======
+
+Contributors:
+  Florian Müllner
+
+Translators:
+  Fran Dieguez [gl], Akarshan Biswas [bn_IN], Kukuh Syafaat [id],
+  Piotr Drąg [pl], Rafael Fontenelle [pt_BR], Jiri Grönroos [fi],
+  Марко Костић [sr], Goran Vidović [hr]
+
+3.37.90
+=======
+* Misc. bug fixes and cleanups [Florian, Piotr; !126, !128]
+
+Contributors:
+  Piotr Drąg, Florian Müllner
+
+Translators:
+  Fabio Tomat [fur], Efstathios Iosifidis [el], Anders Jonsson [sv],
+  Asier Sarasua Garmendia [eu], Alexandre Franke [fr]
+
+3.37.3
+======
+* window-list, native-window-placement: Adjust to shell changes [Florian; !124]
+
+Contributors:
+  Florian Müllner
+
+Translators:
+  Jordi Mas [ca], sicklylife [ja], Boyuan Yang [zh_CN],
+  Baurzhan Muftakhidinov [kk]
+
+3.37.2
+======
+* window-list, auto-move: Modernize preference dialogs [Florian; !121]
+* Adjust to gnome-shell changes [Florian; !122]
+
+Contributors:
+  Florian Müllner
+
+Translators:
+  Cheng-Chia Tseng [zh_TW], Yuri Chornoivan [uk], Daniel Mustieles [es],
+  Emin Tufan Çetin [tr], Danial Behzadi [fa], Daniel Șerbănescu [ro],
+  Matej Urbančič [sl]
+
+3.37.1
+======
+* drive-menu: Emphasize eject buttons [Florian; #223]
+* user-theme: Add preference dialog [Florian; !117]
+* window-list: Fix inconsistent state in preference dialog [Milan; !119]
+* workspace-indicator: Overhaul preference dialog [Florian; !120]
+* user-theme: Support session mode styles [Florian; !118]
+* Misc. bug fixes and cleanups [Florian, Xiaoguang; !113, !106, !114, !116]
+
+Contributors:
+  Milan Crha, Florian Müllner, Xiaoguang Wang
+
+Translators:
+  Daniel Korostil [uk], Yosef Or Boczko [he], Kristjan SCHMIDT [eo],
+  Dz Chen [zh_CN], Danial Behzadi [fa], Yuri Chornoivan [uk],
+  Anders Jonsson [sv], Daniel Mustieles [es]
+
 3.36.0
 ======
 
