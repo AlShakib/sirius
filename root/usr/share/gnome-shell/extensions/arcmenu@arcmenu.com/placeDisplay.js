@@ -46,7 +46,7 @@ const MEDIUM_ICON_SIZE = 25;
 const SMALL_ICON_SIZE = 16;
 
 var PlaceMenuItem = GObject.registerClass(class Arc_Menu_PlaceMenuItem2 extends MW.ArcMenuPopupBaseMenuItem{
-    _init(info, menuLayout) {
+    _init(menuLayout, info) {
         super._init(menuLayout);
         this._info = info;
         this._menuLayout = menuLayout;
@@ -68,7 +68,10 @@ var PlaceMenuItem = GObject.registerClass(class Arc_Menu_PlaceMenuItem2 extends 
                 icon_name: 'media-eject-symbolic',
                 style_class: 'popup-menu-icon'
             });
-            this._ejectButton = new St.Button({ child: this._ejectIcon });
+            this._ejectButton = new St.Button({ 
+                child: this._ejectIcon,
+                style_class: 'arc-menu-eject-button'
+            });
             this._ejectButton.connect('clicked', info.eject.bind(info));
             this.box.add_child(this._ejectButton);
         }

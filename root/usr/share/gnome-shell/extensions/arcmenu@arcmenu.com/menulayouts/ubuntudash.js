@@ -198,7 +198,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         for(let i = 0; i < applicationShortcuts.length; i++){
             let applicationName = applicationShortcuts[i][0];
             let shortcutMenuItem = new MW.ShortcutMenuItem(this, _(applicationName), applicationShortcuts[i][1], applicationShortcuts[i][2]);
-            shortcutMenuItem.setAsIcon();
+            shortcutMenuItem.setAsGridIcon();
             this.appShortcuts.push(shortcutMenuItem);
         }
         this.loadFavorites();

@@ -349,48 +349,7 @@ var BaseLayout = class {
         let directoryShortcuts = this._settings.get_value('directory-shortcuts-list').deep_unpack();
         for (let i = 0; i < directoryShortcuts.length; i++) {
             let directory = directoryShortcuts[i];
-            let placeInfo, placeMenuItem;
-            if(directory[2]=="ArcMenu_Home"){
-                let homePath = GLib.get_home_dir();
-                placeInfo = new MW.PlaceInfo(Gio.File.new_for_path(homePath), _("Home"));
-                placeMenuItem = new MW.PlaceMenuItem(this, placeInfo);
-            }
-            else if(directory[2]=="ArcMenu_Computer"){
-                placeInfo = new PlaceDisplay.RootInfo();
-                placeMenuItem = new PlaceDisplay.PlaceMenuItem(placeInfo, this);
-            }
-            else if(directory[2]=="ArcMenu_Network"){
-                placeInfo = new PlaceDisplay.PlaceInfo('network',Gio.File.new_for_uri('network:///'), _('Network'),'network-workgroup-symbolic');
-                placeMenuItem = new PlaceDisplay.PlaceMenuItem(placeInfo, this);    
-            }
-            else if(directory[2] === "ArcMenu_Trash"){
-                placeMenuItem = new MW.ShortcutMenuItem(this, _("Trash"), '', "ArcMenu_Trash");
-            }
-            else if(directory[2].startsWith("ArcMenu_")){
-                let path = directory[2].replace("ArcMenu_",'');
-
-                if(path === "Documents")
-                    path = imports.gi.GLib.UserDirectory.DIRECTORY_DOCUMENTS;
-                else if(path === "Downloads")
-                    path = imports.gi.GLib.UserDirectory.DIRECTORY_DOWNLOAD;
-                else if(path === "Music")
-                    path = imports.gi.GLib.UserDirectory.DIRECTORY_MUSIC;
-                else if(path === "Pictures")
-                    path = imports.gi.GLib.UserDirectory.DIRECTORY_PICTURES;
-                else if(path === "Videos")
-                    path = imports.gi.GLib.UserDirectory.DIRECTORY_VIDEOS;
-
-                path = GLib.get_user_special_dir(path);
-                if (path != null){
-                    placeInfo = new MW.PlaceInfo(Gio.File.new_for_path(path), _(directory[0]));
-                    placeMenuItem = new MW.PlaceMenuItem(this, placeInfo);
-                }
-            }
-            else{
-                let path = directory[2];
-                placeInfo = new MW.PlaceInfo(Gio.File.new_for_path(path), _(directory[0]), (directory[1] !== "ArcMenu_Folder") ? directory[1] : null);
-                placeMenuItem = new MW.PlaceMenuItem(this, placeInfo);
-            }
+            let placeMenuItem = this.createMenuItem(directory, Constants.MenuItemType.MENU_ITEM);
             if(placeMenuItem)
                 this.shortcutsBox.add_actor(placeMenuItem.actor);
         }
@@ -404,59 +363,10 @@ var BaseLayout = class {
         
         let addStyle = this._settings.get_boolean('enable-custom-arc-menu');
 
-        for(let i = 0;i<pinnedApps.length;i+=3){
+        for(let i = 0;i < pinnedApps.length; i += 3){
             if(i == separatorIndex * 3 && i != 0)
                 this._addSeparator();
-            let app = Shell.AppSystem.get_default().lookup_app(pinnedApps[i+2]);
-            
-            let placeInfo, placeMenuItem;
-            if(pinnedApps[i+2] === "ArcMenu_Home"){
-                let homePath = GLib.get_home_dir();
-                placeInfo = new MW.PlaceInfo(Gio.File.new_for_path(homePath), _("Home"));
-                placeMenuItem = new MW.PlaceButtonItem(this, placeInfo);
-            }
-            else if(pinnedApps[i+2] === "ArcMenu_Computer"){
-                placeInfo = new PlaceDisplay.RootInfo();
-                placeInfo.icon = placeInfo.icon.to_string();
-                placeMenuItem = new MW.PlaceButtonItem(this, placeInfo);
-            }
-            else if(pinnedApps[i+2] === "ArcMenu_Network"){
-                placeInfo = new PlaceDisplay.PlaceInfo('network',Gio.File.new_for_uri('network:///'), _('Network'),'network-workgroup-symbolic');
-                placeInfo.icon = placeInfo.icon.to_string();
-                placeMenuItem = new MW.PlaceButtonItem(this, placeInfo);    
-            }
-            else if(pinnedApps[i+2] === "ArcMenu_Trash"){
-                placeMenuItem = new MW.ShortcutButtonItem(this, _("Trash"), '', "ArcMenu_Trash");
-            }
-            else if(pinnedApps[i+2] === Constants.ArcMenu_SettingsCommand || pinnedApps[i+2] === "ArcMenu_Suspend" || pinnedApps[i+2] === "ArcMenu_LogOut" || pinnedApps[i+2] === "ArcMenu_PowerOff"
-                    || pinnedApps[i+2] === "ArcMenu_Lock" || pinnedApps[i+2] === "ArcMenu_Restart" || app){
-                placeMenuItem = new MW.ShortcutButtonItem(this, pinnedApps[i], pinnedApps[i+1], pinnedApps[i+2]);
-            }
-            else if(pinnedApps[i+2].startsWith("ArcMenu_")){
-                let path = pinnedApps[i+2].replace("ArcMenu_",'');
-
-                if(path === "Documents")
-                    path = imports.gi.GLib.UserDirectory.DIRECTORY_DOCUMENTS;
-                else if(path === "Downloads")
-                    path = imports.gi.GLib.UserDirectory.DIRECTORY_DOWNLOAD;
-                else if(path === "Music")
-                    path = imports.gi.GLib.UserDirectory.DIRECTORY_MUSIC;
-                else if(path === "Pictures")
-                    path = imports.gi.GLib.UserDirectory.DIRECTORY_PICTURES;
-                else if(path === "Videos")
-                    path = imports.gi.GLib.UserDirectory.DIRECTORY_VIDEOS;
-
-                path = GLib.get_user_special_dir(path);
-                if (path !== null){
-                    placeInfo = new MW.PlaceInfo(Gio.File.new_for_path(path), _(pinnedApps[i]));
-                    placeMenuItem = new MW.PlaceButtonItem(this, placeInfo);
-                }
-            }
-            else{
-                let path = pinnedApps[i+2];
-                placeInfo = new MW.PlaceInfo(Gio.File.new_for_path(path), _(pinnedApps[i]), (pinnedApps[i+1] !== "ArcMenu_Folder") ? pinnedApps[i+1] : null);
-                placeMenuItem = new MW.PlaceButtonItem(this, placeInfo);
-            }   
+            let placeMenuItem = this.createMenuItem([pinnedApps[i],pinnedApps[i+1], pinnedApps[i+2]], Constants.MenuItemType.BUTTON);
             if(addStyle) 
                 placeMenuItem.actor.add_style_class_name('arc-menu-action');
             if(this.layout == Constants.MENU_LAYOUT.Mint)
@@ -467,6 +377,93 @@ var BaseLayout = class {
             placeMenuItem.actor.x_align = Clutter.ActorAlign.CENTER;
             this.actionsBox.add(placeMenuItem.actor);
         }  
+    }
+
+    createMenuItem(menuItemArray, menuItemType){
+        let placeInfo, placeMenuItem;
+        let app = Shell.AppSystem.get_default().lookup_app(menuItemArray[2]);
+        
+        if(menuItemArray[2] === "ArcMenu_Home"){
+            let homePath = GLib.get_home_dir();
+            placeInfo = new MW.PlaceInfo(Gio.File.new_for_path(homePath), _("Home"));
+            if(menuItemType === Constants.MenuItemType.BUTTON)
+                placeMenuItem = new MW.PlaceButtonItem(this, placeInfo);
+            else if(menuItemType === Constants.MenuItemType.MENU_ITEM)
+                placeMenuItem = new MW.PlaceMenuItem(this, placeInfo);
+        }
+        else if(menuItemArray[2] === "ArcMenu_Computer"){
+            placeInfo = new PlaceDisplay.RootInfo();
+            if(menuItemType === Constants.MenuItemType.BUTTON){
+                placeInfo.icon = placeInfo.icon.to_string();
+                placeMenuItem = new MW.PlaceButtonItem(this, placeInfo);
+            }
+            else if(menuItemType === Constants.MenuItemType.MENU_ITEM)
+                placeMenuItem = new PlaceDisplay.PlaceMenuItem(this, placeInfo);
+        }
+        else if(menuItemArray[2] === "ArcMenu_Network"){
+            placeInfo = new PlaceDisplay.PlaceInfo('network',Gio.File.new_for_uri('network:///'), _('Network'),'network-workgroup-symbolic');
+            if(menuItemType === Constants.MenuItemType.BUTTON){
+                placeInfo.icon = placeInfo.icon.to_string();
+                placeMenuItem = new MW.PlaceButtonItem(this, placeInfo);
+            }
+            else if(menuItemType === Constants.MenuItemType.MENU_ITEM)
+                placeMenuItem = new PlaceDisplay.PlaceMenuItem(this, placeInfo); 
+        }
+        else if(menuItemArray[2] === "ArcMenu_Software"){
+            let software = Utils.findSoftwareManager();
+            if(software){
+                if(menuItemType === Constants.MenuItemType.BUTTON)
+                    placeMenuItem = new MW.ShortcutButtonItem(this, _("Software"), 'system-software-install-symbolic', software);
+                if(menuItemType === Constants.MenuItemType.MENU_ITEM)
+                    placeMenuItem = new MW.ShortcutMenuItem(this, _("Software"), 'system-software-install-symbolic', software);
+            }
+                
+        }
+        else if(menuItemArray[2] === "ArcMenu_Trash"){
+            if(menuItemType === Constants.MenuItemType.BUTTON)
+                placeMenuItem = new MW.ShortcutButtonItem(this, _("Trash"), '', "ArcMenu_Trash");
+            else if(menuItemType === Constants.MenuItemType.MENU_ITEM)
+                placeMenuItem = new MW.ShortcutMenuItem(this, _("Trash"), '', "ArcMenu_Trash");
+        }
+        else if(menuItemArray[2] === Constants.ArcMenu_SettingsCommand || menuItemArray[2] === "ArcMenu_Suspend" || menuItemArray[2] === "ArcMenu_LogOut" || menuItemArray[2] === "ArcMenu_PowerOff"
+                || menuItemArray[2] === "ArcMenu_Lock" || menuItemArray[2] === "ArcMenu_Restart" || app){
+            if(menuItemType === Constants.MenuItemType.BUTTON)
+                placeMenuItem = new MW.ShortcutButtonItem(this, menuItemArray[0], menuItemArray[1], menuItemArray[2]);
+            else if(menuItemType === Constants.MenuItemType.MENU_ITEM)
+                placeMenuItem = new MW.ShortcutMenuItem(this, menuItemArray[0], menuItemArray[1], menuItemArray[2]);
+        }
+        else if(menuItemArray[2].startsWith("ArcMenu_")){
+            let path = menuItemArray[2].replace("ArcMenu_",'');
+
+            if(path === "Documents")
+                path = imports.gi.GLib.UserDirectory.DIRECTORY_DOCUMENTS;
+            else if(path === "Downloads")
+                path = imports.gi.GLib.UserDirectory.DIRECTORY_DOWNLOAD;
+            else if(path === "Music")
+                path = imports.gi.GLib.UserDirectory.DIRECTORY_MUSIC;
+            else if(path === "Pictures")
+                path = imports.gi.GLib.UserDirectory.DIRECTORY_PICTURES;
+            else if(path === "Videos")
+                path = imports.gi.GLib.UserDirectory.DIRECTORY_VIDEOS;
+
+            path = GLib.get_user_special_dir(path);
+            if (path !== null){
+                placeInfo = new MW.PlaceInfo(Gio.File.new_for_path(path), _(menuItemArray[0]));
+                if(menuItemType === Constants.MenuItemType.BUTTON)
+                    placeMenuItem = new MW.PlaceButtonItem(this, placeInfo);
+                else if(menuItemType === Constants.MenuItemType.MENU_ITEM)
+                    placeMenuItem = new MW.PlaceMenuItem(this, placeInfo);
+            }
+        }
+        else{
+            let path = menuItemArray[2];
+            placeInfo = new MW.PlaceInfo(Gio.File.new_for_path(path), _(menuItemArray[0]), (menuItemArray[1] !== "ArcMenu_Folder") ? menuItemArray[1] : null);
+            if(menuItemType === Constants.MenuItemType.BUTTON)
+                placeMenuItem = new MW.PlaceButtonItem(this, placeInfo);
+            else if(menuItemType === Constants.MenuItemType.MENU_ITEM)
+                placeMenuItem = new MW.PlaceMenuItem(this, placeInfo);
+        }
+        return placeMenuItem;
     }
 
     loadFavorites(isIconGrid = false) {
@@ -567,7 +564,7 @@ var BaseLayout = class {
         if(this._settings.get_boolean('show-bookmarks')){
             if(id === 'bookmarks' && places.length > 0){
                 for (let i = 0; i < places.length; i++){
-                    let item = new PlaceDisplay.PlaceMenuItem(places[i], this);
+                    let item = new PlaceDisplay.PlaceMenuItem(this, places[i]);
                     this._sections[id].add_actor(item); 
                 } 
                 //create a separator if bookmark and software shortcut are both shown
@@ -579,7 +576,7 @@ var BaseLayout = class {
         if(this._settings.get_boolean('show-external-devices')){
             if(id === 'devices'){
                 for (let i = 0; i < places.length; i++){
-                    let item = new PlaceDisplay.PlaceMenuItem(places[i], this);
+                    let item = new PlaceDisplay.PlaceMenuItem(this, places[i]);
                     this._sections[id].add_actor(item); 
                 }
                 if((this.externalDevicesShorctus && !this.networkDevicesShorctus) && (this.bookmarksShorctus || this.softwareShortcuts))
@@ -587,7 +584,7 @@ var BaseLayout = class {
             }
             if(id === 'network'){
                 for (let i = 0; i < places.length; i++){
-                    let item = new PlaceDisplay.PlaceMenuItem(places[i], this);
+                    let item = new PlaceDisplay.PlaceMenuItem(this, places[i]);
                     this._sections[id].add_actor(item); 
                 }
                 if(this.networkDevicesShorctus && (this.bookmarksShorctus || this.softwareShortcuts))

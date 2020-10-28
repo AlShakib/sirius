@@ -1254,7 +1254,8 @@ var ArcMenuSettingsButton = GObject.registerClass(class Arc_Menu_ArcMenuSettings
         Util.spawnCommandLine(Constants.ArcMenu_SettingsCommand);
     }
 });
-//'Windows' layout favorites hamburger button
+
+//'Insider' layout favorites hamburger button
 var FavoritesButton = GObject.registerClass(class Arc_Menu_FavoritesButton extends SessionButton {
     _init(menuLayout) {
         super._init(menuLayout, _("Favorites"), Me.path + Constants.HAMBURGER.Path);
@@ -1264,6 +1265,29 @@ var FavoritesButton = GObject.registerClass(class Arc_Menu_FavoritesButton exten
         this._menuLayout.toggleFavoritesMenu();
     }
 });
+
+//'Windows' layout extras hamburger button
+var ExtrasButton = GObject.registerClass(class Arc_Menu_ExtrasButton extends SessionButton {
+    _init(menuLayout) {
+        super._init(menuLayout, _("Extras"), Me.path + Constants.HAMBURGER.Path);
+        this.toggleMenuOnClick = false;
+    }
+    activate() {
+        this._menuLayout.toggleFavoritesMenu();
+    }
+});
+
+//'Insider' layout favorites hamburger button
+var LeaveButton = GObject.registerClass(class Arc_Menu_LeaveButton extends SessionButton {
+    _init(menuLayout) {
+        super._init(menuLayout, _("Leave"), 'system-shutdown-symbolic');
+        this.toggleMenuOnClick = false;
+    }
+    activate() {
+        this._menuLayout.toggleLeaveMenu();
+    }
+});
+
 //'Ubuntu Dash' layout categories hamburger button
 var CategoriesButton = GObject.registerClass(class Arc_Menu_CategoriesButton extends SessionButton {
     _init(menuLayout) {
@@ -1630,6 +1654,7 @@ var ShortcutMenuItem = GObject.registerClass(class Arc_Menu_ShortcutMenuItem ext
         this._menuLayout = menuLayout;
         this._settings = this._menuLayout._settings;
         this._command = command;
+        this.isGridIcon = false;
         //Check for default commands--------
         if(this._command == "ArcMenu_Software"){
             let softwareManager = Utils.findSoftwareManager();
@@ -1689,7 +1714,8 @@ var ShortcutMenuItem = GObject.registerClass(class Arc_Menu_ShortcutMenuItem ext
     popupContextMenu(){
         if(this._app && this.contextMenu == undefined){
             this.contextMenu = new ApplicationContextMenu(this.actor, this._app, this._menuLayout);
-            this.contextMenu.centerBoxPointerPosition();
+            if(this.isGridIcon)
+                this.contextMenu.centerBoxPointerPosition();
             if(this._path) 
                 this.contextMenu.path = this._path;
         }
@@ -1702,7 +1728,8 @@ var ShortcutMenuItem = GObject.registerClass(class Arc_Menu_ShortcutMenuItem ext
             this.contextMenu.toggle(); 
         }
     }
-    setAsIcon(){
+    setAsGridIcon(){
+        this.isGridIcon = true;
         this.box.vertical = true;
         this.label.x_align = Clutter.ActorAlign.CENTER;
         this._icon.y_align = Clutter.ActorAlign.CENTER;
@@ -2031,7 +2058,7 @@ var FavoritesMenuItem = GObject.registerClass({
         this._emptyDropTarget = new Dash.EmptyDropTargetItem();
         this._emptyDropTarget.setChild(new St.Bin({ style_class: 'arc-empty-dash-drop-target' }));  
 
-        if(this._settings.get_enum('menu-layout') == Constants.MENU_LAYOUT.Windows)
+        if(this._settings.get_enum('menu-layout') == Constants.MENU_LAYOUT.Insider)
             this._emptyDropTarget.style = "width: 250px;";
         
         let p = this._parentBox.get_transformed_position();
@@ -2712,6 +2739,13 @@ var CategorySubMenuItem = GObject.registerClass(class Arc_Menu_CategorySubMenuIt
             });
             this.icon.icon_size = largeIcons ? MEDIUM_ICON_SIZE : SMALL_ICON_SIZE;
         } 
+    }
+
+    forceLargeIcon(size){
+        this.applicationsMap.forEach((value,key,map)=>{
+            map.get(key).forceLargeIcon(size);
+        });
+        this.icon.icon_size = size ? size : MEDIUM_ICON_SIZE;
     }
 
     _needsScrollbar() {

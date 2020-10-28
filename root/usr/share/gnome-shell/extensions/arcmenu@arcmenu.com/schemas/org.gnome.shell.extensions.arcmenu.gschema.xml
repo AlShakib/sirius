@@ -13,12 +13,13 @@
         <value value='9' nick='Redmond'/>
         <value value='10' nick='UbuntuDash'/>
         <value value='11' nick='Budgie'/>
-        <value value='12' nick='Windows'/>
+        <value value='12' nick='Insider'/>
         <value value='13' nick='Runner'/>
         <value value='14' nick='Chromebook'/>
         <value value='15' nick='Raven'/>
         <value value='16' nick='Tognee'/>
         <value value='17' nick='Plasma'/>
+        <value value='18' nick='Windows'/>
     </enum>
     <enum id='org.gnome.shell.extensions.arcmenu.menu-hotkey'>
         <value value='0' nick='Undefined'/>

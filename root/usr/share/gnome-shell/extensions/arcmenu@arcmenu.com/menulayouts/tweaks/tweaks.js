@@ -74,8 +74,8 @@ var TweaksDialog = GObject.registerClass(
                 this._loadRavenTweaks(vbox);
             else if(menuLayout == Constants.MENU_LAYOUT.Budgie)
                 this._loadBudgieMenuTweaks(vbox);
-            else if(menuLayout == Constants.MENU_LAYOUT.Windows)
-                this._loadWindowsMenuTweaks(vbox);
+            else if(menuLayout == Constants.MENU_LAYOUT.Insider)
+                this._loadInsiderMenuTweaks(vbox);
             else if(menuLayout == Constants.MENU_LAYOUT.Runner)
                 this._loadKRunnerMenuTweaks(vbox);
             else if(menuLayout == Constants.MENU_LAYOUT.Chromebook)
@@ -861,10 +861,10 @@ var TweaksDialog = GObject.registerClass(
 
             vbox.add(redmondMenuTweaksFrame);
         }
-        _loadWindowsMenuTweaks(vbox){
-            let windowsMenuTweaksFrame = new PW.FrameBox();
-            windowsMenuTweaksFrame.add(this._createAvatarShapeRow());
-            vbox.add(windowsMenuTweaksFrame);
+        _loadInsiderMenuTweaks(vbox){
+            let insiderMenuTweaksFrame = new PW.FrameBox();
+            insiderMenuTweaksFrame.add(this._createAvatarShapeRow());
+            vbox.add(insiderMenuTweaksFrame);
         }
         _loadGnomeMenuTweaks(vbox){
             let gnomeMenuTweaksFrame = new PW.FrameBox();

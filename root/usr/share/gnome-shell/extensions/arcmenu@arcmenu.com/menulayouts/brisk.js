@@ -177,65 +177,11 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         this.actionsBox.destroy_all_children();
         this.actionsBox.add(this._createHorizontalSeparator(Constants.SEPARATOR_STYLE.LONG));
         let pinnedApps = this._settings.get_strv('brisk-shortcuts-list');
-        this.favoritesArray=null;
-        this.favoritesArray=[];
+        this.favoritesArray = null;
+        this.favoritesArray = [];
 
-        for(let i = 0;i<pinnedApps.length;i+=3){
-            let app = Shell.AppSystem.get_default().lookup_app(pinnedApps[i+2]);
-            
-            let placeInfo, placeMenuItem;
-            if(pinnedApps[i+2]=="ArcMenu_Home"){
-                let homePath = GLib.get_home_dir();
-                placeInfo = new MW.PlaceInfo(Gio.File.new_for_path(homePath), _("Home"));
-                placeMenuItem = new MW.PlaceMenuItem(this, placeInfo);
-            }
-            else if(pinnedApps[i+2]=="ArcMenu_Computer"){
-                placeInfo = new PlaceDisplay.RootInfo();
-                placeInfo.icon = placeInfo.icon.to_string();
-                placeMenuItem = new MW.PlaceMenuItem(this, placeInfo);
-            }
-            else if(pinnedApps[i+2]=="ArcMenu_Network"){
-                placeInfo = new PlaceDisplay.PlaceInfo('network',Gio.File.new_for_uri('network:///'), _('Network'),'network-workgroup-symbolic');
-                placeInfo.icon = placeInfo.icon.to_string();
-                placeMenuItem = new MW.PlaceMenuItem(this, placeInfo);    
-            }
-            else if(pinnedApps[i+2] == "ArcMenu_Software"){
-                let software = Utils.findSoftwareManager();
-                if(software)
-                    placeMenuItem = new MW.ShortcutMenuItem(this, _("Software"), 'system-software-install-symbolic', software);
-            }
-            else if(pinnedApps[i+2] == Constants.ArcMenu_SettingsCommand || pinnedApps[i+2] == "ArcMenu_Suspend" || pinnedApps[i+2] == "ArcMenu_LogOut" || pinnedApps[i+2] == "ArcMenu_PowerOff"
-                    || pinnedApps[i+2] == "ArcMenu_Lock" || pinnedApps[i+2] === "ArcMenu_Restart" || app){
-                placeMenuItem = new MW.ShortcutMenuItem(this, pinnedApps[i], pinnedApps[i+1], pinnedApps[i+2]);
-            }
-            else if(pinnedApps[i+2] === "ArcMenu_Trash"){
-                placeMenuItem = new MW.ShortcutMenuItem(this, _("Trash"), '', "ArcMenu_Trash");
-            }
-            else if(pinnedApps[i+2].startsWith("ArcMenu_")){
-                let path = pinnedApps[i+2].replace("ArcMenu_",'');
-
-                if(path === "Documents")
-                    path = imports.gi.GLib.UserDirectory.DIRECTORY_DOCUMENTS;
-                else if(path === "Downloads")
-                    path = imports.gi.GLib.UserDirectory.DIRECTORY_DOWNLOAD;
-                else if(path === "Music")
-                    path = imports.gi.GLib.UserDirectory.DIRECTORY_MUSIC;
-                else if(path === "Pictures")
-                    path = imports.gi.GLib.UserDirectory.DIRECTORY_PICTURES;
-                else if(path === "Videos")
-                    path = imports.gi.GLib.UserDirectory.DIRECTORY_VIDEOS;
-
-                path = GLib.get_user_special_dir(path);
-                if (path != null){
-                    placeInfo = new MW.PlaceInfo(Gio.File.new_for_path(path), _(pinnedApps[i]));
-                    placeMenuItem = new MW.PlaceMenuItem(this, placeInfo);
-                }
-            }
-            else{
-                let path = pinnedApps[i+2];
-                placeInfo = new MW.PlaceInfo(Gio.File.new_for_path(path), _(pinnedApps[i]), (pinnedApps[i+1] !== "ArcMenu_Folder") ? pinnedApps[i+1] : null);
-                placeMenuItem = new MW.PlaceMenuItem(this, placeInfo);
-            }   
+        for(let i = 0;i < pinnedApps.length; i += 3){
+            let placeMenuItem = this.createMenuItem([pinnedApps[i],pinnedApps[i+1], pinnedApps[i+2]], Constants.MenuItemType.MENU_ITEM);     
             if(placeMenuItem){
                 placeMenuItem.setIconSizeLarge();
                 this.actionsBox.add(placeMenuItem.actor);

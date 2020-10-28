@@ -591,7 +591,7 @@ var SearchResults = class Arc_Menu_SearchResults {
         if(gridView){
             if(this.layout == Constants.MENU_LAYOUT.Elementary || this.layout == Constants.MENU_LAYOUT.UbuntuDash)
                 MAX_APPS_SEARCH_RESULTS_ROWS = 6;
-            else if(this.layout == Constants.MENU_LAYOUT.Windows)
+            else if(this.layout == Constants.MENU_LAYOUT.Insider)
                 MAX_APPS_SEARCH_RESULTS_ROWS = 5;
             else 
                 MAX_APPS_SEARCH_RESULTS_ROWS = 4; 

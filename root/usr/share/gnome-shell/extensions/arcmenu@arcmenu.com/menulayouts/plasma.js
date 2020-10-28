@@ -187,7 +187,6 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
                 this.applicationShortcuts.push(shortcutMenuItem.actor);
         }
 
-        var SHORTCUT_TRANSLATIONS = [_("Home"), _("Documents"), _("Downloads"), _("Music"), _("Pictures"), _("Videos"), _("Computer"), _("Network")];
         let directoryShortcutsList = this._settings.get_value('directory-shortcuts-list').deep_unpack();
         this._loadPlaces(directoryShortcutsList);
         
@@ -205,6 +204,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
             });	
             this.placeManagerUpdatedID = this.placesManager.connect(`${id}-updated`, () => {
                 this._redisplayPlaces(id);
+                this.updateIcons();
             });
 
             this._createPlaces(id);
@@ -290,7 +290,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         if(id === 'bookmarks' && places.length > 0){
             this._sections[id].add_actor(this.createLabelRow(_("Bookmarks")));
             for (let i = 0; i < places.length; i++){
-                let item = new PlaceDisplay.PlaceMenuItem(places[i], this);
+                let item = new PlaceDisplay.PlaceMenuItem(this, places[i]);
                 this._sections[id].add_actor(item); 
             } 
         }
@@ -298,7 +298,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         if(id === 'devices' && places.length > 0){
             this._sections[id].add_actor(this.createLabelRow(_("Devices")));
             for (let i = 0; i < places.length; i++){
-                let item = new PlaceDisplay.PlaceMenuItem(places[i], this);
+                let item = new PlaceDisplay.PlaceMenuItem(this, places[i]);
                 this._sections[id].add_actor(item); 
             }
         }
@@ -306,7 +306,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         if(id === 'network' && places.length > 0){
             this._sections[id].add_actor(this.createLabelRow(_("Network")));
             for (let i = 0; i < places.length; i++){
-                let item = new PlaceDisplay.PlaceMenuItem(places[i], this);
+                let item = new PlaceDisplay.PlaceMenuItem(this, places[i]);
                 this._sections[id].add_actor(item); 
             }
         }
@@ -331,46 +331,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         this.directoryShortcuts = [];
         for (let i = 0; i < directoryShortcutsList.length; i++) {
             let directory = directoryShortcutsList[i];
-            let placeInfo, placeMenuItem;
-            if(directory[2]=="ArcMenu_Home"){
-                let homePath = GLib.get_home_dir();
-                placeInfo = new MW.PlaceInfo(Gio.File.new_for_path(homePath), _("Home"));
-                placeMenuItem = new MW.PlaceMenuItem(this, placeInfo);
-            }
-            else if(directory[2]=="ArcMenu_Computer"){
-                placeInfo = new PlaceDisplay.RootInfo();
-                placeMenuItem = new PlaceDisplay.PlaceMenuItem(placeInfo, this);
-            }
-            else if(directory[2]=="ArcMenu_Network"){
-                placeInfo = new PlaceDisplay.PlaceInfo('network',Gio.File.new_for_uri('network:///'), _('Network'),'network-workgroup-symbolic');
-                placeMenuItem = new PlaceDisplay.PlaceMenuItem(placeInfo, this);    
-            }
-            else if(directory[2].startsWith("ArcMenu_")){
-                let path = directory[2].replace("ArcMenu_",'');
-
-                if(path === "Documents")
-                    path = imports.gi.GLib.UserDirectory.DIRECTORY_DOCUMENTS;
-                else if(path === "Downloads")
-                    path = imports.gi.GLib.UserDirectory.DIRECTORY_DOWNLOAD;
-                else if(path === "Music")
-                    path = imports.gi.GLib.UserDirectory.DIRECTORY_MUSIC;
-                else if(path === "Pictures")
-                    path = imports.gi.GLib.UserDirectory.DIRECTORY_PICTURES;
-                else if(path === "Videos")
-                    path = imports.gi.GLib.UserDirectory.DIRECTORY_VIDEOS;
-
-                path = GLib.get_user_special_dir(path);
-                if (path != null){
-                    placeInfo = new MW.PlaceInfo(Gio.File.new_for_path(path), _(directory[0]));
-                    placeMenuItem = new MW.PlaceMenuItem(this, placeInfo)
-                }
-            }
-            else{
-                let path = directory[2];
-                placeInfo = new MW.PlaceInfo(Gio.File.new_for_path(path), _(directory[0]), (directory[1] !== "ArcMenu_Folder") ? directory[1] : null);
-                placeMenuItem = new MW.PlaceMenuItem(this, placeInfo);
-            }
-            
+            let placeMenuItem = this.createMenuItem(directory, Constants.MenuItemType.MENU_ITEM);
             this.directoryShortcuts.push(placeMenuItem);
         }
     }
@@ -392,7 +353,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
             this.suspend = new MW.PlasmaPowerItem(this, Constants.PowerType.SUSPEND, _("Suspend"), 'media-playback-pause-symbolic');
         this.applicationsBox.add(this.suspend);
 
-        if(!this.powerOff)
+        if(!this.restart)
             this.restart = new MW.PlasmaPowerItem(this, Constants.PowerType.RESTART, _("Restart..."), Me.path + Constants.RESTART_ICON.Path);
         this.applicationsBox.add(this.restart);
 

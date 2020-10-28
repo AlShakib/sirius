@@ -51,8 +51,8 @@ function getMenuLayout(button, layout){
             return new MenuLayout.ubuntudash.createMenu(button); 
         case Constants.MENU_LAYOUT.Budgie:
             return new MenuLayout.budgie.createMenu(button);
-        case Constants.MENU_LAYOUT.Windows:
-            return new MenuLayout.windows.createMenu(button);
+        case Constants.MENU_LAYOUT.Insider:
+            return new MenuLayout.insider.createMenu(button);
         case Constants.MENU_LAYOUT.Runner:
             return new MenuLayout.runner.createMenu(button);
         case Constants.MENU_LAYOUT.Chromebook:
@@ -63,6 +63,8 @@ function getMenuLayout(button, layout){
             return new MenuLayout.tognee.createMenu(button);
         case Constants.MENU_LAYOUT.Plasma:
             return new MenuLayout.plasma.createMenu(button);
+        case Constants.MENU_LAYOUT.Windows:
+            return new MenuLayout.windows.createMenu(button);
         default:
             return new MenuLayout.arcmenu.createMenu(button);    
     }
@@ -390,6 +392,9 @@ function createStylesheet(settings){
             + plasmaButtonStyle + "\nborder-color: " + plasmaSelectedItemColor + ";\n}\n\n"
 
         +"StScrollView .small-vfade{\n-st-vfade-offset: 44px;\n}\n\n"
+
+        +".arc-menu-eject-button{\n-st-icon-style: symbolic;\nbackground-color: transparent;\nmin-width: 16px;\nmin-height: 0px;\nborder-radius: 6px;\npadding: 0px 13px;\n}\n\n"
+        +".arc-menu-eject-button:hover{\nbackground-color: rgba(186, 196,201, 0.1);\n}\n\n"
 
         +".arc-menu-button{\n-st-icon-style: symbolic;\nmin-height: 0px;\nmin-width: 16px;\nborder-radius: 26px;\npadding: 13px;\n}\n\n"
 

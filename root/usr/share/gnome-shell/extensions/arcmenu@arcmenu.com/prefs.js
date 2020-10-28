@@ -2038,7 +2038,6 @@ var ButtonAppearancePage = GObject.registerClass(
             menuButtonHoverBackgroundcolorRow.add(menuButtonHoverBackgroundcolorLabel);
             menuButtonHoverBackgroundcolorRow.add(menuButtonHoverBackgroundcolorChooser);
             menuButtonIconColorFrame.add(menuButtonHoverBackgroundcolorRow);
-            vbox.add(menuButtonIconColorFrame);
 
             let menuButtonActiveBackgroundcolorRow = new PW.FrameBoxRow();
             let menuButtonActiveBackgroundcolorLabel = new Gtk.Label({
@@ -3302,7 +3301,7 @@ var MenuSettingsFineTunePage = GObject.registerClass(
         let alphabetizeAllProgramsFrame = new PW.FrameBox();
         let alphabetizeAllProgramsRow = new PW.FrameBoxRow();
         let alphabetizeAllProgramsLabel = new Gtk.Label({
-            label: _("Alphabetize 'All Programs'"),
+            label: _("Alphabetize 'All Programs' Category"),
             use_markup: true,
             xalign: 0,
             hexpand: true
@@ -5410,7 +5409,7 @@ var MiscPage = GObject.registerClass(
             this._settings = settings;
 
             let settingsHeaderLabel = new Gtk.Label({
-                label: "<b>" + _('ArcMenu Settings') +"</b>",
+                label: "<b>" + _('Export or Import Settings') +"</b>",
                 use_markup: true,
                 xalign: 0,
                 hexpand: true
@@ -5420,7 +5419,7 @@ var MiscPage = GObject.registerClass(
             let importFrame = new PW.FrameBox();
             let importRow = new PW.FrameBoxRow();
             let importLabel = new Gtk.Label({
-                label: _("Export or Import ArcMenu Settings"),
+                label: _("All ArcMenu Settings"),
                 use_markup: true,
                 xalign: 0,
                 hexpand: true
@@ -5429,7 +5428,7 @@ var MiscPage = GObject.registerClass(
             let settingsImportInfoButton = new PW.InfoButton();
             settingsImportInfoButton.connect('clicked', ()=> {
                 let dialog = new Gtk.MessageDialog({
-                    text: "<b>" + _("Export or Import ArcMenu Settings") + '</b>\n\n' + _('Importing settings from file may replace ALL saved settings.\nThis includes all saved pinned apps.'),
+                    text: "<b>" + _("Export or Import All ArcMenu Settings") + '</b>\n\n' + _('Importing settings from file may replace ALL saved settings.\nThis includes all saved pinned apps.'),
                     use_markup: true,
                     buttons: Gtk.ButtonsType.OK,
                     message_type: Gtk.MessageType.OTHER,
@@ -5511,32 +5510,14 @@ var MiscPage = GObject.registerClass(
             importFrame.add(importButtonsRow);
             this.add(importFrame);
 
-            let presetsHeaderLabel = new Gtk.Label({
-                label: "<b>" + _('Menu Theme Presets') +"</b>",
-                use_markup: true,
-                xalign: 0,
-                hexpand: true
-            });
-            this.add(presetsHeaderLabel);
-
             let importColorPresetFrame = new PW.FrameBox();
             let importColorPresetRow = new PW.FrameBoxRow();
             let importColorPresetLabel = new Gtk.Label({
-                label: _("Export or Import Menu Theme Presets"),
+                label: _("Menu Theme Presets"),
                 use_markup: true,
                 xalign: 0,
                 hexpand: true
             });
-            let imgPath = Me.path + Constants.COLOR_PRESET.Path;
-            let [imageWidth, imageHeight] = Constants.COLOR_PRESET.Size;
-            let pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(imgPath, imageWidth, imageHeight);
-            let colorPresetImage = new Gtk.Image({ pixbuf: pixbuf });
-            let colorPresetBox = new Gtk.VBox({
-                margin_top: 5,
-                margin_bottom: 0,
-                expand: false
-            });
-            colorPresetBox.add(colorPresetImage);
             
             let colorThemesImportInfoButton = new PW.InfoButton();
             colorThemesImportInfoButton.connect('clicked', ()=> {
@@ -5635,7 +5616,6 @@ var MiscPage = GObject.registerClass(
             });
             
             importColorPresetRow.add(importColorPresetLabel);
-            importColorPresetRow.add(colorPresetBox);
             importColorPresetRow.add(colorThemesImportInfoButton);
             importColorPresetButtonsRow.add(exportColorPresetButton);
             importColorPresetButtonsRow.add(importColorPresetButton);
@@ -6140,9 +6120,9 @@ class Arc_Menu_ArcMenuPreferencesWidget extends Gtk.Box{
         });
 
         this.settingsFrameStack.add_named(new MenuSettingsShortcutDirectoriesPage(this._settings), "MenuSettingsShortcutDirectories");
-        this.settingsFrameStack.add_named(new MenuSettingsShortcutApplicationsPage(this._settings), "MenuSettingsShortcutApplications"); 
-        this.settingsFrameStack.add_named(new MenuSettingsShortcutSessionButtonsPage(this._settings), "MenuSettingsShortcutSessionButtons"); 
-        this.settingsFrameStack.add_named(new MenuSettingsShortcutExtrasPage(this._settings), "MenuSettingsShortcutExtras"); 
+        this.settingsFrameStack.add_named(new MenuSettingsShortcutApplicationsPage(this._settings), "MenuSettingsShortcutApplications");
+        this.settingsFrameStack.add_named(new MenuSettingsShortcutSessionButtonsPage(this._settings), "MenuSettingsShortcutSessionButtons");
+        this.settingsFrameStack.add_named(new MenuSettingsShortcutExtrasPage(this._settings), "MenuSettingsShortcutExtras");
 
         this.settingsFrameStack.add_named(new MenuSettingsCategoriesPage(this._settings), "MenuSettingsCategories");
         this.settingsFrameStack.add_named(new MenuSettingsFineTunePage(this._settings), "MenuSettingsFineTune");
