@@ -85,6 +85,13 @@ function overrideStyle(actor, secondTime) {
                 }
             });
     }
+
+    // thanks to https://github.com/home-sweet-gnome/dash-to-panel/commit/d372e6abd393b8f1c0e791b043dc2283b41d3ffb
+    if (actor.visible && imports.misc.config.PACKAGE_VERSION >= '3.34.0') {
+        //force gnome 3.34 to refresh (having problem with the -natural-hpadding)
+        actor.hide();
+        Mainloop.idle_add(() => actor.show());
+    }
 }
 
 // see the note in overrideStyle about us having to recurse down to the first
