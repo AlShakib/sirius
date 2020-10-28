@@ -2,7 +2,7 @@
 * Name: Internet Speed Meter
 * Description: A simple and minimal internet speed meter extension for Gnome Shell.
 * Author: Al Shakib
-* GitLab: https://gitlab.com/AlShakib/InternetSpeedMeter
+* GitHub: https://github.com/AlShakib/InternetSpeedMeter
 * License: GPLv3.0
 */
 
@@ -83,8 +83,8 @@ function init() {
     style_class: 'panel-button',
     reactive: true,
     can_focus: false,
-    x_fill: true,
-    y_fill: false,
+    x_expand: true,
+    y_expand: false,
     track_hover: false
   });
   netSpeed = new St.Label({

@@ -11,9 +11,10 @@
     "3.30",
     "3.34",
     "3.32",
-    "3.36"
+    "3.36",
+    "3.38"
   ],
-  "url": "https://gitlab.com/AlShakib/InternetSpeedMeter",
+  "url": "https://github.com/AlShakib/InternetSpeedMeter",
   "uuid": "InternetSpeedMeter@alshakib.dev",
-  "version": 3
+  "version": 4
 }
