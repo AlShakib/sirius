@@ -285,3 +285,6 @@ dotnet-sdk-3.1
 
 # Development tools for Mono
 mono-devel
+
+# A small command-line program to download online videos
+youtube-dl

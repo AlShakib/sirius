@@ -443,24 +443,6 @@ remove_pip_packages() {
   fi
 }
 
-install_youtube_dl() {
-  print "Installing youtube-dl"
-  if [[ -x "$(command -v youtube-dl)" ]]; then
-    print_success "Skipping: youtube-dl is already installed"
-  else
-    print "Downloading youtube-dl"
-    wget "https://yt-dl.org/downloads/latest/youtube-dl" -O "/usr/local/bin/youtube-dl" &>> "${LOG_FILE}"
-    if [[ "$?" -eq 0 ]]; then
-      print_success "Done"
-      print "Installing binary"
-      chmod a+rx "/usr/local/bin/youtube-dl"
-      is_failed "Done" "Skipping: youtube-dl installation did not complete successfully. See log for more info."
-    else
-      print_failed "Skipping: Downloading youtube-dl binary is failed. See log for more info."
-    fi
-  fi
-}
-
 install_rclone() {
   print "Installing rclone"
   if [[ -x "$(command -v rclone)" ]]; then
@@ -828,7 +810,6 @@ set_misc_flags() {
 
 setup_operating_system() {
   copy_to_system
-  install_youtube_dl
   install_rclone
   install_hugo_extended_cli
   install_heroku_cli
