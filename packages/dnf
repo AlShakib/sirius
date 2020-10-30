@@ -10,6 +10,9 @@
 # Google Roboto fonts
 google-roboto-fonts google-roboto-condensed-fonts google-roboto-mono-fonts google-roboto-slab-fonts
 
+# All the font packages, generated from jetbrains-mono-fonts
+jetbrains-mono-fonts-all
+
 # Powerline packages
 powerline powerline-fonts powerline-docs powerline-go
 
