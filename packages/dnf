@@ -291,3 +291,9 @@ youtube-dl
 
 # SSL/TLS module for the Apache HTTP Server
 mod_ssl
+
+# A free, automated certificate authority client
+certbot
+
+# The apache plugin for certbot
+python-certbot-apache
