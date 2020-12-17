@@ -37,10 +37,32 @@
  */
 /*
  */
+
+let versionAtLeast = function(atleast, current) {
+    let currentArray = current.split('.');
+    let major = currentArray[0];
+    let minor = currentArray[1];
+    let point = currentArray[2];
+    let atleastArray = atleast.split('.');
+    if ((atleastArray[0] < major) ||
+        (atleastArray[0] == major &&
+         atleastArray[1] < minor) ||
+        (atleastArray[0] == major &&
+         atleastArray[1] == minor) &&
+        (atleastArray[2] == undefined ||
+         atleastArray[2] <= point))
+        return true;
+    return false;
+}
+
 const ExtensionUtils = imports.misc.extensionUtils;
 const Config = imports.misc.config;
 const Main = imports.ui.main;
-const Tweener = imports.tweener.tweener;
+if (versionAtLeast('3.38', Config.PACKAGE_VERSION)) {
+   const Tweener = imports.tweener.tweener;
+} else{
+    const Tweener = imports.ui.tweener;
+}
 const Lang = imports.lang;
 const Mainloop = imports.mainloop;
 const Me = ExtensionUtils.getCurrentExtension();
@@ -125,23 +147,6 @@ let loadConfig = function() {
         }
     });
 };
-
-let versionAtLeast = function(atleast, current) {
-    let currentArray = current.split('.');
-    let major = currentArray[0];
-    let minor = currentArray[1];
-    let point = currentArray[2];
-    let atleastArray = atleast.split('.');
-    if ((atleastArray[0] < major) ||
-        (atleastArray[0] == major &&
-         atleastArray[1] < minor) ||
-        (atleastArray[0] == major &&
-         atleastArray[1] == minor) &&
-        (atleastArray[2] == undefined ||
-         atleastArray[2] <= point))
-        return true;
-    return false;
-}
 
 
 let getX_position = function() {
@@ -234,14 +239,18 @@ let extensionShowNotification = function() {
         this._banner = this._notification.createBanner();
         this._bannerClickedId = this._banner.connect('done-displaying',
                                                      Lang.bind(this, this._escapeTray));
-        this._bannerUnfocusedId = this._banner.connect('unfocused', Lang.bind(this, function() {
-            this._updateState();
-        }));
-
         if (versionAtLeast('3.36', Config.PACKAGE_VERSION)) {
+            this._bannerUnfocusedId = this._banner.connect('unfocused', () => {
+                this._updateState();
+            });
+
             this._bannerBin.add_actor(this._banner);
         } else
         {
+            this._bannerUnfocusedId = this._banner.connect('unfocused', Lang.bind(this, function() {
+                this._updateState();
+            }));
+
             this._bannerBin.add_actor(this._banner.actor);
         }
 

@@ -63,38 +63,42 @@ function enable() {
     settings.connect('changed::arc-menu-placement', () => _onArcMenuPlacementChange());
     settingsControllers = [];
 
-    let boolArray = settings.get_default_value('dtp-dtd-state').deep_unpack();
-    settings.set_value('dtp-dtd-state', new GLib.Variant('ab', boolArray));
+    let avaliablePlacementArray = settings.get_default_value('available-placement').deep_unpack();
+    settings.set_value('available-placement', new GLib.Variant('ab', avaliablePlacementArray));
 
     _enableButtons();
     
     // dash to panel might get enabled after Arc-Menu
     extensionChangedId = Main.extensionManager.connect('extension-state-changed', (data, extension) => {
         if (extension.uuid === 'dash-to-panel@jderose9.github.com') {
+            let state = extension.state === 1 ? true : false;
+            setAvaliablePlacement(Constants.ArcMenuPlacement.DTP, state);
             let arcMenuPlacement = settings.get_enum('arc-menu-placement');
             if(extension.state === 1){
-                this.set_DtD_DtP_State(Constants.EXTENSION.DTP, true);
-                if(arcMenuPlacement == Constants.ArcMenuPlacement.PANEL || arcMenuPlacement == Constants.ArcMenuPlacement.DTP){
+                if(_getDockExtensions() === undefined)
+                    setAvaliablePlacement(Constants.ArcMenuPlacement.DASH, false);
+                if(arcMenuPlacement == Constants.ArcMenuPlacement.DASH && _getDockExtensions() === undefined)
+                    settings.set_enum('arc-menu-placement', Constants.ArcMenuPlacement.PANEL);
+                else if(arcMenuPlacement == Constants.ArcMenuPlacement.PANEL || arcMenuPlacement == Constants.ArcMenuPlacement.DTP){
                     _connectDtpSignals();
                     _enableButtons();
                 }
             }
-            else if(extension.state === 2) {
-                this.set_DtD_DtP_State(Constants.EXTENSION.DTP, false);
-            }
         }
-        if ((extension.uuid === "dash-to-dock@micxgx.gmail.com" || extension.uuid === "ubuntu-dock@ubuntu.com") && (extension.state === 1 || extension.state === 2)) {
+        if ((extension.uuid === "dash-to-dock@micxgx.gmail.com" || extension.uuid === "ubuntu-dock@ubuntu.com")) {
             _disconnectDtdSignals();
             let state = extension.state === 1 ? true : false;
-            this.set_DtD_DtP_State(Constants.EXTENSION.DTD, state);
+            setAvaliablePlacement(Constants.ArcMenuPlacement.DASH, state);
             let arcMenuPlacement = settings.get_enum('arc-menu-placement');
-            if(arcMenuPlacement == Constants.ArcMenuPlacement.DASH){
-                for (let i = settingsControllers.length - 1; i >= 0; --i) {
-                    let sc = settingsControllers[i];
-                    _disableButton(sc, 1);
+            if(extension.state === 1){
+                if(arcMenuPlacement == Constants.ArcMenuPlacement.DASH){
+                    for (let i = settingsControllers.length - 1; i >= 0; --i) {
+                        let sc = settingsControllers[i];
+                        _disableButton(sc, 1);
+                    }
+                    _enableButtons();
+                    _connectDtdSignals();
                 }
-                _enableButtons();
-                _connectDtdSignals();
             }
         }
     });
@@ -103,13 +107,12 @@ function enable() {
     _connectDtdSignals();
     _connectDtpSignals();
 }
-function set_DtD_DtP_State(extension, state){
-    let boolArray = settings.get_value('dtp-dtd-state').deep_unpack();
-    if(boolArray[extension] !== state){
-        boolArray[extension] = state;
-        settings.set_value('dtp-dtd-state', new GLib.Variant('ab', boolArray));
+function setAvaliablePlacement(placement, state){
+    let avaliablePlacementArray = settings.get_value('available-placement').deep_unpack();
+    if(avaliablePlacementArray[placement] !== state){
+        avaliablePlacementArray[placement] = state;
+        settings.set_value('available-placement', new GLib.Variant('ab', avaliablePlacementArray));
     }
-
 }
 // Disable the extension
 function disable() {
@@ -170,12 +173,12 @@ function _disconnectDtdSignals() {
 
 function _onArcMenuPlacementChange() {
     let arcMenuPlacement = settings.get_enum('arc-menu-placement');
-    if(arcMenuPlacement == Constants.ArcMenuPlacement.PANEL || arcMenuPlacement == Constants.ArcMenuPlacement.DTP){
-        _disconnectDtdSignals();
+    _disconnectDtdSignals();
+    _disconnectDtpSignals();
+    if(arcMenuPlacement === Constants.ArcMenuPlacement.PANEL || arcMenuPlacement === Constants.ArcMenuPlacement.DTP){
         _connectDtpSignals();
     }
-    else{
-        _disconnectDtpSignals();
+    else if(arcMenuPlacement === Constants.ArcMenuPlacement.DASH){
         _connectDtdSignals();
     }
     for (let i = settingsControllers.length - 1; i >= 0; --i) {
@@ -207,18 +210,23 @@ function _getDockExtensions(){
 }
 
 function _enableButtons() {
+    let avaliablePlacementArray = settings.get_value('available-placement').deep_unpack();
+    avaliablePlacementArray[Constants.ArcMenuPlacement.PANEL] = false;
+
     let multiMonitor = settings.get_boolean('multi-monitor');
     dockExtension = _getDockExtensions();
     let arcMenuPlacement = settings.get_enum('arc-menu-placement');
     if(arcMenuPlacement == Constants.ArcMenuPlacement.DASH && dockExtension){
-        this.set_DtD_DtP_State(Constants.EXTENSION.DTD, true);
+        avaliablePlacementArray[Constants.ArcMenuPlacement.DASH] = true;
+
         let panel = dockExtension.stateObj.dockManager; 
         if(panel){ 
             if(panel._allDocks.length){  
                 let iterLength = multiMonitor ? panel._allDocks.length : 1;
                 for(var index = 0; index < iterLength; index++){      
                     if(!panel._allDocks[index].dash.arcMenuEnabled){
-                        let settingsController = new Controller.MenuSettingsController(settings, settingsControllers, panel, index, Constants.ArcMenuPlacement.DASH);
+                        let settingsController = new Controller.MenuSettingsController(settings, settingsControllers, panel, 
+                                                                                        index, Constants.ArcMenuPlacement.DASH);
                         
                         settingsController.enableButton(index);
                         settingsController.bindSettingsChanges();
@@ -229,26 +237,33 @@ function _enableButtons() {
         }
     }
     else{
-        let panelArray = global.dashToPanel ? global.dashToPanel.panels.map(pw => pw.panel || pw) : [Main.panel];
+        let panelArray = global.dashToPanel ? global.dashToPanel.panels.map(pw => pw) : [Main.panel];
         let iterLength = multiMonitor ? panelArray.length : 1;
         for(var index = 0; index < iterLength; index++){
-            let panel = panelArray[index];
+            let panel = global.dashToPanel ? panelArray[index].panel : panelArray[index];
+            let panelParent = panelArray[index];
 
-            if(global.dashToPanel) this.set_DtD_DtP_State(Constants.EXTENSION.DTP, true);
+            let isPrimaryStandAlone = global.dashToPanel ? ('isPrimary' in panelParent && panelParent.isPrimary) && panelParent.isStandalone : false;
 
-            let isMainPanel = ('isSecondary' in panel && !panel.isSecondary) || panel == Main.panel;
-    
+            if(arcMenuPlacement === Constants.ArcMenuPlacement.PANEL && isPrimaryStandAlone){
+                avaliablePlacementArray[Constants.ArcMenuPlacement.PANEL] = true;
+                panel = Main.panel;
+            }
+
+            if(global.dashToPanel)
+                avaliablePlacementArray[Constants.ArcMenuPlacement.DTP] = true;
+            else
+                avaliablePlacementArray[Constants.ArcMenuPlacement.PANEL] = true;
+
             if (panel.statusArea['ArcMenu'])
                 continue;
             else if (settingsControllers[index])
-                _disableButton(settingsControllers[index], 1); 
+                _disableButton(settingsControllers[index], 1);
     
-            // Create a Menu Controller that is responsible for controlling
-            // and managing the menu as well as the menu button.
-        
-            let settingsController = new Controller.MenuSettingsController(settings, settingsControllers, panel, isMainPanel, Constants.ArcMenuPlacement.PANEL);
+            let settingsController = new Controller.MenuSettingsController(settings, settingsControllers, panel, 
+                                                                            index, Constants.ArcMenuPlacement.PANEL);
             
-            if (!isMainPanel) {
+            if (global.dashToPanel) {
                 panel._amDestroyId = panel.connect('destroy', () => extensionChangedId ? _disableButton(settingsController, 1) : null);
             }
     
@@ -256,8 +271,10 @@ function _enableButtons() {
             settingsController.bindSettingsChanges();
             settingsControllers.push(settingsController);
         }
-    }  
-    
+    } 
+    if(!Utils.getArraysEqual(settings.get_value('available-placement').deep_unpack(), avaliablePlacementArray)){
+        settings.set_value('available-placement', new GLib.Variant('ab', avaliablePlacementArray));
+    } 
 }
 
 function _disableButton(controller, remove) {

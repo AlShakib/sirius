@@ -991,9 +991,10 @@ var SessionButton = GObject.registerClass(
             iconSize = SMALL_ICON_SIZE;
         this._icon = new St.Icon({ 
             gicon: gicon ? gicon : Gio.icon_new_for_string(icon_name),
-            fallback_icon_name : icon_name,
             icon_size: iconSize
         });
+        if(icon_name)
+            this._icon.fallback_icon_name = icon_name;
         this.set_child(this._icon);
         this.connect('key-focus-in', this._onKeyFocusIn.bind(this));
         this.connect('destroy', () => this.needsDestroy = false);
@@ -1086,38 +1087,9 @@ var PlaceButtonItem = GObject.registerClass(class Arc_Menu_PlaceButtonItem exten
 
 var CategoryMenuButton = GObject.registerClass(class Arc_Menu_CategoryMenuButton extends SessionButton {
     _init(menuLayout, category) {
-        let name;
-        let icon;
-        let gicon;
+        let [name, gicon, iconName, fallbackIconName] = Utils.getCategoryDetails(category);
 
-        if(category == Constants.CategoryType.FREQUENT_APPS){
-            name = _("Frequent Apps");
-            icon = 'user-bookmarks-symbolic';
-        }
-        else if(category == Constants.CategoryType.HOME_SCREEN){
-            name = _("Home Screen");  
-            icon = 'emblem-favorite-symbolic';
-            gicon = Gio.icon_new_for_string(Me.path + '/media/misc/homescreen-symbolic.svg');
-        }    
-        else if(category == Constants.CategoryType.ALL_PROGRAMS){
-            name = _("All Programs"); 
-            icon = 'view-grid-symbolic';
-        }  
-        else if(category == Constants.CategoryType.FAVORITES){
-            name = _("Favorites");
-            icon = 'emblem-favorite-symbolic';
-        }  
-        else if(category == Constants.CategoryType.PINNED_APPS){
-            name = _("Pinned Apps");
-            gicon = Gio.icon_new_for_string(Me.path + '/media/icons/arc-menu-symbolic.svg');
-        }
-        else{
-            name = category.get_name();
-            gicon = category.get_icon() ? category.get_icon() : null;
-            icon = category.get_icon() ? category.get_icon().to_string() : null;
-        }  
-
-        super._init(menuLayout, _(name), icon, gicon);
+        super._init(menuLayout, _(name), iconName ? iconName : fallbackIconName, gicon);
         this._name = name;
         this.appList = [];
         this.isRecentlyInstalled = false;
@@ -1145,19 +1117,7 @@ var CategoryMenuButton = GObject.registerClass(class Arc_Menu_CategoryMenuButton
 
     activate(event) {
         this._menuLayout.activeCategory = this._name;
-        if(this._category == Constants.CategoryType.HOME_SCREEN){
-            this._menuLayout.activeCategory = _("Pinned Apps");
-            this._menuLayout.displayFavorites();
-        }
-        else if(this._category == Constants.CategoryType.PINNED_APPS)
-            this._menuLayout.displayFavorites();
-        else if(this._category == Constants.CategoryType.FREQUENT_APPS){
-            this._menuLayout.setFrequentAppsList(this);
-            this._menuLayout.displayCategoryAppList(this.appList);  
-        }
-        else
-            this._menuLayout.displayCategoryAppList(this.appList);       
-        this._menuLayout.activeCategoryType = this._category;
+        Utils.activateCategory(this._category, this._menuLayout, this, null);
     }
 });
 
@@ -1742,17 +1702,9 @@ var ShortcutMenuItem = GObject.registerClass(class Arc_Menu_ShortcutMenuItem ext
             this.label.y_expand = false;
         }
         this.remove_child(this._ornamentLabel);
-        let layout = this._settings.get_enum('menu-layout');        
-        if(layout == Constants.MENU_LAYOUT.Elementary || layout == Constants.MENU_LAYOUT.UbuntuDash){
-            this._iconSize = 52;
-            this.actor.style ='text-align: center; border-radius:4px; padding: 5px; spacing: 0px; width:95px; height:95px;';
-            this.box.style = 'padding: 0px; margin: 0px; spacing:0px;';
-        } 
-        else{
-            this._iconSize = 36;  
-            this.actor.style ='text-align: center; border-radius:4px; padding: 5px; spacing: 0px; width:80px;height:80px;';
-            this.box.style = 'padding: 0px; margin: 0px; spacing:0px;';
-        }
+        let layout = this._settings.get_enum('menu-layout');    
+        Utils.setGridLayoutStyle(layout, this.actor, this.box);
+        this._iconSize = Utils.getGridIconSize(layout);    
         this._icon.icon_size = this._iconSize;
     }
     activate(event) {
@@ -1808,8 +1760,6 @@ var UserMenuItem = GObject.registerClass(class Arc_Menu_UserMenuItem extends Arc
         this.box.add_actor(this.iconBin);
         this._userLabel = new St.Label({
             text: GLib.get_real_name(),
-            x_expand: true,
-            x_align: Clutter.ActorAlign.FILL,
             y_align: Clutter.ActorAlign.CENTER
         });
         this.box.add_actor(this._userLabel);
@@ -1913,6 +1863,7 @@ var FavoritesMenuItem = GObject.registerClass({
     _init(menuLayout, name, icon, command, isIconGrid = false) {
         super._init(menuLayout);
         this._menuLayout = menuLayout;
+        this._menuButton = menuLayout.menuButton;
         this._settings = this._menuLayout._settings;
         this._command = command;
         this._iconString = this._iconPath = icon;
@@ -1950,8 +1901,8 @@ var FavoritesMenuItem = GObject.registerClass({
         this.box.add_child(this._icon);
  
         this.label = new St.Label({
-            text: _(this._name), y_expand: true, x_expand: true,
-            x_align: Clutter.ActorAlign.START,
+            text: _(this._name), 
+            y_expand: true,
             y_align: Clutter.ActorAlign.CENTER
         });
         let layout = this._settings.get_enum('menu-layout'); 
@@ -1994,16 +1945,8 @@ var FavoritesMenuItem = GObject.registerClass({
             this.box.vertical = true;
             this.remove_child(this._ornamentLabel);
             let layout = this._settings.get_enum('menu-layout');
-            if(layout == Constants.MENU_LAYOUT.Elementary || layout == Constants.MENU_LAYOUT.UbuntuDash){
-                this._icon.icon_size = 52;
-                this.box.style = 'padding: 0px; margin: 0px; spacing:0px;';
-                this.actor.style ='text-align: center; border-radius:4px; padding: 5px; spacing: 0px; width:95px; height:95px;';
-            }
-            else{
-                this.box.style = 'padding: 0px; margin: 0px; spacing:0px;';
-                this.actor.style ='text-align: center; border-radius:4px; padding: 5px; spacing: 0px; width:80px;height:80px;';
-                this._icon.icon_size = 36;  
-            }
+            Utils.setGridLayoutStyle(layout, this.actor, this.box);
+            this._icon.icon_size = Utils.getGridIconSize(layout);
         }
         this.setShouldShow();
     }
@@ -2038,6 +1981,16 @@ var FavoritesMenuItem = GObject.registerClass({
     }
 
    _onDragBegin() {   
+        if(this._menuButton.tooltipShowingID){
+            GLib.source_remove(this._menuButton.tooltipShowingID);
+            this._menuButton.tooltipShowingID = null;
+            this._menuButton.tooltipShowing = false;
+        }
+        if(this.tooltip){
+            this.tooltip.hide();
+            this._menuButton.tooltipShowing = false;
+        }
+        
         if(this.contextMenu && this.contextMenu.isOpen)
             this.contextMenu.toggle();
 
@@ -2214,14 +2167,7 @@ var ApplicationMenuItem = GObject.registerClass(class Arc_Menu_ApplicationMenuIt
                 this._indicator.y_expand = false;
             }
             let layout = this._settings.get_enum('menu-layout');
-            if(layout == Constants.MENU_LAYOUT.Elementary || layout == Constants.MENU_LAYOUT.UbuntuDash){
-                this.actor.style ='text-align: center; border-radius:4px; padding: 5px; spacing: 0px; width:95px; height:95px;';
-                this.box.style = 'padding: 0px; margin: 0px; spacing:0px;';
-            }
-            else{
-                this.actor.style ='text-align: center; border-radius:4px; padding: 5px; spacing: 0px; width:80px;height:80px;';
-                this.box.style = 'padding: 0px; margin: 0px; spacing:0px;';
-            }
+            Utils.setGridLayoutStyle(layout, this.actor, this.box);
         }
         this._updateIcon();
     }
@@ -2334,37 +2280,20 @@ var CategoryMenuItem = GObject.registerClass(class Arc_Menu_CategoryMenuItem ext
             icon_size: MEDIUM_ICON_SIZE
         });
 
-        if(this._category == Constants.CategoryType.FREQUENT_APPS){
-            this._name = _("Frequent Apps");
-            this._icon.icon_name = 'user-bookmarks-symbolic';
-        }
-        else if(this._category == Constants.CategoryType.HOME_SCREEN){
-            this._name = _("Home Screen");  
-            this._icon.gicon = Gio.icon_new_for_string(Me.path + '/media/misc/homescreen-symbolic.svg');
-        }    
-        else if(this._category == Constants.CategoryType.ALL_PROGRAMS){
-            this._name = _("All Programs"); 
-            this._icon.icon_name = 'view-grid-symbolic';
-        }  
-        else if(this._category == Constants.CategoryType.FAVORITES){
-            this._name = _("Favorites");
-            this._icon.icon_name = 'emblem-favorite-symbolic';
-        }  
-        else if(this._category == Constants.CategoryType.PINNED_APPS){
-            this._name = _("Pinned Apps");
-            this._icon.gicon = Gio.icon_new_for_string(Me.path + '/media/icons/arc-menu-symbolic.svg');
-        }
-        else{
-            this._name = this._category.get_name();
-            this._icon.gicon = this._category.get_icon() ? this._category.get_icon() : null;
-            this._icon.fallback_icon_name = this._category.get_icon() ? this._category.get_icon().to_string() : null;
-        }            
+        let [name, gicon, iconName, fallbackIconName] = Utils.getCategoryDetails(this._category);
+        this._name = _(name);
+        if(gicon)
+            this._icon.gicon = gicon;
+        else if(iconName)
+            this._icon.icon_name = iconName;
+        else
+            this._icon.fallback_icon_name = fallbackIconName;
+
         this.box.add_child(this._icon);
         
         this.label = new St.Label({
             text: this._name,
             y_expand: true,
-            x_expand: true,
             y_align: Clutter.ActorAlign.CENTER
         });
         this.box.add_child(this.label);
@@ -2376,6 +2305,7 @@ var CategoryMenuItem = GObject.registerClass(class Arc_Menu_CategoryMenuItem ext
             this._arrowIcon = new St.Icon({
                 icon_name: 'go-next-symbolic',
                 style_class: 'popup-menu-icon',
+                x_expand: true,
                 x_align: Clutter.ActorAlign.END,
                 icon_size: 12,
             });
@@ -2399,31 +2329,22 @@ var CategoryMenuItem = GObject.registerClass(class Arc_Menu_CategoryMenuItem ext
             });
             if(this._settings.get_boolean("disable-category-arrows"))
                 this.box.add_child(this._indicator);
-            else
+            else{
                 this.box.insert_child_at_index(this._indicator, this.box.get_n_children() - 1);
+                if(this._arrowIcon)
+                    this._arrowIcon.x_expand = false;
+            }
         }
         else if(this._indicator && this.box.contains(this._indicator)){
+            if(this._arrowIcon)
+                this._arrowIcon.x_expand = true;
             this.box.remove_child(this._indicator);
         }
     }
 
     displayAppList(){
         this._menuLayout.activeCategory = this._name;
-        if(this._category == Constants.CategoryType.HOME_SCREEN){
-            this._menuLayout.activeCategory = _("Pinned Apps");
-            this._menuLayout.displayFavorites();
-        }
-        else if(this._category == Constants.CategoryType.PINNED_APPS)
-            this._menuLayout.displayFavorites();
-        else if(this._category == Constants.CategoryType.FREQUENT_APPS){
-            this._menuLayout.setFrequentAppsList(this);
-            this._menuLayout.displayCategoryAppList(this.appList);  
-        }
-        else if(this._category == Constants.CategoryType.ALL_PROGRAMS)
-            this._menuLayout.displayCategoryAppList(this.appList, this._category);  
-        else
-            this._menuLayout.displayCategoryAppList(this.appList);  
-        this._menuLayout.activeCategoryType = this._category; 
+        Utils.activateCategory(this._category, this._menuLayout, this, null);
     }
 
     activate(event) {
@@ -2449,7 +2370,7 @@ var SimpleMenuItem = GObject.registerClass(class Arc_Menu_SimpleMenuItem extends
         this._category = category;
         this._menuLayout = menuLayout;
         this._settings = this._menuLayout._settings;
-        this.name = "";
+        this._name = "";
         this._active = false;
 
         this._icon = new St.Icon({
@@ -2457,37 +2378,19 @@ var SimpleMenuItem = GObject.registerClass(class Arc_Menu_SimpleMenuItem extends
             icon_size: MEDIUM_ICON_SIZE
         });
 
-        if(this._category == Constants.CategoryType.FREQUENT_APPS){
-            this._name = _("Frequent Apps");
-            this._icon.icon_name = 'user-bookmarks-symbolic';
-        }
-        else if(this._category == Constants.CategoryType.HOME_SCREEN){
-            this._name = _("Home Screen");  
-            this._icon.gicon = Gio.icon_new_for_string(Me.path + '/media/misc/homescreen-symbolic.svg');
-        }    
-        else if(this._category == Constants.CategoryType.ALL_PROGRAMS){
-            this._name = _("All Programs"); 
-            this._icon.icon_name = 'view-grid-symbolic';
-        }  
-        else if(this._category == Constants.CategoryType.FAVORITES){
-            this._name = _("Favorites");
-            this._icon.icon_name = 'emblem-favorite-symbolic';
-        }  
-        else if(this._category == Constants.CategoryType.PINNED_APPS){
-            this._name = _("Pinned Apps");
-            this._icon.gicon = Gio.icon_new_for_string(Me.path + '/media/icons/arc-menu-symbolic.svg');
-        }
-        else{
-            this._name = this._category.get_name();
-            this._icon.gicon = this._category.get_icon() ? this._category.get_icon() : null;
-            this._icon.fallback_icon_name = this._category.get_icon() ? this._category.get_icon().to_string() : null;
-        }
+        let [name, gicon, iconName, fallbackIconName] = Utils.getCategoryDetails(this._category);
+        this._name = _(name);
+        if(gicon)
+            this._icon.gicon = gicon;
+        else if(iconName)
+            this._icon.icon_name = iconName;
+        else
+            this._icon.fallback_icon_name = fallbackIconName;
 
         this.actor.add_child(this._icon);
         let categoryLabel = new St.Label({
             text: _(this._name),
             y_expand: true,
-            x_expand:true,
             y_align: Clutter.ActorAlign.CENTER
         });
         this.actor.add_child(categoryLabel);
@@ -2495,6 +2398,7 @@ var SimpleMenuItem = GObject.registerClass(class Arc_Menu_SimpleMenuItem extends
             this._arrowIcon = new St.Icon({
                 icon_name: 'go-next-symbolic',
                 style_class: 'popup-menu-icon',
+                x_expand: true,
                 x_align: Clutter.ActorAlign.END,
                 icon_size: 12,
             });
@@ -2585,8 +2489,11 @@ var SimpleMenuItem = GObject.registerClass(class Arc_Menu_SimpleMenuItem extends
             });
             if(this._settings.get_boolean("disable-category-arrows"))
                 this.actor.add_child(this._indicator);
-            else
+            else{
                 this.actor.insert_child_at_index(this._indicator, this.actor.get_n_children() - 1);
+                if(this._arrowIcon)
+                    this._arrowIcon.x_expand = false;
+            }
         }
         else if(this._indicator && this.actor.contains(this._indicator)){
             this.actor.remove_child(this._indicator);
@@ -2613,17 +2520,7 @@ var SimpleMenuItem = GObject.registerClass(class Arc_Menu_SimpleMenuItem extends
     }
     showMenu(event, navigateFocus = true) {
         this._menuLayout.activeCategory = this._name;
-        if(this._category == Constants.CategoryType.PINNED_APPS)
-            this._menuLayout.displayFavorites();
-        else if(this._category == Constants.CategoryType.FREQUENT_APPS){
-            this._menuLayout.setFrequentAppsList(this);
-            this._menuLayout.displayCategoryAppList(this.appList, this);  
-        }
-        else if(this._category == Constants.CategoryType.ALL_PROGRAMS)
-            this._menuLayout.displayCategoryAppList(this.appList, this, this._category);  
-        else
-            this._menuLayout.displayCategoryAppList(this.appList, this);       
-        this._menuLayout.activeCategoryType = this._category;
+        Utils.activateCategory(this._category, this._menuLayout, this, true);
         this.subMenu.toggle();
         if(navigateFocus)
             this.subMenu.actor.navigate_focus(null, St.DirectionType.TAB_FORWARD, false);
@@ -2642,39 +2539,22 @@ var CategorySubMenuItem = GObject.registerClass(class Arc_Menu_CategorySubMenuIt
         this._category = category;
         this._menuLayout = menuLayout;
         this._settings = this._menuLayout._settings;
-        this.name = "";
+        this._name = "";
         this.isSimpleMenuItem = false;
         this._active = false;
         this.applicationsMap = new Map();
         this.appList = [];
 
-        if(this._category == Constants.CategoryType.FREQUENT_APPS){
-            this.name = _("Frequent Apps");
-            this.icon.icon_name = 'user-bookmarks-symbolic';
-        }
-        else if(this._category == Constants.CategoryType.HOME_SCREEN){
-            this.name = _("Home Screen");  
-            this.icon.gicon = Gio.icon_new_for_string(Me.path + '/media/misc/homescreen-symbolic.svg');
-        }    
-        else if(this._category == Constants.CategoryType.ALL_PROGRAMS){
-            this.name = _("All Programs"); 
-            this.icon.icon_name = 'view-grid-symbolic';
-        }  
-        else if(this._category == Constants.CategoryType.FAVORITES){
-            this.name = _("Favorites");
-            this.icon.icon_name = 'emblem-favorite-symbolic';
-        }  
-        else if(this._category == Constants.CategoryType.PINNED_APPS){
-            this.name = _("Pinned Apps");
-            this.icon.gicon = Gio.icon_new_for_string(Me.path + '/media/icons/arc-menu-symbolic.svg');
-        }
-        else{
-            this.name = this._category.get_name();
-            this.icon.gicon = this._category.get_icon() ? this._category.get_icon() : null;
-            this.icon.fallback_icon_name = this._category.get_icon() ? this._category.get_icon().to_string() : null;
-        }
+        let [name, gicon, iconName, fallbackIconName] = Utils.getCategoryDetails(this._category);
+        this._name = _(name);
+        if(gicon)
+            this.icon.gicon = gicon;
+        else if(iconName)
+            this.icon.icon_name = iconName;
+        else
+            this.icon.fallback_icon_name = fallbackIconName;
 
-        this.label.text = this.name;
+        this.label.text = this._name;
         this.icon.icon_size = MEDIUM_ICON_SIZE;
 
         let panAction = new Clutter.PanAction({ interpolate: false });
@@ -2789,17 +2669,7 @@ var CategorySubMenuItem = GObject.registerClass(class Arc_Menu_CategorySubMenuIt
         if(this.isSimpleMenuItem){
             if(open){
                 this._menuLayout.activeCategory = this._name;
-                if(this._category == Constants.CategoryType.PINNED_APPS)
-                    this._menuLayout.displayFavorites();
-                else if(this._category == Constants.CategoryType.FREQUENT_APPS){
-                    this._menuLayout.setFrequentAppsList(this);
-                    this._menuLayout.displayCategoryAppList(this.appList, this);  
-                }
-                else if(this._category == Constants.CategoryType.ALL_PROGRAMS)
-                    this._menuLayout.displayCategoryAppList(this.appList, this, this._category);  
-                else
-                    this._menuLayout.displayCategoryAppList(this.appList, this);
-                this._menuLayout.activeCategoryType = this._category;
+                Utils.activateCategory(this._category, this._menuLayout, this, true);
             }
         }
         else{
@@ -3168,9 +3038,14 @@ var MenuButtonWidget = class Arc_Menu_MenuButtonWidget{
     }
 
     hidePanelText() {
+        this._label.style = '';
         if (this.actor.contains(this._label)) {
             this.actor.remove_child(this._label);
         }
+    }
+
+    setPanelTextStyle(style){
+        this._label.style = style;
     }
 };
 

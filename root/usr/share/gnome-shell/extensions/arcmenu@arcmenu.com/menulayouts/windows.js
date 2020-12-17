@@ -23,7 +23,7 @@
 
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 
-const {Clutter, GLib, Gio, Gtk, St} = imports.gi;
+const {Clutter, GLib, Gio, Gtk, Shell, St} = imports.gi;
 const BaseMenuLayout = Me.imports.menulayouts.baseMenuLayout;
 const Constants = Me.imports.constants;
 const Gettext = imports.gettext.domain(Me.metadata['gettext-domain']);
@@ -418,6 +418,61 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
     loadFavorites(){
         let isIconGrid = true;
         super.loadFavorites(isIconGrid);
+    }
+
+    updateIcons(){
+        for(let i = 0; i < this.frequentAppsList.length; i++){
+            let item = this.frequentAppsList[i];
+            item._updateIcon();
+        };
+        super.updateIcons();
+    }
+
+    displayAllApps(isGridLayout = false){
+        this._clearActorsFromBox();
+        let frequentAppsLabel = new PopupMenu.PopupMenuItem(_("Frequent"), {
+            hover: false,
+            can_focus: false
+        });  
+        frequentAppsLabel.actor.add_style_pseudo_class = () => { return false;};
+        frequentAppsLabel.actor.add(this._createHorizontalSeparator(Constants.SEPARATOR_STYLE.LONG));
+        frequentAppsLabel.label.style = 'font-weight: bold;';
+        this.applicationsBox.add_actor(frequentAppsLabel.actor)
+
+        let mostUsed = Shell.AppUsage.get_default().get_most_used();
+        this.frequentAppsList = [];
+        for (let i = 0; i < mostUsed.length; i++) {
+            if (mostUsed[i] && mostUsed[i].get_app_info().should_show()){
+                let item = new MW.ApplicationMenuItem(this, mostUsed[i]);
+                this.frequentAppsList.push(item);
+            }
+        }
+        let activeMenuItemSet = false;
+        for (let i = 0; i < this.frequentAppsList.length; i++) {
+            let item = this.frequentAppsList[i];
+            if(item.actor.get_parent())
+                item.actor.get_parent().remove_actor(item.actor);
+            if (!item.actor.get_parent()) 
+                this.applicationsBox.add_actor(item.actor);
+            if(!activeMenuItemSet){
+                activeMenuItemSet = true;  
+                this.activeMenuItem = item;
+                if(this.arcMenu.isOpen){
+                    this.mainBox.grab_key_focus();
+                }
+            }    
+        }
+
+        let appList = [];
+        this.applicationsMap.forEach((value,key,map) => {
+            appList.push(key);
+        });
+        appList.sort((a, b) => {
+            return a.get_name().toLowerCase() > b.get_name().toLowerCase();
+        });
+        
+        let displayAllApps = !isGridLayout;
+        this._displayAppList(appList, displayAllApps);
     }
 
     _reload() {

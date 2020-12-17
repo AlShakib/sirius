@@ -52,6 +52,15 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
             this.mainBox.add(this.searchBox.actor);
         }
             
+        this.buttonPressEventID = global.stage.connect("button-press-event", () => {
+            if(this.arcMenu.isOpen && this.backButton.visible){
+                let event = Clutter.get_current_event();
+                if(event.get_button() === 8){
+                    this.backButton.activate(event);
+                }
+            }
+        });
+        
         //subMainBox stores left and right box
         this.subMainBox = new St.BoxLayout({
             vertical: false,
@@ -361,5 +370,13 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
             this.viewProgramsButton.actor.hide(); 
             this.activeCategoryType = Constants.CategoryType.SEARCH_RESULTS;   
         }            
+    }
+
+    destroy(isReload){
+        if(this.buttonPressEventID){
+            global.stage.disconnect(this.buttonPressEventID);
+            this.buttonPressEventID = null;
+        }
+        super.destroy(isReload)
     }
 }

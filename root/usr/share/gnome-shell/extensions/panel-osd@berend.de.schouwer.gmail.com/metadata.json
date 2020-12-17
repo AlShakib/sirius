@@ -17,9 +17,10 @@
     "3.30",
     "3.34",
     "3.32",
-    "3.36"
+    "3.36",
+    "3.38"
   ],
   "url": "https://gitlab.com/jenslody/gnome-shell-extension-panel-osd",
   "uuid": "panel-osd@berend.de.schouwer.gmail.com",
-  "version": 38
+  "version": 39
 }

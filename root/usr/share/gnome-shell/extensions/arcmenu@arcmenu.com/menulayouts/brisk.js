@@ -177,8 +177,6 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         this.actionsBox.destroy_all_children();
         this.actionsBox.add(this._createHorizontalSeparator(Constants.SEPARATOR_STYLE.LONG));
         let pinnedApps = this._settings.get_strv('brisk-shortcuts-list');
-        this.favoritesArray = null;
-        this.favoritesArray = [];
 
         for(let i = 0;i < pinnedApps.length; i += 3){
             let placeMenuItem = this.createMenuItem([pinnedApps[i],pinnedApps[i+1], pinnedApps[i+2]], Constants.MenuItemType.MENU_ITEM);     

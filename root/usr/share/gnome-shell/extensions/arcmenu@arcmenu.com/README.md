@@ -8,7 +8,7 @@
 
 ### Introduction
 
-ArcMenu is an application menu for GNOME shell, designed to provide a more traditional user experience and workflow. This extension has many features, including multiple menu layout styles, GNOME search, quick access to system shorctus, and more! If you are a new user to GNOME and are looking for a Windows style start menu, this extension will be perfect for you!
+ArcMenu is an application menu for GNOME Shell, designed to provide a more traditional user experience and workflow. This extension has many features, including multiple menu layout styles, GNOME search, quick access to system shorctus, and more! If you are a new user to GNOME and are looking for a Windows style start menu, this extension will be perfect for you!
 
 -----
 
@@ -36,7 +36,7 @@ ArcMenu is provided free of charge. If you enjoy using ArcMenu and wish to make 
 
 #### To install the most recent official release: Visit ArcMenu on the [Official GNOME Extensions](https://extensions.gnome.org/extension/3628/arcmenu/) website.
 
-- **To install a Development version from source**: Please see the: [Install From Source wiki Guide](https://gitlab.com/arcmenu/ArcMenu/-/wikis/Install-From-Source-Guide).
+- **To install ArcMenu from source**: Please see the: [Install From Source wiki Guide](https://gitlab.com/arcmenu/ArcMenu/-/wikis/Install-From-Source-Guide).
 
 <p align="left">
        <a href="https://extensions.gnome.org/extension/3628/arcmenu/" >
@@ -55,8 +55,7 @@ For ArcMenu to work properly, your GNOME Desktop may need [these dependencies](h
 
 Bugs should be reported [here](https://gitlab.com/arcmenu/ArcMenu/issues) on the GitLab issues page.
 
-Please note that without any information about your system, the ArcMenu team can only speculate what the problem is.
-So, please provide us information about your GNU/Linux distribution and the GNOME Shell version. Otherwise, we are not able to try and solve your problem.
+When reporting a bug, please provide as much information as you can about the issue and make sure to include your Linux distribution, GNOME Shell version, and ArcMenu version.
 
 -----
 
@@ -66,10 +65,7 @@ There are basic rules of conduct that should be followed at all times by everyon
 
 - Do not insult, harass, or demean anyone.
 - Do not intentionally multi-post an issue.
-- Do not use ALL CAPS when creating an issue report.
 - Do not repeatedly update an open issue remarking that the issue persists.
-
-**Remember**: Just because the issue you reported was reported here does not mean that it is an issue with ArcMenu. As well, should your issue not be resolved immediately, it does not mean that a resolution is not being researched or tested. Patience is always appreciated.
 
 -----
 
@@ -78,7 +74,7 @@ There are basic rules of conduct that should be followed at all times by everyon
 
 ArcMenu is available under the terms of the GPL-2.0 license See [`COPYING`](https://gitlab.com/arcmenu/ArcMenu/blob/master/COPYING) for details.
 
-ArcMenu is Free Software: You can use, study share and improve it at your will. Specifically you can redistribute and/or modify it under the terms of the [GNU General Public License](https://www.gnu.org/licenses/gpl.html) as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version. 
+ArcMenu is Free Software: You can use, study, share, and improve it at your will. Specifically you can redistribute and/or modify it under the terms of the [GNU General Public License](https://www.gnu.org/licenses/gpl.html) as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version. 
 
 All ArcMenu's Image assets including wiki images, icons and application image assets are created by [LinxGem33](https://gitlab.com/LinxGem33) and licensed under; [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
 
@@ -142,10 +138,9 @@ Linux - is the registered trademark of Linus Torvalds in the U.S. and other coun
 
 -----
 
-* This extension leverages some of the design elements for the default menu layout (ArcMenu) from Zorin OS.
-* This extension also uses some code from gnome-shell adapted to be used for ArcMenu.
-* This extension also uses adapted code from Dash to Panel's Utils.js.
-* This extension also uses some code from gnome-shell-extensions package for use with external file sources adapted to be used for ArcMenu.
+* ArcMenu leverages some of the design elements for the default menu layout from Zorin OS.
+* ArcMenu utilizes some modified code from GNOME Shell and the GNOME Shell extensions package.
+* ArcMenu also uses adapted code from Dash to Panel's utils.js.
 
 -----
 
@@ -187,7 +182,7 @@ Linux - is the registered trademark of Linus Torvalds in the U.S. and other coun
 
 ### Thanks to the following people for contributing via pull requests:
 
-**@[fishears](https://github.com/fishears/Arc-Menu)** | **@[JasonLG1979](https://github.com/JasonLG1979)** | **@[itmitica](https://github.com/itmitica)** | **@[vikaig](https://gitlab.com/vikaig)** | **@[MagneFire](https://gitlab.com/MagneFire)** | **@[tognee](https://gitlab.com/tognee)** | **@[hlechner](https://gitlab.com/hlechner)** | **@[vanillajonathan](https://gitlab.com/vanillajonathan)**
+**@[fishears](https://github.com/fishears/Arc-Menu)** | **@[JasonLG1979](https://github.com/JasonLG1979)** | **@[itmitica](https://github.com/itmitica)** | **@[vikaig](https://gitlab.com/vikaig)** | **@[MagneFire](https://gitlab.com/MagneFire)** | **@[tognee](https://gitlab.com/tognee)** | **@[hlechner](https://gitlab.com/hlechner)** | **@[vanillajonathan](https://gitlab.com/vanillajonathan)** | **@[epskampie](https://gitlab.com/epskampie)** | **@[GnomeBook](https://gitlab.com/GnomeBook)**
 
 -----
 
@@ -217,7 +212,7 @@ Linux - is the registered trademark of Linus Torvalds in the U.S. and other coun
  
 -----
 
- **- @[MorganAntonsson](https://gitlab.com/MorganAntonsson) - Swedish** | **- @[jiri.doubravsky](https://gitlab.com/jiri.doubravsky) - czech** | **- @[juanlucer](https://gitlab.com/juanlucer) - Spanish** | **- @[plesry](https://gitlab.com/plesry) - Chinese (Taiwan)** |
+ **- @[MorganAntonsson](https://gitlab.com/MorganAntonsson) - Swedish** | **- @[jiri.doubravsky](https://gitlab.com/jiri.doubravsky) - Czech** | **- @[juanlucer](https://gitlab.com/juanlucer) - Spanish** | **- @[plesry](https://gitlab.com/plesry) - Chinese (Taiwan)** |
 
 -----
 
@@ -225,7 +220,7 @@ Linux - is the registered trademark of Linus Torvalds in the U.S. and other coun
  
 -----
 
- **- @[stevendobay](https://gitlab.com/stevendobay) - Hungarian** | **- @[omeritzics](https://gitlab.com/omeritzics) - Hebrew** |
+ **- @[stevendobay](https://gitlab.com/stevendobay) - Hungarian** | **- @[omeritzics](https://gitlab.com/omeritzics) - Hebrew** | **- @[prescott66](https://gitlab.com/prescott66) - Slovak** |
 
 </p>
 </details>

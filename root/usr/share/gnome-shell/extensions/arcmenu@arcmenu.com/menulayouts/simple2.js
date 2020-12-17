@@ -106,8 +106,20 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         super._clearActorsFromBox(this.mainBox);
     }
 
-    displayCategoryAppList(appList, categoryMenuItem, category){
-        this._displayAppList(appList, categoryMenuItem, category);
+    displayCategoryAppList(appList, category, categoryMenuItem){
+        this._displayAppList(appList, category, categoryMenuItem);
+    }
+
+    displayRecentFiles(){
+        let categoryMenuItem = this.categoryDirectories.get(Constants.CategoryType.RECENT_FILES);
+        let children = categoryMenuItem.menu.box.get_children();
+        for (let i = 0; i < children.length; i++) {
+            let actor = children[i];
+            if(actor._delegate instanceof MW.CategorySubMenuItem)
+                actor._delegate.menu.close();
+            categoryMenuItem.menu.box.remove_actor(actor);
+        }
+        super.displayRecentFiles(categoryMenuItem.menu.box);
     }
 
     displayFavorites() {
@@ -118,7 +130,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
                 let actor = children[i];
                 if(actor._delegate instanceof MW.CategorySubMenuItem)
                     actor._delegate.menu.close();
-                    categoryMenuItem.menu.box.remove_actor(actor);
+                categoryMenuItem.menu.box.remove_actor(actor);
             }
             for(let i = 0;i < this.favoritesArray.length; i++){
                 categoryMenuItem.menu.box.add_actor(this.favoritesArray[i].actor);	
@@ -134,7 +146,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         } 
     }
 
-    _displayAppList(apps, categoryMenuItem, displayAllApps) {
+    _displayAppList(apps, displayAllApps, categoryMenuItem) {
         let currentCharacter;
         let needsNewSeparator = false; 
         let listByCharacter = this._settings.get_boolean("alphabetize-all-programs");

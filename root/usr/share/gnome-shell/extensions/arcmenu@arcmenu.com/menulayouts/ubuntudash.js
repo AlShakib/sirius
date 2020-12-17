@@ -418,6 +418,19 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         this.subMainBox.add(this.actionsContainerBox);     
     }
 
+    displayRecentFiles(){
+        super.displayRecentFiles();
+        let favsLabel = new PopupMenu.PopupMenuItem(_("Recent Files"), {
+            hover: false,
+            can_focus: false
+        });  
+        favsLabel.actor.add_style_pseudo_class = () => { return false;};
+        favsLabel.actor.add(this._createHorizontalSeparator(Constants.SEPARATOR_STYLE.LONG));
+        favsLabel.label.style = 'font-weight: bold;';
+        this.applicationsBox.insert_child_at_index(favsLabel, 0);
+        this.activeCategoryType = Constants.CategoryType.RECENT_FILES;
+    }
+
     displayCategoryAppList(appList){
         this._clearActorsFromBox();
         this._displayAppList(appList);

@@ -304,6 +304,12 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         this.backButton.actor.show();
     }
 
+    displayRecentFiles(){
+        super.displayRecentFiles();
+        this.activeCategoryType = Constants.CategoryType.RECENT_FILES; 
+        this.backButton.actor.show();
+    }
+
     _onSearchBoxChanged(searchBox, searchString){  
         super._onSearchBoxChanged(searchBox, searchString);  
         if(!searchBox.isEmpty()){  

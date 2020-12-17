@@ -374,10 +374,13 @@ var MenuButton = GObject.registerClass(class Arc_Menu_MenuButton extends PanelMe
             this.subMenuManager.activeMenu.toggle();
 
         let layout = this._settings.get_enum('menu-layout');
-        if(layout == Constants.MENU_LAYOUT.GnomeDash)
+        if(layout === Constants.MENU_LAYOUT.GnomeDash){
+            if(this._settings.get_boolean('gnome-dash-show-applications') && !Main.overview.visible)
+                Main.overview.viewSelector._showAppsButton.checked = true;
             Main.overview.toggle();
+        }
         else{
-            if(layout == Constants.MENU_LAYOUT.Runner || layout == Constants.MENU_LAYOUT.Raven)
+            if(layout === Constants.MENU_LAYOUT.Runner || layout === Constants.MENU_LAYOUT.Raven)
                 this.MenuLayout.updateLocation();
             if(this.arcMenuPlacement === Constants.ArcMenuPlacement.PANEL){
                 if(global.dashToPanel && !this.arcMenu.isOpen){

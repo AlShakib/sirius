@@ -65,7 +65,6 @@ var ListSearchResult = class Arc_Menu_ListSearchResult {
         
         this.label = new St.Label({ 
             text: this.metaInfo['name'],
-            x_expand: true,
             y_expand: false,
             y_align: Clutter.ActorAlign.CENTER 
         });
@@ -81,7 +80,6 @@ var ListSearchResult = class Arc_Menu_ListSearchResult {
 
         let descriptionLabel = new St.Label({ 
             text: descriptionText,
-            x_expand: true,
             y_expand: false,
             x_align: Clutter.ActorAlign.START,
             y_align: Clutter.ActorAlign.CENTER 
@@ -119,7 +117,7 @@ var ListSearchResult = class Arc_Menu_ListSearchResult {
                     this.menuItem.actor.style = "height:40px";
                 descriptionLabel.style = "font-weight: lighter;";
     
-                let icon = this.metaInfo['createIcon'](this.layout == Constants.MENU_LAYOUT.Plasma ? MEDIUM_ICON_SIZE : LARGE_ICON_SIZE);
+                let icon = this.metaInfo['createIcon'](this.layout === Constants.MENU_LAYOUT.Plasma ? MEDIUM_ICON_SIZE : LARGE_ICON_SIZE);
                 if (icon)
                     this.menuItem.box.add_child(icon);   
                 
@@ -170,7 +168,6 @@ var AppSearchResult = class Arc_Menu_AppSearchResult {
         this.label = new St.Label({
             text: this._app ? this._app.get_name() : this.metaInfo['name'],
             y_expand: true,
-            x_expand: true,
             y_align: gridView ? Clutter.ActorAlign.CENTER : Clutter.ActorAlign.CENTER, 
             x_align: gridView ? Clutter.ActorAlign.CENTER : Clutter.ActorAlign.FILL
         });
@@ -184,16 +181,10 @@ var AppSearchResult = class Arc_Menu_AppSearchResult {
             if(gridView){
                 this.menuItem.box.vertical = true;
                 this.menuItem.remove_child(this.menuItem._ornamentLabel);
-                if(this.layout == Constants.MENU_LAYOUT.Elementary || this.layout == Constants.MENU_LAYOUT.UbuntuDash){
-                    this.menuItem.actor.style ='text-align: center; border-radius:4px; padding: 5px; spacing: 0px; width:95px; height:95px;';
-                    this.menuItem.box.style = 'padding: 0px; margin: 0px; spacing:0px;';
-                    iconSize = 52;
-                }
-                else {
-                    this.menuItem.actor.style ='text-align: center; border-radius:4px; padding: 5px; spacing: 0px; width:80px;height:80px;';
-                    this.menuItem.box.style = 'padding: 0px; margin: 0px; spacing:0px;';
-                    iconSize = 36;
-                } 
+                
+                Utils.setGridLayoutStyle(this.layout, this.menuItem.actor, this.menuItem.box);
+                iconSize = Utils.getGridIconSize(this.layout);
+
                 this.icon = this.metaInfo['createIcon'](iconSize);         
                 if(this.icon){
                     if(this._settings.get_boolean('multi-lined-labels')){
@@ -241,7 +232,6 @@ var AppSearchResult = class Arc_Menu_AppSearchResult {
                 let descriptionLabel = new St.Label({ 
                     text: descriptionText,
                     x_align: Clutter.ActorAlign.START,
-                    x_expand: true,
                     style: "font-weight: lighter;"
                 });
                 if(descriptionText){
@@ -978,7 +968,6 @@ var ArcSearchProviderInfo = GObject.registerClass(class Arc_Menu_ArcSearchProvid
                     text: this.description,
                     x_align: Clutter.ActorAlign.START,
                     y_align: Clutter.ActorAlign.CENTER,
-                    x_expand: true
                 });
 
                 if(this.description){
@@ -1007,7 +996,6 @@ var ArcSearchProviderInfo = GObject.registerClass(class Arc_Menu_ArcSearchProvid
         }
         else{
             this.label.style = 'font-weight: bold;';
-            this.label.x_expand = true;
             this.actor.x_fill = true;
             this.actor.y_fill = false;
             this.actor.x_align = Clutter.ActorAlign.FILL;
@@ -1022,7 +1010,6 @@ var ArcSearchProviderInfo = GObject.registerClass(class Arc_Menu_ArcSearchProvid
                 let descriptionLabel = new St.Label({ 
                     text: this.description,
                     x_align: Clutter.ActorAlign.START,
-                    x_expand: true
                 });
 
                 if(this.description){

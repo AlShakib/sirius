@@ -299,17 +299,18 @@ var Tile = GObject.registerClass(class Arc_Menu_Tile extends Gtk.Button{
             halign: Gtk.Align.CENTER,
             valign: Gtk.Align.CENTER,
         });
+        this.name = name;
+        this.layout = layout;
+        this.margin = 1;
+
         let pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(file, width, height);
         this._image = new Gtk.Image({ pixbuf: pixbuf });
-        this.name = name;
         this._label = new Gtk.Label({ label: _(this.name) });
-        this.layout = layout;
-
         this._vbox = new Gtk.Box({ orientation: Gtk.Orientation.VERTICAL });
+
         this._vbox.add(this._image);
         this._vbox.add(this._label);
         this.add(this._vbox);
-        this.margin=1;
     }
 });
 
@@ -318,18 +319,12 @@ var LayoutTile = GObject.registerClass(class Arc_Menu_LayoutTile extends FrameBo
         super._init();
         this.name = name;
         this.layout = layout.layoutStyle;
-        this.info = "<b>"+ _(this.name) + "</b>\n\n" + _(layout.description) + "\n\n" + _("Included Layouts") + ":";
         
         this.box = new FrameBoxRow({ 
             selectable: false,
             activatable: false
         });
         this.box._grid.row_spacing = 10;
-
-        this.layoutList = "";
-        this.layout.forEach((style) => {
-            this.layoutList += "•   " + _(style.name) + "\n";
-        });
 
         let pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(file, 75, 75);
         this._image = new Gtk.Image({ 
@@ -338,8 +333,9 @@ var LayoutTile = GObject.registerClass(class Arc_Menu_LayoutTile extends FrameBo
             pixbuf: pixbuf 
         });
         this.box._grid.attach(this._image, 0, 0, 1, 1);
+
         let styleLabel = new Gtk.Label({
-            label: "<b>" + _(this.name) + " " + _("Menu Layouts") + "</b>",
+            label: "<b>" + _(layout.descriptionTitle) + "</b>",
             use_markup: true,
             hexpand: false,
             halign: Gtk.Align.START,
@@ -365,14 +361,10 @@ var LayoutTile = GObject.registerClass(class Arc_Menu_LayoutTile extends FrameBo
             valign: Gtk.Align.CENTER,
             hexpand: true,
             vexpand: false,
-            tooltip_text: _("Browse all") + " " + _(this.name)
+            tooltip_text: _('Browse all %s layouts').format(_(this.name))
         });
-        this.box._grid.attach(this.layoutButton, 1, 0, 1, 1);
 
-       
-        this.infoButton = new InfoButton({
-            tooltip_text: _(this.name) + " " + _("Information")
-        });
+        this.box._grid.attach(this.layoutButton, 1, 0, 1, 1);
         this.box._grid.attach(Gtk.Separator.new(Gtk.Orientation.HORIZONTAL), 0, 1, 2, 1);
         this.box._grid.attach(styleLabel, 0, 2, 1, 1);
         this.box._grid.attach(descriptoinLabel, 0, 3, 1, 1);

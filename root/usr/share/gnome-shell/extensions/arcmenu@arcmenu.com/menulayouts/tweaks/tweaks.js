@@ -61,7 +61,7 @@ var TweaksDialog = GObject.registerClass(
             else if(menuLayout == Constants.MENU_LAYOUT.Elementary)
                 this._loadElementaryTweaks(vbox);
             else if(menuLayout == Constants.MENU_LAYOUT.GnomeDash)
-                this._loadPlaceHolderTweaks(vbox);
+                this._loadGnomeDashTweaks(vbox);
             else if(menuLayout == Constants.MENU_LAYOUT.Simple)
                 this._loadPlaceHolderTweaks(vbox);
             else if(menuLayout == Constants.MENU_LAYOUT.Simple2)
@@ -187,6 +187,27 @@ var TweaksDialog = GObject.registerClass(
             disableAvatarRow.add(disableAvatarSwitch);
             return disableAvatarRow;
         }
+
+        _loadGnomeDashTweaks(vbox){
+            let gnomeDashTweaksFrame = new PW.FrameBox();
+            let appsGridRow = new PW.FrameBoxRow();
+            let appsGridLabel = new Gtk.Label({
+                label: _("Show Applications Grid"),
+                use_markup: true,
+                xalign: 0,
+                hexpand: true
+            });
+            let appsGridSwitch = new Gtk.Switch({ halign: Gtk.Align.END });
+            appsGridSwitch.set_active(this._settings.get_boolean('gnome-dash-show-applications'));
+            appsGridSwitch.connect('notify::active', (widget) => {
+                this._settings.set_boolean('gnome-dash-show-applications', widget.get_active());
+            });
+            appsGridRow.add(appsGridLabel);
+            appsGridRow.add(appsGridSwitch);
+            gnomeDashTweaksFrame.add(appsGridRow);
+            vbox.add(gnomeDashTweaksFrame);
+        }
+
         _loadPlasmaMenuTweaks(vbox){
             let plasmaMenuTweaksFrame = new PW.FrameBox();
             

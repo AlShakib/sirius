@@ -46,7 +46,7 @@
     <enum id='org.gnome.shell.extensions.arcmenu.arc-menu-placement'>
         <value value="0" nick="Panel"/>
         <value value="1" nick="DTP"/>
-        <value value="2" nick="DTD"/>
+        <value value="2" nick="DASH"/>
     </enum>
     <enum id='org.gnome.shell.extensions.arcmenu.menu-button-icon'>
         <value value="0" nick="Arc_Menu_Icon"/>
@@ -92,10 +92,10 @@
       <summary>disable hotkey on key release</summary>
       <description>disable hotkey on key release.</description>
     </key>
-    <key type="ab" name="dtp-dtd-state">
-      <default>[false, false]</default>
-      <summary>Keeps track of Dash to Panel and Dash to Dock extension states</summary>
-      <description>false = off, true = on</description>
+    <key type="ab" name="available-placement">
+      <default>[true, false, false]</default>
+      <summary>Keeps track of available placement for ArcMenu. [Main Panel, Dash to Panel, Dash to Dock] </summary>
+      <description>false = not avaliable, true = avaliable</description>
     </key>
     <key enum="org.gnome.shell.extensions.arcmenu.arc-menu-placement" name="arc-menu-placement">
       <default>"Panel"</default>
@@ -211,6 +211,11 @@
       <default>false</default>
       <summary>Flip menu horizontally</summary>
       <description>Flip menu horizontally</description>
+    </key>
+    <key type="b" name="gnome-dash-show-applications">
+      <default>false</default>
+      <summary>GNOME Dash Layout - Show Applications</summary>
+      <description>GNOME Dash Layout - Show Applications</description>
     </key>
     <key type="b" name="plasma-show-descriptions">
       <default>false</default>
@@ -363,7 +368,7 @@
       <description>Show suspend button.</description>
     </key>
     <key type="b" name="show-restart-button">
-      <default>false</default>
+      <default>true</default>
       <summary>Show restart button</summary>
       <description>Show restart button.</description>
     </key>
@@ -482,10 +487,10 @@
       <summary>Size of the icon in percentage.</summary>
       <description>Size of the icon in percentage.</description>
     </key>
-    <key type="i" name="button-icon-padding">
-      <default>0</default>
-      <summary>Button Icon Padding.</summary>
-      <description>Button Icon Padding.</description>
+    <key type="i" name="button-padding">
+      <default>-1</default>
+      <summary>Menu Button Padding.</summary>
+      <description>Menu Button Padding.</description>
     </key>
     <key type="s" name="menu-button-color">
       <default>'rgb(240,240,240)'</default>
@@ -513,7 +518,7 @@
       <description>Active background color for the menu button icon.</description>
     </key>
     <key name="extra-categories" type="a(ib)">
-      <default>[(0, true), (1, true), (2, false), (3, false)]</default>
+      <default>[(0, true), (1, true), (2, false), (3, false), (4, false)]</default>
       <summary>List of recently installed apps</summary>
       <description>List of recently installed apps</description>
     </key>

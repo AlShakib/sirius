@@ -400,6 +400,13 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         this.activeCategoryType = Constants.CategoryType.CATEGORY_APP_LIST; 
     }
 
+    displayRecentFiles(){
+        super.displayRecentFiles();
+        this.applicationsBox.insert_child_at_index(this.categoryHeader, 0);
+        this.activeCategoryType = Constants.CategoryType.RECENT_FILES; 
+        this.categoryHeader.setActiveCategory(this.activeCategory);
+    }
+
     displayFrequentApps(){
         this._clearActorsFromBox();
         let mostUsed = Shell.AppUsage.get_default().get_most_used();

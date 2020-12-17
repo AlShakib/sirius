@@ -120,11 +120,23 @@ var createMenu =  class extends BaseMenuLayout.BaseLayout{
         
     }
 
-    displayCategoryAppList(appList, categoryMenuItem, category){
-        this._displayAppList(appList, categoryMenuItem, category);
+    displayCategoryAppList(appList, category, categoryMenuItem){
+        this._displayAppList(appList, category, categoryMenuItem);
     }
 
-    _displayAppList(apps, categoryMenuItem, displayAllApps) {
+    displayRecentFiles(){
+        let categoryMenuItem = this.categoryDirectories.get(Constants.CategoryType.RECENT_FILES);
+        let children = categoryMenuItem.applicationsBox.get_children();
+        for (let i = 0; i < children.length; i++) {
+            let actor = children[i];
+            if(actor._delegate instanceof MW.CategorySubMenuItem)
+                actor._delegate.menu.close();
+            categoryMenuItem.applicationsBox.remove_actor(actor);
+        }
+        super.displayRecentFiles(categoryMenuItem.applicationsBox);
+    }
+
+    _displayAppList(apps, displayAllApps, categoryMenuItem) {
         let currentCharacter;
         let needsNewSeparator = false; 
         let listByCharacter = this._settings.get_boolean("alphabetize-all-programs");
