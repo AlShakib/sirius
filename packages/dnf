@@ -61,9 +61,6 @@ gtk-murrine-engine
 # Theme engines for GTK+ 2.0
 gtk2-engines
 
-# A Material Design-like theme for GNOME/GTK+ based desktop environments
-materia-gtk-theme
-
 # pkgconf shim to provide /usr/bin/pkg-config
 pkgconf-pkg-config
 

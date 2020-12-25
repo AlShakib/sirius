@@ -231,11 +231,6 @@ add_repos() {
   dnf copr -y enable "dirkdavidis/papirus-icon-theme" &>> "${LOG_FILE}"
   is_failed "Done" "Skipping: dirkdavidis/papirus-icon-theme repo did not enable successfully. See log for more info."
 
-  # enable materia theme repo
-  print "Enabling tcg/themes copr repo"
-  dnf copr -y enable "tcg/themes" &>> "${LOG_FILE}"
-  is_failed "Done" "Skipping: tcg/themes repo did not enable successfully. See log for more info."
-
   # enable scrcpy repo
   print "Enabling zeno/scrcpy copr repo"
   dnf copr -y enable "zeno/scrcpy" &>> "${LOG_FILE}"
