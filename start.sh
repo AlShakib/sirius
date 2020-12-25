@@ -443,38 +443,6 @@ remove_pip_packages() {
   fi
 }
 
-install_rclone() {
-  print "Installing rclone"
-  if [[ -x "$(command -v rclone)" ]]; then
-    print_success "Skipping: rclone is already installed"
-  else
-    mkdir -p "${TMP_DIR}/rclone"
-    print "Downloading rclone pre compiled binary"
-    wget "https://downloads.rclone.org/rclone-current-linux-amd64.zip" -O "${TMP_DIR}/rclone/rclone-current-linux-amd64.zip" &>> "${LOG_FILE}"
-    if [[ "$?" -ne 0 ]]; then
-      print_failed "Skipping: rclone downloading did not complete successfully. See log for more info."
-    else
-      print_success "Done"
-      cd "${TMP_DIR}/rclone"
-      print "Unzipping rclone zip bundle"
-      unzip -j "rclone-current-linux-amd64.zip" &>> "${LOG_FILE}"
-      is_failed "Done" "Skipping. Unzipping rclone zip bundle is failed. See log for more info."
-      print "Installing rclone man file"
-      mkdir -p "/usr/local/share/man/man1" &>> "${LOG_FILE}"
-      rsync -av --chown=root:root "${TMP_DIR}/rclone/rclone.1" "/usr/local/share/man/man1" &>> "${LOG_FILE}"
-      is_failed "Done" "Skipping: Rclone man file installation is failed. See log for more info."
-      print "Updating mandb"
-      mandb &>> "${LOG_FILE}"
-      is_failed "Done" "Skipping: Updating mandb is failed"
-      print "Installing rclone binary"
-      rsync -av --chown=root:root "${TMP_DIR}/rclone/rclone" "/usr/local/bin" &>> "${LOG_FILE}"
-      chmod +x "/usr/local/bin/rclone" &>> "${LOG_FILE}"
-      is_failed "Done" "Skipping: rclone installation did not complete successfully. See log for more info."
-      cd "${OLDPWD}"
-    fi
-  fi
-}
-
 install_hugo_extended_cli() {
   print "Installing hugo extended cli"
   if [[ -x "$(command -v hugo)" ]]; then
@@ -759,7 +727,6 @@ set_misc_flags() {
 
 setup_operating_system() {
   copy_to_system
-  install_rclone
   install_hugo_extended_cli
   install_heroku_cli
   install_telegram_desktop

@@ -300,3 +300,6 @@ certbot
 
 # The apache plugin for certbot
 python-certbot-apache
+
+# Rsync for cloud storage
+rclone
