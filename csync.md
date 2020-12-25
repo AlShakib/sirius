@@ -40,7 +40,7 @@ There are several options for `csync`
 
 ### pull
 
-`csync pull` will pull files from the remote directory to the local directory. It will pull the identical directory from the remote. If you delete a file from the remote, the pull will delete the file from local as well. If you create a file in the local but do not have that file in the local, the pull will delete that file from the local as well.
+`csync pull` will pull files from the remote directory to the local directory. It will pull the identical directory from the remote. If you delete a file from the remote, the pull will delete the file from local as well. If you create a file in the local but do not have that file in the remote, the pull will delete that file from the local as well.
 
 ### show config
 
