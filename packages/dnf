@@ -300,3 +300,6 @@ python-certbot-apache
 
 # Rsync for cloud storage
 rclone
+
+# Music player for GNOME
+lollypop
