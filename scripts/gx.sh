@@ -42,6 +42,7 @@ if [[ ! -e "${CONFIG_FILE}" ]]; then
   else
     echo "GITHUB_USERNAME=" >> "${CONFIG_FILE}"
     echo "GITHUB_TOKEN=" >> "${CONFIG_FILE}"
+    chmod 600 "${CONFIG_FILE}"
   fi
 fi
 
