@@ -303,3 +303,6 @@ rclone
 
 # A music management program
 quodlibet
+
+# A general-purpose full virtualizer for PC hardware
+VirtualBox
