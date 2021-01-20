@@ -71,10 +71,13 @@ clone_from_organization() {
   mkdir -p "${3}"
   repo_list=$(curl --silent https://api.github.com/orgs/${3}/repos?type=private -u ${1}:${2}  | \
             jq .[].ssh_url | sed -e 's/^"//'  -e 's/"$//')
+  total_repo=`echo "${repo_list}" | wc -l`
+  count=0
   for repo in $repo_list; do
-    print "Repo found => ${YELLOW}${repo}${NC}"
+    ((++count))
+    echo -e "[${count}/${total_repo}] Cloning now => ${YELLOW}${repo}${NC}"
     echo ""
-    git  -C "${3}" clone "${repo}"
+    git -C "${3}" clone "${repo}"
     echo ""
   done
 }
