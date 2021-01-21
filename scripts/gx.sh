@@ -68,17 +68,26 @@ if [[ "${1}" == "" ]]; then
 fi
 
 clone_from_organization() {
+  per_page=50
+
+  org_info=$(curl --silent https://api.github.com/orgs/${3} -u ${1}:${2})
+  total_private_repos=`echo "${org_info}" | jq .total_private_repos | sed -e 's/^"//'  -e 's/"$//'`
+  public_repos=`echo "${org_info}" | jq .public_repos | sed -e 's/^"//'  -e 's/"$//'`
+  total_repo=$((total_private_repos+public_repos))
+  page=$(((total_repo+per_page-1)/per_page))
+
   mkdir -p "${3}"
-  repo_list=$(curl --silent https://api.github.com/orgs/${3}/repos?type=private -u ${1}:${2}  | \
-            jq .[].ssh_url | sed -e 's/^"//'  -e 's/"$//')
-  total_repo=`echo "${repo_list}" | wc -l`
-  count=0
-  for repo in $repo_list; do
-    ((++count))
-    echo -e "[${count}/${total_repo}] Cloning now => ${YELLOW}${repo}${NC}"
-    echo ""
-    git -C "${3}" clone "${repo}"
-    echo ""
+  counter=0
+  for (( i = 1; i <= $page; ++i )); do
+    repo_list=$(curl --silent https://api.github.com/orgs/${3}/repos?type=all\&sort=updated\&direction=desc\&per_page=${per_page}\&page=${i} -u ${1}:${2} | \
+                jq .[].ssh_url | sed -e 's/^"//'  -e 's/"$//')
+    for repo in $repo_list; do
+      ((++counter))
+      echo -e "[${counter}/${total_repo}] Cloning now => ${YELLOW}${repo}${NC}"
+      echo ""
+      git -C "${3}" clone "${repo}"
+      echo ""
+    done
   done
 }
 
