@@ -145,6 +145,10 @@ org.gnome.gedit.preferences.editor scheme 'plata-light'
 # Set default temperature unit to 'centigrade'
 org.gnome.GWeather temperature-unit 'centigrade'
 
+# Disable automatic location
+org.gnome.shell.weather automatic-location false
+org.gnome.Weather automatic-location false
+
 # Set default location to 'Dhaka'
 org.gnome.Weather locations [<(uint32 2, <('Dhaka', 'VGHS', true, [(0.41626102660064762, 1.5777776438028739)], [(0.41404543583499592, 1.5779279341047632)])>)>]
 
