@@ -46,6 +46,15 @@ let actorAddedID, hpaddingChangedID, styleLine, padding, settings;
  * However, we only recurse down one level to find the actor with style class
  * 'panel-button' because otherwise we'll spend all day doing it.
  */
+function _refreshActor(actor) {
+    // thanks to https://github.com/home-sweet-gnome/dash-to-panel/commit/d372e6abd393b8f1c0e791b043dc2283b41d3ffb
+    if (imports.misc.config.PACKAGE_VERSION >= '3.34.0') {
+	let oldClass = actor.get_style_class_name();
+	actor.set_style_class_name('dummy-class-unlikely-to-exist-status-area-horizontal-spacing');
+	actor.set_style_class_name(oldClass);
+    }
+}
+
 function overrideStyle(actor, secondTime) {
     // it could be that the first child has the right style class name.
     if (!actor.has_style_class_name ||
@@ -85,13 +94,7 @@ function overrideStyle(actor, secondTime) {
                 }
             });
     }
-
-    // thanks to https://github.com/home-sweet-gnome/dash-to-panel/commit/d372e6abd393b8f1c0e791b043dc2283b41d3ffb
-    if (actor.visible && imports.misc.config.PACKAGE_VERSION >= '3.34.0') {
-        //force gnome 3.34 to refresh (having problem with the -natural-hpadding)
-        actor.hide();
-        Mainloop.idle_add(() => actor.show());
-    }
+    _refreshActor(actor);
 }
 
 // see the note in overrideStyle about us having to recurse down to the first
@@ -119,6 +122,7 @@ function restoreOriginalStyle(actor, secondTime) {
         actor.set_style(actor._original_inline_style_);
         delete actor._original_inline_style_;
     }
+    _refreshActor(actor);
 }
 
 /* Apply hpadding style to all existing actors & listen for more */
