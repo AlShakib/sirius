@@ -85,6 +85,9 @@ flameshot
 # Free exFAT file system implementation
 fuse-exfat
 
+# Utilities for exFAT file system
+exfat-utils
+
 # FUSE-Filesystem to access remote filesystems via SSH
 fuse-sshfs
 
