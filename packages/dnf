@@ -280,9 +280,6 @@ ddclient
 # Yum-utils CLI compatibility layer
 dnf-utils
 
-# Google Cloud SDK
-google-cloud-sdk
-
 # .NET Core 3.1 Software Development Kit
 dotnet-sdk-3.1
 
