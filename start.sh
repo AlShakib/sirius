@@ -117,6 +117,16 @@ backup_csync_config() {
   fi
 }
 
+backup_gx_config() {
+  if [[ -d "${SUDO_HOME}/.config/gx" ]]; then
+    mkdir -p "${SRC_DIR}/backup/gx"
+    rsync -av --delete --chown="${SUDO_USER}":"${SUDO_USER}" "${SUDO_HOME}/.config/gx/" "${SRC_DIR}/backup/gx" &>> "${LOG_FILE}"
+    is_failed "gx configuration backup completed successfully" "Skipping: gx configuration backup did not complete successfully. See log for more info."
+  else
+    print_warning "Skipping: gx configuration is not found"
+  fi
+}
+
 backup_ssh() {
   if [[ -d "${SUDO_HOME}/.ssh" ]]; then
     mkdir -p "${SRC_DIR}/backup/ssh"
@@ -131,6 +141,7 @@ create_backup() {
   backup_vnstat_database
   backup_rclone_config
   backup_csync_config
+  backup_gx_config
   backup_ssh
   # make available for non root user
   if [[ -d "${SRC_DIR}/backup" ]]; then
@@ -619,10 +630,22 @@ restore_csync_config() {
   fi
 }
 
+restore_gx_config() {
+  if [[ -d "${SRC_DIR}/backup/gx" ]]; then
+    print "Restoring gx configuration"
+    mkdir -p "${SUDO_HOME}/.config/gx"
+    rsync -av --chown="${SUDO_USER}":"${SUDO_USER}" "${SRC_DIR}/backup/gx/" "${SUDO_HOME}/.config/gx" &>> "${LOG_FILE}"
+    is_failed "Done" "Skipping: Restoring gx configuration is failed. See log for more info."
+  else
+    print_warning "Skipping: gx configuration backup is not found"
+  fi
+}
+
 restore_backup() {
   restore_csync_config
   restore_rclone_config
   restore_vnstat_database
+  restore_gx_config
 }
 
 cleanup() {
