@@ -21,7 +21,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// Import Libraries
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 const {Gdk, GdkPixbuf, Gio, GLib, GObject, Gtk} = imports.gi;
 const Constants = Me.imports.constants;
@@ -32,18 +31,13 @@ const PW = Me.imports.prefsWidgets;
 const Utils = Me.imports.utils;
 const _ = Gettext.gettext;
 
-
-const SCHEMA_PATH = '/org/gnome/shell/extensions/arc-menu/';
-const GSET = 'gnome-shell-extension-tool';
-
 var TweaksDialog = GObject.registerClass(
     class Arc_Menu_TweaksDialog extends PW.DialogWindow {
-
         _init(settings, parent, label) {
             this._settings = settings;
             this.addResponse = false;
             super._init(label, parent);
-            this.resize(550,250);
+            this.set_default_size(550,250);
         }
 
         _createLayout(vbox) {    
@@ -304,6 +298,7 @@ var TweaksDialog = GObject.registerClass(
 
             let resetButton = new Gtk.Button({
                 label: _("Restore Defaults"),
+                tooltip_text: _("Restore the default settings on this page"),
                 halign: Gtk.Align.START,
                 hexpand: true
             });
@@ -339,12 +334,11 @@ var TweaksDialog = GObject.registerClass(
             pinnedAppsScrollWindow.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC);
             pinnedAppsScrollWindow.set_max_content_height(100);
             pinnedAppsScrollWindow.set_min_content_height(100);
-            //last row - save settings
+
             let savePinnedAppsButton = new Gtk.Button({
                 label: _("Save"),
             });
             savePinnedAppsButton.connect('clicked', ()=> {
-                //iterate through each frame row (containing apps to pin) to create an array to save in settings
                 let array = [];
                 for(let x = 0;x < pinnedAppsFrame.count; x++) {
                     array.push(pinnedAppsFrame.get_index(x)._name);
@@ -357,7 +351,6 @@ var TweaksDialog = GObject.registerClass(
             savePinnedAppsButton.set_halign(Gtk.Align.END);
             savePinnedAppsButton.set_sensitive(false);
             
-            //function to load all pinned apps
             this._loadPinnedApps(this._settings.get_strv('brisk-shortcuts-list'), pinnedAppsFrame, savePinnedAppsButton);
             pinnedAppsScrollWindow.add_with_viewport(pinnedAppsFrame);
 
@@ -506,12 +499,11 @@ var TweaksDialog = GObject.registerClass(
             pinnedAppsScrollWindow.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC);
             pinnedAppsScrollWindow.set_max_content_height(300);
             pinnedAppsScrollWindow.set_min_content_height(300);
-            //last row - save settings
+
             let savePinnedAppsButton = new Gtk.Button({
                 label: _("Save"),
             });
             savePinnedAppsButton.connect('clicked', ()=> {
-                //iterate through each frame row (containing apps to pin) to create an array to save in settings
                 let array = [];
                 for(let x = 0;x < pinnedAppsFrame.count; x++) {
                     array.push(pinnedAppsFrame.get_index(x)._name);
@@ -524,7 +516,6 @@ var TweaksDialog = GObject.registerClass(
             savePinnedAppsButton.set_halign(Gtk.Align.END);
             savePinnedAppsButton.set_sensitive(false);
             
-            //function to load all pinned apps
             this._loadPinnedApps(this._settings.get_strv('ubuntu-dash-pinned-app-list'), pinnedAppsFrame, savePinnedAppsButton);
             pinnedAppsScrollWindow.add_with_viewport(pinnedAppsFrame);
 
@@ -551,30 +542,29 @@ var TweaksDialog = GObject.registerClass(
                 use_markup: true,
                 xalign: 0
             });
-            let pinnedAppsSeparatorScale = new Gtk.HScale({
-                adjustment: new Gtk.Adjustment({
-                    lower: 0,upper: 7, step_increment: 1, page_increment: 1, page_size: 0
-                }),
-                digits: 0,round_digits: 0,hexpand: true,
-                value_pos: Gtk.PositionType.RIGHT
+            let pinnedAppsSeparatorScale = new Gtk.Scale({
+                orientation: Gtk.Orientation.HORIZONTAL, 
+                adjustment: new Gtk.Adjustment({lower: 0, upper: 7, step_increment: 1, page_increment: 1, page_size: 0}),
+                digits: 0, round_digits: 0, hexpand: true,
+                draw_value: true
             });
+            pinnedAppsSeparatorScale.add_mark(0, Gtk.PositionType.BOTTOM, _("None"));
             pinnedAppsSeparatorScale.set_value(this._settings.get_int('ubuntu-dash-separator-index'));
             pinnedAppsSeparatorScale.connect('value-changed', (widget) => {
                 this._settings.set_int('ubuntu-dash-separator-index', widget.get_value());
             }); 
             
-            let infoButton = new PW.InfoButton();
+            let infoButton = new PW.Button({
+                icon_name: 'info-circle-symbolic'
+            });
             infoButton.connect('clicked', ()=> {
-                let dialog = new Gtk.MessageDialog({
+                let dialog = new PW.MessageDialog({
                     text: _('Adjust the position of the separator in the button panel'),
-                    use_markup: true,
                     buttons: Gtk.ButtonsType.OK,
-                    message_type: Gtk.MessageType.OTHER,
-                    transient_for: this.get_toplevel(),
-                    modal: true
+                    transient_for: this.get_toplevel()
                 });
                 dialog.connect ('response', ()=> dialog.destroy());
-                dialog.show();
+                dialog.show_all();
             });
 
             pinnedAppsSeparatorRow.add(pinnedAppsSeparatorLabel);
@@ -652,7 +642,6 @@ var TweaksDialog = GObject.registerClass(
                 label: _("Save"),
             });
             savePinnedAppsButton.connect('clicked', ()=> {
-                //iterate through each frame row (containing apps to pin) to create an array to save in settings
                 let array = [];
                 for(let x = 0;x < pinnedAppsFrame.count; x++) {
                     array.push(pinnedAppsFrame.get_index(x)._name);
@@ -665,7 +654,6 @@ var TweaksDialog = GObject.registerClass(
             savePinnedAppsButton.set_halign(Gtk.Align.END);
             savePinnedAppsButton.set_sensitive(false);
             
-            //function to load all pinned apps
             this._loadPinnedApps(this._settings.get_strv('mint-pinned-app-list'), pinnedAppsFrame, savePinnedAppsButton);
             pinnedAppsScrollWindow.add_with_viewport(pinnedAppsFrame);
             vbox.add(pinnedAppsScrollWindow);
@@ -686,30 +674,29 @@ var TweaksDialog = GObject.registerClass(
                 use_markup: true,
                 xalign: 0
             });
-            let pinnedAppsSeparatorScale = new Gtk.HScale({
-                adjustment: new Gtk.Adjustment({
-                    lower: 0,upper: 7, step_increment: 1, page_increment: 1, page_size: 0
-                }),
-                digits: 0,round_digits: 0,hexpand: true,
-                value_pos: Gtk.PositionType.RIGHT
+            let pinnedAppsSeparatorScale = new Gtk.Scale({
+                orientation: Gtk.Orientation.HORIZONTAL, 
+                adjustment: new Gtk.Adjustment({lower: 0, upper: 7, step_increment: 1, page_increment: 1, page_size: 0}),
+                digits: 0, round_digits: 0, hexpand: true,
+                draw_value: true,
             });
+            pinnedAppsSeparatorScale.add_mark(0, Gtk.PositionType.BOTTOM, _("None"));
             pinnedAppsSeparatorScale.set_value(this._settings.get_int('mint-separator-index'));
             pinnedAppsSeparatorScale.connect('value-changed', (widget) => {
                 this._settings.set_int('mint-separator-index', widget.get_value());
             }); 
 
-            let infoButton = new PW.InfoButton();
+            let infoButton = new PW.Button({
+                icon_name: 'info-circle-symbolic'
+            });
             infoButton.connect('clicked', ()=> {
-                let dialog = new Gtk.MessageDialog({
+                let dialog = new PW.MessageDialog({
                     text: _('Adjust the position of the separator in the button panel'),
-                    use_markup: true,
                     buttons: Gtk.ButtonsType.OK,
-                    message_type: Gtk.MessageType.OTHER,
-                    transient_for: this.get_toplevel(),
-                    modal: true
+                    transient_for: this.get_toplevel()
                 });
                 dialog.connect ('response', ()=> dialog.destroy());
-                dialog.show();
+                dialog.show_all();
             });
 
             pinnedAppsSeparatorRow.add(pinnedAppsSeparatorLabel);
@@ -719,7 +706,7 @@ var TweaksDialog = GObject.registerClass(
             vbox.add(pinnedAppsSeparatorFrame);
         }
         _loadPinnedApps(array,frame, savePinnedAppsButton) {
-            for(let i = 0;i<array.length;i+=3) {
+            for(let i = 0; i < array.length; i += 3) {
                 let frameRow = new PW.FrameBoxRow();
                 frameRow._name = array[i];
                 frameRow._icon = Prefs.getIconPath([array[i], array[i+1], array[i+2]]);
@@ -733,9 +720,10 @@ var TweaksDialog = GObject.registerClass(
                     pixel_size: 22
                 });
                 
-                let arcMenuImageBox = new Gtk.VBox({
-                    margin_left:5,
-                    expand: false
+                let arcMenuImageBox = new Gtk.Box({
+                    margin_start: 5,
+                    hexpand: false,
+                    vexpand: false
                 });
                 arcMenuImageBox.add(arcMenuImage);
                 frameRow.add(arcMenuImageBox);
@@ -751,27 +739,19 @@ var TweaksDialog = GObject.registerClass(
 
                 Prefs.checkIfValidShortcut(frameRow, frameLabel, arcMenuImage);
 
-                let buttonBox = new Gtk.Grid({
-                    margin_top:0,
-                    margin_bottom: 0,
-                    vexpand: false,
-                    hexpand: false,
-                    column_spacing: 2
+                let buttonBox = new PW.EditEntriesBox({
+                    frameRow: frameRow, 
+                    frame: frame, 
+                    buttons: [savePinnedAppsButton],
+                    modifyButton: true,
+                    changeButton: true
                 });
 
-                //create the three buttons to handle the ordering of pinned apps
-                //and delete pinned apps
-                let addPinnedAppsButton = new PW.IconButton({
-                    circular: false,
-                    icon_name: 'text-editor-symbolic',
-                    tooltip_text: _("Change")
-                });
-                addPinnedAppsButton.connect('clicked', ()=> {
+                buttonBox.connect('change', ()=> {
                     let dialog = new Prefs.AddAppsToPinnedListWindow(this._settings, this, Constants.DIALOG_TYPE.Mint_Pinned_Apps);
                     dialog.show_all();
                     dialog.connect('response', ()=> { 
                         if(dialog.get_response()) {
-                            //checked apps to add to pinned apps list - from dialog 'Add" button click event
                             let newPinnedApps = dialog.get_newPinnedAppsArray();
                             frameRow._name = newPinnedApps[0];
                             frameRow._icon = newPinnedApps[1];
@@ -784,7 +764,7 @@ var TweaksDialog = GObject.registerClass(
                             let icon = Prefs.getIconPath(newPinnedApps);
                             arcMenuImage.gicon = Gio.icon_new_for_string(iconString ? iconString : icon);
                             dialog.destroy();
-                            frame.show();
+                            frame.show_all();
                             savePinnedAppsButton.set_sensitive(true);
                         }
                         else
@@ -792,22 +772,7 @@ var TweaksDialog = GObject.registerClass(
                     }); 
                 });
 
-                let editButton = new PW.IconButton({
-                    circular: false,
-                    icon_name: 'emblem-system-symbolic',
-                    tooltip_text: _("Modify")
-                });
-                let upButton = new PW.IconButton({
-                    circular: false,
-                    icon_name: 'go-up-symbolic',
-                    tooltip_text: _('Move Up')
-                });
-                let downButton = new PW.IconButton({
-                    circular: false,
-                    icon_name: 'go-down-symbolic',
-                    tooltip_text: _('Move Down')
-                });
-                editButton.connect('clicked', ()=> {
+                buttonBox.connect('modify', ()=> {
                     let appArray = [frameRow._name,frameRow._icon,frameRow._cmd];
                     let dialog = new Prefs.AddCustomLinkDialogWindow(this._settings, this, Constants.DIALOG_TYPE.Mint_Pinned_Apps, true, appArray);
                     dialog.show_all();
@@ -824,42 +789,14 @@ var TweaksDialog = GObject.registerClass(
                             }
                             arcMenuImage.gicon = Gio.icon_new_for_string(iconString ? iconString : frameRow._icon);
                             dialog.destroy();
-                            frame.show();
+                            frame.show_all();
                             savePinnedAppsButton.set_sensitive(true);
                         }
                         else
                             dialog.destroy();
                     });  
                 });
-                upButton.connect('clicked', ()=> {
-                    //find index of frameRow in frame
-                    //remove and reinsert at new position
-                    let index = frameRow.get_index();
-                    if(index!=0) {
-                      frame.remove(frameRow);
-                      frame.insert(frameRow,index-1);
-                    }
-                    frame.show();
-                    savePinnedAppsButton.set_sensitive(true);
-                });
 
-                downButton.connect('clicked', ()=> {
-                    //find index of frameRow in frame
-                    //remove and reinsert at new position
-                    let index = frameRow.get_index();
-                    if(index+1<frame.count) {
-                      frame.remove(frameRow);
-                      frame.insert(frameRow,index+1);
-                    }
-                    frame.show();
-                    savePinnedAppsButton.set_sensitive(true);
-                });
-
-                //add everything to frame
-                buttonBox.add(addPinnedAppsButton);
-                buttonBox.add(editButton);
-                buttonBox.add(upButton);
-                buttonBox.add(downButton);
                 frameRow.add(buttonBox);
                 frame.add(frameRow);
             }
@@ -937,7 +874,6 @@ var TweaksDialog = GObject.registerClass(
             vbox.add(togneeMenuTweaksFrame);
         }
         _loadArcMenuTweaks(vbox){
-            //Pinned Apps / Categories Default View Toggle 
             let arcMenuTweaksFrame = new PW.FrameBox();
             let defaultLeftBoxRow = new PW.FrameBoxRow();
             let defaultLeftBoxLabel = new Gtk.Label({

@@ -422,29 +422,9 @@ var MenuSettingsController = class {
         let path = this._settings.get_string('custom-menu-button-icon');
         let menuButtonWidget = this._menuButton.menuButtonWidget;
         let stIcon = menuButtonWidget.getPanelIcon();
-        let iconEnum = this._settings.get_enum('menu-button-icon');
-        if(iconEnum == Constants.MENU_BUTTON_ICON.Custom){
-            stIcon.set_icon_name('start-here-symbolic');
-            if (path && GLib.file_test(path, GLib.FileTest.IS_REGULAR))
-                stIcon.set_gicon(Gio.icon_new_for_string(path));
-            else{
-                global.log("ArcMenu - Custom Menu Icon Error! Set to System Default.")
-            }
-        }
-        else if(iconEnum == Constants.MENU_BUTTON_ICON.Distro_Icon){
-            iconEnum = this._settings.get_int('distro-icon');
-            path = Me.path + Constants.DISTRO_ICONS[iconEnum].path;
-            if(Constants.DISTRO_ICONS[iconEnum].path === 'start-here-symbolic')
-                stIcon.set_icon_name('start-here-symbolic');
-            else if(GLib.file_test(path, GLib.FileTest.IS_REGULAR))
-                stIcon.set_gicon(Gio.icon_new_for_string(path));
-        }
-        else{
-            iconEnum = this._settings.get_int('arc-menu-icon');
-            path = Me.path + Constants.MENU_ICONS[iconEnum].path;
-            if(GLib.file_test(path, GLib.FileTest.IS_REGULAR))
-                stIcon.set_gicon(Gio.icon_new_for_string(path));
-        }
+        
+        let iconString = Utils.getMenuButtonIcon(this._settings, path);
+        stIcon.set_gicon(Gio.icon_new_for_string(iconString));
     }
 
     // Update the icon of the menu button as specified in the settings

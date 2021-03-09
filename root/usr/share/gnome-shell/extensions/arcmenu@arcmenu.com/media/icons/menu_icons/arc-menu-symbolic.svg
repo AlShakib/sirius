@@ -7,33 +7,33 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   inkscape:version="1.0 (4035a4fb49, 2020-05-01)"
-   sodipodi:docname="arc-menu-symbolic.svg"
-   width="64"
-   height="64"
+   id="svg24"
    version="1.1"
-   id="svg24">
+   height="64"
+   width="64"
+   sodipodi:docname="arc-menu-symbolic.svg"
+   inkscape:version="1.0 (4035a4fb49, 2020-05-01)">
   <sodipodi:namedview
-     inkscape:document-rotation="0"
-     inkscape:current-layer="svg24"
-     inkscape:window-maximized="1"
-     inkscape:window-y="40"
-     inkscape:window-x="0"
-     inkscape:cy="32"
-     inkscape:cx="27.254237"
-     inkscape:zoom="3.6875"
-     showgrid="false"
-     id="namedview481"
-     inkscape:window-height="898"
-     inkscape:window-width="1920"
-     inkscape:pageshadow="2"
-     inkscape:pageopacity="0"
-     guidetolerance="10"
-     gridtolerance="10"
-     objecttolerance="10"
-     borderopacity="1"
+     pagecolor="#ffffff"
      bordercolor="#666666"
-     pagecolor="#ffffff" />
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="898"
+     id="namedview954"
+     showgrid="false"
+     inkscape:zoom="3.6875"
+     inkscape:cx="27.254237"
+     inkscape:cy="32"
+     inkscape:window-x="0"
+     inkscape:window-y="40"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg24"
+     inkscape:document-rotation="0" />
   <metadata
      id="metadata30">
     <rdf:RDF>
@@ -49,20 +49,45 @@
   <defs
      id="defs28" />
   <g
-     id="g1366"
-     transform="translate(-116.94915,23.533898)" />
+     transform="translate(-116.94915,23.533898)"
+     id="g1366" />
   <g
-     style="fill:#cccccc"
-     transform="matrix(3.4369578,0,0,3.4369578,2.9004247,-959.67683)"
-     id="layer1">
+     transform="matrix(1.1686692,0,0,1.1686692,-5.768325,-5.8697109)"
+     id="g2840">
     <g
        style="fill:#cccccc"
-       transform="matrix(0.05709354,0,0,0.05703853,9.6034111,278.29442)"
-       id="g83628">
-      <path
-         id="path83614-2"
-         d="M -19.91572,34.266877 A 145.24027,145.24026 0 0 0 -165.14936,179.50844 145.24027,145.24026 0 0 0 -19.91572,324.74997 145.24027,145.24026 0 0 0 125.32893,179.50844 145.24027,145.24026 0 0 0 -19.91572,34.266877 Z m -11.619568,42.458951 c 34.0492079,0 58.054503,12.197498 77.408799,39.463132 V 81.384737 H 72.402654 V 277.62109 H 45.873511 v -34.44076 c -20.78794,27.98315 -42.2828611,39.11069 -75.615249,39.11069 -60.213342,0 -105.016272,-43.7653 -105.016272,-102.24293 0,-58.83637 44.443023,-103.322262 103.222722,-103.322262 z m 0.71522,24.395992 c -42.651112,0 -77.056672,34.43875 -77.056672,77.131 0,44.84483 34.04393,79.64221 78.487109,79.64221 42.292704,0 75.263142,-34.80372 75.263142,-79.28974 0,-43.76856 -33.684037,-77.48347 -76.693579,-77.48347 z"
-         style="fill:#cccccc;fill-opacity:1;stroke:none;stroke-width:11.2693;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+       id="g1139">
+      <g
+         transform="matrix(1.48656,0,0,1.48656,-15.403652,-13.20102)"
+         id="g1144">
+        <rect
+           style="fill:#cccccc;stroke-width:1.64048"
+           width="32.809589"
+           height="9.8428764"
+           x="15.696856"
+           y="14.273518"
+           rx="1.6404794"
+           ry="1.6404794"
+           id="rect14" />
+        <rect
+           style="fill:#cccccc;stroke-width:1.64048"
+           width="9.8428764"
+           height="19.685753"
+           x="38.66357"
+           y="27.397354"
+           rx="1.6404794"
+           ry="1.6404794"
+           id="rect18" />
+        <rect
+           style="fill:#cccccc;stroke-width:1.64048"
+           width="19.685753"
+           height="19.685753"
+           x="15.696856"
+           y="27.397354"
+           rx="1.6404794"
+           ry="1.6404794"
+           id="rect22" />
+      </g>
     </g>
   </g>
 </svg>

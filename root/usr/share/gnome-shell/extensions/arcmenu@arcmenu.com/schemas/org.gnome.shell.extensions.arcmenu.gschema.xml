@@ -492,30 +492,60 @@
       <summary>Menu Button Padding.</summary>
       <description>Menu Button Padding.</description>
     </key>
+    <key type="b" name="disable-menu-button-active-indicator">
+      <default>false</default>
+      <summary>Disable the active indicator for the menu button</summary>
+      <description>Disable the active indicator for the menu button.</description>
+    </key>
     <key type="s" name="menu-button-color">
       <default>'rgb(240,240,240)'</default>
       <summary>Color for the menu button icon</summary>
       <description>Color for the menu button icon.</description>
+    </key>
+    <key type="b" name="override-menu-button-color">
+      <default>false</default>
+      <summary>Allows changing the menu button icon color</summary>
+      <description>Allows changing the menu button icon color.</description>
     </key>
     <key type="s" name="menu-button-active-color">
       <default>'rgb(240,240,240)'</default>
       <summary>Active color for the menu button icon</summary>
       <description>Active color for the menu button icon.</description>
     </key>
+    <key type="b" name="override-menu-button-active-color">
+      <default>false</default>
+      <summary>Allows changing the menu button icon active color</summary>
+      <description>Allows changing the menu button icon active color.</description>
+    </key>
     <key type="s" name="menu-button-hover-color">
       <default>'rgb(214,214,214)'</default>
       <summary>Hover color for the menu button icon</summary>
       <description>Hover color for the menu button icon.</description>
+    </key>
+    <key type="b" name="override-menu-button-hover-color">
+      <default>false</default>
+      <summary>Allows changing the menu button icon hover color</summary>
+      <description>Allows changing the menu button icon hover color.</description>
     </key>
     <key type="s" name="menu-button-hover-backgroundcolor">
       <default>'rgba(238,238,236,0.1)'</default>
       <summary>Hover background color for the menu button icon</summary>
       <description>Hover background color for the menu button icon.</description>
     </key>
+    <key type="b" name="override-menu-button-hover-background-color">
+      <default>false</default>
+      <summary>Allows changing the menu button hover background color</summary>
+      <description>Allows changing the menu button hover background color.</description>
+    </key>
     <key type="s" name="menu-button-active-backgroundcolor">
       <default>'rgba(238,238,236,0.18)'</default>
       <summary>Active background color for the menu button icon</summary>
       <description>Active background color for the menu button icon.</description>
+    </key>
+    <key type="b" name="override-menu-button-active-background-color">
+      <default>false</default>
+      <summary>Allows changing the menu button active background color</summary>
+      <description>Allows changing the menu button active background color.</description>
     </key>
     <key name="extra-categories" type="a(ib)">
       <default>[(0, true), (1, true), (2, false), (3, false), (4, false)]</default>

@@ -187,17 +187,15 @@ var AppSearchResult = class Arc_Menu_AppSearchResult {
 
                 this.icon = this.metaInfo['createIcon'](iconSize);         
                 if(this.icon){
-                    if(this._settings.get_boolean('multi-lined-labels')){
+                    if(this._settings.get_boolean('multi-lined-labels'))
                         this.label.get_clutter_text().set_line_wrap(true);
-                    }
-                    else{
-                        this.icon.y_expand = true;
-                        this.label.y_align = Clutter.ActorAlign.CENTER;
-                        this.label.y_expand = false;
-                    }
+                    
+                    this.label.y_align = Clutter.ActorAlign.CENTER;
+                    this.label.y_expand = true;
                     this.icon.icon_size = iconSize;
                     this.icon.x_align = Clutter.ActorAlign.CENTER;
                     this.icon.y_align = Clutter.ActorAlign.CENTER;
+                    this.icon.y_expand = true;
                     this.menuItem.box.add_child(this.icon);
                 }
                 else{

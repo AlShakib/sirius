@@ -368,7 +368,10 @@ var BaseLayout = class {
             placeMenuItem.description = this._recentFiles[i].get_uri_display().replace(homeRegExp, '~');
             placeMenuItem._updateIcon();
             placeMenuItem.fileUri = this._recentFiles[i].get_uri();
-            placeMenuItem._removeBtn = new St.Button();
+            placeMenuItem._removeBtn = new St.Button({
+                style_class: this._settings.get_boolean('enable-custom-arc-menu') ? 'arc-menu-action button' : 'button',
+                style: 'padding: 0px 8px;'
+            });
             placeMenuItem._removeBtn.child = new St.Icon({
                 icon_name: 'edit-delete-symbolic',
                 style_class: 'popup-menu-icon',

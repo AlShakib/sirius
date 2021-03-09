@@ -777,7 +777,10 @@ var Tooltip = class Arc_Menu_Tooltip{
         this._menuButton = menuLayout.menuButton;
         this._settings = this._menuButton._settings;
         this.sourceActor = sourceActor;
-        this.location = Constants.TooltipLocation.BOTTOM;
+        if(this.sourceActor.tooltipLocation)
+            this.location = this.sourceActor.tooltipLocation;
+        else
+            this.location = Constants.TooltipLocation.BOTTOM;
         let titleLabel, descriptionLabel;
         this.actor = new St.BoxLayout({ 
             vertical: true,
@@ -902,8 +905,8 @@ var Tooltip = class Arc_Menu_Tooltip{
                     x = stageX + Math.floor((itemWidth - labelWidth) / 2);
                     break;
                 case Constants.TooltipLocation.BOTTOM:
-                    y = stageY + itemHeight;
-                    x = stageX + gap * 2;
+                    y = stageY + itemHeight + gap;
+                    x = stageX + gap;
                     break;
             }
 
@@ -1207,7 +1210,7 @@ var SettingsButton = GObject.registerClass(class Arc_Menu_SettingsButton extends
 // ArcMenu Settings Button
 var ArcMenuSettingsButton = GObject.registerClass(class Arc_Menu_ArcMenuSettingsButton extends SessionButton {
     _init(menuLayout) {
-        super._init(menuLayout, _("ArcMenu Settings"), Me.path + '/media/icons/arc-menu-symbolic.svg');
+        super._init(menuLayout, _("ArcMenu Settings"), Me.path + '/media/icons/menu_icons/arc-menu-symbolic.svg');
         this.tooltip.location = Constants.TooltipLocation.BOTTOM_CENTERED;
     }
     activate() {
@@ -1690,17 +1693,16 @@ var ShortcutMenuItem = GObject.registerClass(class Arc_Menu_ShortcutMenuItem ext
     }
     setAsGridIcon(){
         this.isGridIcon = true;
+        this.tooltipLocation = Constants.TooltipLocation.BOTTOM_CENTERED;
         this.box.vertical = true;
         this.label.x_align = Clutter.ActorAlign.CENTER;
+        this.label.y_align = Clutter.ActorAlign.CENTER;
+        this.label.y_expand = true;
         this._icon.y_align = Clutter.ActorAlign.CENTER;
-        if(this._settings.get_boolean('multi-lined-labels')){
+        this._icon.y_expand = true;
+        if(this._settings.get_boolean('multi-lined-labels'))
             this.label.get_clutter_text().set_line_wrap(true);
-        }
-        else{
-            this._icon.y_expand = true;
-            this.label.y_align = Clutter.ActorAlign.CENTER;
-            this.label.y_expand = false;
-        }
+
         this.remove_child(this._ornamentLabel);
         let layout = this._settings.get_enum('menu-layout');    
         Utils.setGridLayoutStyle(layout, this.actor, this.box);
@@ -1879,8 +1881,8 @@ var FavoritesMenuItem = GObject.registerClass({
         else if(this._name == "Terminal"){
             this._name = _("Terminal");
         }
-        if(this._iconPath === "ArcMenu_ArcMenuIcon"){
-            this._iconString = this._iconPath = Me.path + '/media/icons/arc-menu-symbolic.svg';
+        if(this._iconPath === "ArcMenu_ArcMenuIcon" || this._iconPath ===  Me.path + '/media/icons/arc-menu-symbolic.svg'){
+            this._iconString = this._iconPath = Me.path + '/media/icons/menu_icons/arc-menu-symbolic.svg';
         }
         //-------------------------------------------------------
               
@@ -1932,16 +1934,15 @@ var FavoritesMenuItem = GObject.registerClass({
             this._draggable.connect('drag-end', this._onDragEnd.bind(this));
         }
         else{
+            this.tooltipLocation = Constants.TooltipLocation.BOTTOM_CENTERED;
             this.label.x_align = Clutter.ActorAlign.CENTER;
+            this.label.y_align = Clutter.ActorAlign.CENTER;
+            this.label.y_expand = true;
             this._icon.y_align = Clutter.ActorAlign.CENTER;
-            if(this._settings.get_boolean('multi-lined-labels')){
+            this._icon.y_expand = true;
+            if(this._settings.get_boolean('multi-lined-labels'))
                 this.label.get_clutter_text().set_line_wrap(true);
-            }
-            else{
-                this._icon.y_expand = true;
-                this.label.y_align = Clutter.ActorAlign.END;
-                this.label.y_expand = false;
-            }
+            
             this.box.vertical = true;
             this.remove_child(this._ornamentLabel);
             let layout = this._settings.get_enum('menu-layout');
@@ -2147,16 +2148,15 @@ var ApplicationMenuItem = GObject.registerClass(class Arc_Menu_ApplicationMenuIt
         if(this._isIconGrid){
             this._iconBin.x_align = Clutter.ActorAlign.CENTER;
             this._iconBin.y_align = Clutter.ActorAlign.CENTER;
-            this.label.x_align = Clutter.ActorAlign.CENTER; 
+            this._iconBin.y_expand = true;
+            this.label.x_align = Clutter.ActorAlign.CENTER;
+            this.label.y_align = Clutter.ActorAlign.CENTER;
+            this.label.y_expand = true;
+            this.tooltipLocation = Constants.TooltipLocation.BOTTOM_CENTERED;
             
-            if(this._settings.get_boolean('multi-lined-labels')){
+            if(this._settings.get_boolean('multi-lined-labels'))
                 this.label.get_clutter_text().set_line_wrap(true);
-            }
-            else{
-                this._iconBin.y_expand = true;
-                this.label.y_align = Clutter.ActorAlign.END;
-                this.label.y_expand = false;
-            }
+
             this.box.vertical = true;
             this.remove_child(this._ornamentLabel);
             if(this.isRecentlyInstalled){
@@ -3166,30 +3166,9 @@ var DashMenuButtonWidget = class Arc_Menu_DashMenuButtonWidget{
             reactive: true
         });
         let path = this._settings.get_string('custom-menu-button-icon');
-        let iconEnum = this._settings.get_enum('menu-button-icon');
+        let iconString = Utils.getMenuButtonIcon(this._settings, path);
+        this._icon.set_gicon(Gio.icon_new_for_string(iconString));
 
-        if(iconEnum == Constants.MENU_BUTTON_ICON.Custom){
-            this._icon.set_icon_name('start-here-symbolic');
-            if (path && GLib.file_test(path, GLib.FileTest.IS_REGULAR))
-                this._icon.set_gicon(Gio.icon_new_for_string(path));
-            else{
-                global.log("ArcMenu - Custom Menu Icon Error! Set to System Default.")
-            }
-        }
-        else if(iconEnum == Constants.MENU_BUTTON_ICON.Distro_Icon){
-            iconEnum = this._settings.get_int('distro-icon');
-            path = Me.path + Constants.DISTRO_ICONS[iconEnum].path;
-            if (GLib.file_test(path, GLib.FileTest.IS_REGULAR))
-                this._icon.set_gicon(Gio.icon_new_for_string(path));
-        }
-        else{
-            iconEnum = this._settings.get_int('arc-menu-icon');
-            path = Me.path + Constants.MENU_ICONS[iconEnum].path;
-            if(Constants.MENU_ICONS[iconEnum].path === 'start-here-symbolic')
-                this._icon.set_icon_name('start-here-symbolic');
-            else if(GLib.file_test(path, GLib.FileTest.IS_REGULAR))
-                this._icon.set_gicon(Gio.icon_new_for_string(path));
-        }
         return this._icon;
     }
     getPanelIcon() {
