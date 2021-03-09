@@ -367,6 +367,10 @@ ATTR{idProduct}=="201d", ENV{adb_adbfast}="yes"
 GOTO="android_usb_rule_match"
 LABEL="not_Micromax"
 
+#	Microsoft
+#		Surface Duo
+SUBSYSTEM=="usb", ATTR{idVendor}=="045e", ATTR{idProduct}=="0c26", ENV{adb_user}="yes"
+
 #	Motorola
 ATTR{idVendor}!="22b8", GOTO="not_Motorola"
 ENV{adb_user}="yes"
@@ -607,6 +611,12 @@ ATTR{idProduct}=="01bb", ENV{adb_adbfast}="yes"
 ATTR{idProduct}=="51c9", ENV{adb_adbfast}="yes"
 #		Xperia XZ
 ATTR{idProduct}=="51e7", ENV{adb_adbfast}="yes"
+#		Xperia XZ1 Compact
+ATTR{idProduct}=="01f4", ENV{adb_adbfast}="yes"
+#		Xperia XZ2 Compact
+ATTR{idProduct}=="b00b", ENV{adb_adbfast}="yes"
+#		Xperia 5 II
+ATTR{idProduct}=="020d", ENV{adb_adbfast}="yes"
 GOTO="android_usb_rule_match"
 LABEL="not_Sony_Ericsson"
 
@@ -631,6 +641,14 @@ ATTR{idVendor}=="0451", ATTR{idProduct}=="d010", ENV{adb_user}="yes"
 
 #	Toshiba
 ATTR{idVendor}=="0930", ENV{adb_user}="yes"
+
+#	Unitech Electronics
+ATTR{idVendor}!="2e8e", GOTO="not_Unitech_Electronics"
+ENV{adb_user}="yes"
+#		EA630 (96e1=normal,96e7=debug)
+ATTR{idProduct}=="96e7", ENV{adb_adb}="yes"
+GOTO="android_usb_rule_match"
+LABEL="not_Unitech_Electronics"
 
 #	Wileyfox
 ATTR{idVendor}=="2970", ENV{adb_user}="yes"
@@ -686,6 +704,8 @@ ATTR{idVendor}=="1ebf", ENV{adb_user}="yes"
 ATTR{idVendor}!="05e0", GOTO="not_Zebra"
 #		TC55
 ATTR{idProduct}=="2101", ENV{adb_adb}="yes"
+#		TC72
+ATTR{idProduct}=="2106", ENV{adb_adb}="yes"
 GOTO="android_usb_rule_match"
 LABEL="not_Zebra"
 
