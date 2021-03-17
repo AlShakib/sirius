@@ -33,6 +33,9 @@ org.gnome.desktop.datetime automatic-timezone true
 org.gtk.Settings.FileChooser clock-format '12h'
 org.gnome.desktop.interface clock-format '12h'
 
+# Control how new windows get focus
+org.gnome.desktop.wm.preferences focus-new-windows 'strict'
+
 
 ## Gnome Tweak Tools ##
 
