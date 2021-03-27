@@ -173,6 +173,7 @@ var FrameBox = GObject.registerClass(class Arc_Menu_FrameBox extends Gtk.Frame {
     }
     show_all() {
         this._listBox.show_all();
+        super.show_all();
     }
     length() {
         return this._listBox.length;
@@ -227,6 +228,206 @@ var FrameBoxRow = GObject.registerClass(class Arc_Menu_FrameBoxRow extends Gtk.L
         });
         this.x = 0;
         Gtk.ListBoxRow.prototype.add.call(this, this._grid);
+    }
+
+    add(widget) {
+        this._grid.attach(widget, this.x, 0, 1, 1);
+        this.x++;
+    }
+    
+    setVerticalAlignmentBottom(){
+        this._grid.vexpand = true;
+        this._grid.valign = Gtk.Align.END;
+    }
+});
+
+var FrameBoxDragRow = GObject.registerClass(class Arc_Menu_FrameBoxDragRow extends Gtk.ListBoxRow {
+    _init(scrolledWindow) {
+        this.moveIndex = 0;
+        super._init();
+
+        this._grid = new Gtk.Grid({
+            orientation: Gtk.Orientation.HORIZONTAL,
+            margin_top: 5,
+            margin_bottom: 5,
+            margin_start: 5,
+            margin_end: 5,
+            column_spacing: 20,
+            row_spacing: 20
+        });
+
+        this._eventBox = new Gtk.EventBox({visible: true});
+        this.connect('button-press-event', (actor, event) => {return true;});
+
+        this._eventBox.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, null, Gdk.DragAction.MOVE);
+        let targets = new Gtk.TargetList(null);
+        targets.add(Gdk.atom_intern('GTK_LIST_BOX_ROW', false), Gtk.TargetFlags.SAME_APP, 0);
+        this._eventBox.drag_source_set_target_list(targets);
+        this.drag_dest_set(Gtk.DestDefaults.ALL, null, Gdk.DragAction.MOVE);
+        this.drag_dest_set_target_list(targets);
+
+
+        this._eventBox.connect('button-press-event', (actor, event) => {return false;});
+        this._eventBox.connect('enter-notify-event', (actor, event) => {return false;});
+        this._eventBox.connect('leave-notify-event', (actor, event) => {return false;});
+        this._eventBox.connect('button-release-event', (actor, event) => {return false;});
+        
+        this._eventBox.add(this._grid);
+        this.x = 0;
+        Gtk.ListBoxRow.prototype.add.call(this, this._eventBox);
+        this._eventBox.connect("drag-begin", (widget, context) => {
+            //get listbox parent
+            let parent = widget.get_parent();
+            let listBox = parent.get_parent();
+            listBox.dragLeave = true;
+            //get widgets parent - the listBoxDragRow
+            listBox.dragRow = parent;
+            //create a new copy drag row 
+            let alloc = this.get_allocation();
+            let window = widget.get_window();
+            let [_window, x, y] = window.get_device_position(context.get_device());
+            let dragWidget = this.createDragRow(alloc);
+            listBox.dragWidget = dragWidget;
+            Gtk.drag_set_icon_widget(context, dragWidget, x, y);
+        });
+
+        this.connect("drag-leave", (widget)=> {
+            this.set_state_flags(Gtk.StateFlags.NORMAL, true);
+            let listBox = widget.get_parent();
+            listBox.drag_unhighlight_row();
+            listBox.dragLeave = true;
+        });
+
+        this._eventBox.connect("drag-end", (widget, context)=> {
+            let parent = widget.get_parent();
+            let listBox = parent.get_parent();
+            listBox.drag_unhighlight_row();
+            if(listBox.dragWidget){
+                listBox.dragWidget.hide();
+                listBox.dragWidget.destroy();
+                listBox.dragWidget = null;
+            }
+        });
+
+        this.connect("drag-motion", (widget)=> {
+            let listBox = widget.get_parent();
+            if(listBox.dragLeave){
+                let alloc = widget.get_allocation();
+
+                let height = alloc.height;
+                alloc = scrolledWindow.get_allocation();
+                let scrollHeight = alloc.height;
+                let widgetLoc = widget.get_index() * height;
+                let value = scrolledWindow.vadjustment.value;
+                
+                if((widgetLoc + (height * 4)) > (value + scrollHeight))
+                    scrolledWindow.vadjustment.value += height;
+                else if((widgetLoc - (height * 2)) < value)
+                    scrolledWindow.vadjustment.value -= height;
+
+                listBox.drag_highlight_row(widget);
+                listBox.dragLeave = false;
+            }
+        });
+
+        this._eventBox.connect("drag-failed", (widget, context, result)=> {
+            let parent = widget.get_parent();
+            let listBox = parent.get_parent();
+            listBox.dragWidget.hide();
+            listBox.dragWidget.destroy();
+            listBox.dragWidget = null;
+            return true;
+        });
+        
+        this.connect("drag-drop", (widget, context, x, y, selection, info, time)=> {
+            //get listbox parent 
+            let listBox = this.get_parent();
+            let index = widget.get_index();
+            listBox.remove(listBox.dragRow);
+            listBox.show_all();
+            listBox.insert(listBox.dragRow, index);
+            listBox.show_all();
+            this.resetButton ? this.resetButton.set_sensitive(true) : null;
+            this.saveButton.set_sensitive(true);
+            Gtk.drag_finish(context, true, Gdk.DragAction.MOVE, time);
+        });
+    }
+
+    createDragRow(alloc){
+        let dragWidget = new Gtk.ListBox();
+
+        let dragRow = new FrameBoxRow();
+        dragRow.set_size_request(alloc.width, alloc.height);
+        dragWidget.add(dragRow);
+        dragWidget.drag_highlight_row(dragRow);
+
+        let image = new Gtk.Image( {
+            gicon: this._gicon,
+            pixel_size: 22
+        });
+
+        let imageBox = new Gtk.Box({
+            margin_start: 0,
+            hexpand: false,
+            vexpand: true,
+            spacing: 5,
+        });
+        let dragImage = new Gtk.Image( {
+            gicon: Gio.icon_new_for_string("list-drag-handle-symbolic"),
+            pixel_size: 12
+        });
+
+        imageBox.add(dragImage);
+        imageBox.add(image);
+
+        dragRow.add(imageBox);
+
+        let label = new Gtk.Label({
+            use_markup: true,
+            xalign: 0,
+            hexpand: true,
+            label: _(this._name)
+        });
+        dragRow.add(label);
+        let grid = new Gtk.Grid({
+            margin_top: 0,
+            margin_bottom: 0,
+            vexpand: false,
+            hexpand: false,
+            column_spacing: 10
+        })
+        let editButton = new Gtk.Button({
+            image:  new Gtk.Image({
+                icon_name: 'view-more-symbolic'
+            }),
+        });
+        grid.attach(editButton, 0, 0, 1, 1);
+
+        if(this.hasSwitch){
+            let modifyButton = new Gtk.Switch({
+                valign: Gtk.Align.CENTER,
+                margin_start: 10,
+                tooltip_text: _('Enable/Disble'),
+                active: this.switchActive
+            });
+            grid.insert_column(0);
+            grid.attach(Gtk.Separator.new(Gtk.Orientation.VERTICAL), 0, 0, 1, 1);
+            grid.insert_column(0);
+            grid.attach(modifyButton, 0, 0, 1, 1);
+        }
+        if(this.hasEditButton){
+            let editButton = new Button({
+                icon_name: 'text-editor-symbolic',
+            });
+            grid.insert_column(0);
+            grid.attach(Gtk.Separator.new(Gtk.Orientation.VERTICAL), 0, 0, 1, 1);
+            grid.insert_column(0);
+            grid.attach(editButton, 0, 0, 1, 1);
+        }
+        dragRow.add(grid);
+
+        dragWidget.show_all();
+        return dragWidget;
     }
 
     add(widget) {

@@ -91,7 +91,7 @@ var createMenu =  class extends BaseMenuLayout.BaseLayout{
             y_align: Clutter.ActorAlign.START,
             x_align: Clutter.ActorAlign.START,
             overlay_scrollbars: true,
-            style_class: 'apps-menu vfade',
+            style_class: 'apps-menu small-vfade',
             reactive:true
         });      
         this.applicationsScrollBox.style = "width: " + RUNNER_WIDTH + "px";

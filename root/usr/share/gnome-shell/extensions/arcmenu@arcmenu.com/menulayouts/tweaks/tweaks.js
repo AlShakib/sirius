@@ -351,7 +351,7 @@ var TweaksDialog = GObject.registerClass(
             savePinnedAppsButton.set_halign(Gtk.Align.END);
             savePinnedAppsButton.set_sensitive(false);
             
-            this._loadPinnedApps(this._settings.get_strv('brisk-shortcuts-list'), pinnedAppsFrame, savePinnedAppsButton);
+            this._loadPinnedApps(this._settings.get_strv('brisk-shortcuts-list'), pinnedAppsFrame, savePinnedAppsButton, pinnedAppsScrollWindow);
             pinnedAppsScrollWindow.add_with_viewport(pinnedAppsFrame);
 
             let pinnedAppsHeaderLabel = new Gtk.Label({
@@ -516,7 +516,7 @@ var TweaksDialog = GObject.registerClass(
             savePinnedAppsButton.set_halign(Gtk.Align.END);
             savePinnedAppsButton.set_sensitive(false);
             
-            this._loadPinnedApps(this._settings.get_strv('ubuntu-dash-pinned-app-list'), pinnedAppsFrame, savePinnedAppsButton);
+            this._loadPinnedApps(this._settings.get_strv('ubuntu-dash-pinned-app-list'), pinnedAppsFrame, savePinnedAppsButton, pinnedAppsScrollWindow);
             pinnedAppsScrollWindow.add_with_viewport(pinnedAppsFrame);
 
             let pinnedAppsHeaderLabel = new Gtk.Label({
@@ -654,7 +654,7 @@ var TweaksDialog = GObject.registerClass(
             savePinnedAppsButton.set_halign(Gtk.Align.END);
             savePinnedAppsButton.set_sensitive(false);
             
-            this._loadPinnedApps(this._settings.get_strv('mint-pinned-app-list'), pinnedAppsFrame, savePinnedAppsButton);
+            this._loadPinnedApps(this._settings.get_strv('mint-pinned-app-list'), pinnedAppsFrame, savePinnedAppsButton, pinnedAppsScrollWindow);
             pinnedAppsScrollWindow.add_with_viewport(pinnedAppsFrame);
             vbox.add(pinnedAppsScrollWindow);
 
@@ -705,26 +705,35 @@ var TweaksDialog = GObject.registerClass(
             pinnedAppsSeparatorFrame.add(pinnedAppsSeparatorRow);
             vbox.add(pinnedAppsSeparatorFrame);
         }
-        _loadPinnedApps(array,frame, savePinnedAppsButton) {
+        _loadPinnedApps(array,frame, savePinnedAppsButton, scrollWindow) {
             for(let i = 0; i < array.length; i += 3) {
-                let frameRow = new PW.FrameBoxRow();
+                let frameRow = new PW.FrameBoxDragRow(scrollWindow);
                 frameRow._name = array[i];
                 frameRow._icon = Prefs.getIconPath([array[i], array[i+1], array[i+2]]);
                 frameRow._cmd = array[i+2];
+                frameRow.saveButton = savePinnedAppsButton;
+                frameRow.hasEditButton = true;
                 let iconString;
                 if(frameRow._icon === "" && Gio.DesktopAppInfo.new(frameRow._cmd)){
                     iconString = Gio.DesktopAppInfo.new(frameRow._cmd).get_icon() ? Gio.DesktopAppInfo.new(frameRow._cmd).get_icon().to_string() : "";
                 }
+                frameRow._gicon = Gio.icon_new_for_string(iconString ? iconString : frameRow._icon);
                 let arcMenuImage = new Gtk.Image( {
-                    gicon: Gio.icon_new_for_string(iconString ? iconString : frameRow._icon),
+                    gicon: frameRow._gicon,
                     pixel_size: 22
                 });
                 
                 let arcMenuImageBox = new Gtk.Box({
-                    margin_start: 5,
+                    margin_start: 0,
                     hexpand: false,
-                    vexpand: false
+                    vexpand: false,
+                    spacing: 5,
                 });
+                let dragImage = new Gtk.Image( {
+                    gicon: Gio.icon_new_for_string("list-drag-handle-symbolic"),
+                    pixel_size: 12
+                });
+                arcMenuImageBox.add(dragImage);
                 arcMenuImageBox.add(arcMenuImage);
                 frameRow.add(arcMenuImageBox);
 

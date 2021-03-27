@@ -134,7 +134,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
             x_align: Clutter.ActorAlign.START,
             y_align: Clutter.ActorAlign.START,
             overlay_scrollbars: true,
-            style_class: 'vfade'
+            style_class: 'small-vfade'
         });   
         this.applicationsScrollBox.style = "width:300px;";   
 
@@ -340,7 +340,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
 
         let themeContext = St.ThemeContext.get_for_stage(global.stage);
         let scaleFactor = themeContext.scale_factor;
-        let height =  Math.round(this._settings.get_int('menu-height') / scaleFactor);
+        let height = Math.round(this._settings.get_int('menu-height') / scaleFactor) - 1;
         this.leftPanelPopup.style = `height: ${height}px`;        
         this.section.actor.add_actor(this.leftPanelPopup); 
         this.displayFavorites();

@@ -427,42 +427,6 @@ var ScrollView = GObject.registerClass(
     class Arc_Menu_ScrollView extends St.ScrollView{
     _init(params){
         super._init(params);
-        this.mouse_scroll = false;
-    }
-
-    vfunc_scroll_event(event){
-        let newValue, callback, adjustment;
-        switch (event.direction){
-            case Clutter.SCROLL_SMOOTH:
-                callback = ()=> {
-                    let delta_x, delta_y;
-                    [delta_x, delta_y] = event.get_scroll_delta();
-                    this.hscroll.adjustment.adjust_for_scroll_event(delta_x);
-                    this.vscroll.adjustment.adjust_for_scroll_event(delta_y);
-                };
-                break;
-            case Clutter.ScrollDirection.DOWN:
-            case Clutter.ScrollDirection.RIGHT:
-                adjustment = event.direction === Clutter.ScrollDirection.DOWN ? this.vscroll.adjustment : this.hscroll.adjustment;
-                callback = ()=> {
-                    newValue = adjustment.value + adjustment.page_size / 6;
-                    adjustment.set_value(newValue);
-                };
-                break;
-            case Clutter.ScrollDirection.UP:
-            case Clutter.ScrollDirection.LEFT:
-                adjustment = event.direction === Clutter.ScrollDirection.UP ? this.vscroll.adjustment : this.hscroll.adjustment;
-                callback = ()=> {
-                    newValue = adjustment.value - adjustment.page_size / 6;
-                    adjustment.set_value(newValue);
-                };
-                break;
-            default:
-                break;
-        }
-        if(callback)
-            Main.initializeDeferredWork(this, callback);
-        return Clutter.EVENT_PROPAGATE;
     }
     
     vfunc_style_changed(){
@@ -1091,8 +1055,15 @@ var PlaceButtonItem = GObject.registerClass(class Arc_Menu_PlaceButtonItem exten
 var CategoryMenuButton = GObject.registerClass(class Arc_Menu_CategoryMenuButton extends SessionButton {
     _init(menuLayout, category) {
         let [name, gicon, iconName, fallbackIconName] = Utils.getCategoryDetails(category);
+        super._init(menuLayout, _(name), "", null);
 
-        super._init(menuLayout, _(name), iconName ? iconName : fallbackIconName, gicon);
+        if(gicon)
+            this._icon.gicon = gicon;
+        else if(iconName)
+            this._icon.icon_name = iconName;
+        else
+            this._icon.fallback_icon_name = fallbackIconName;
+
         this._name = name;
         this.appList = [];
         this.isRecentlyInstalled = false;

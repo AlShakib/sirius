@@ -221,7 +221,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
         }
         let themeContext = St.ThemeContext.get_for_stage(global.stage);
         let scaleFactor = themeContext.scale_factor;
-        let height =  Math.round(this._settings.get_int('menu-height') / scaleFactor);
+        let height = Math.round(this._settings.get_int('menu-height') / scaleFactor) - 1;
         this.leftPanelPopup.style = `height: ${height}px`;        
         this.section.actor.add_actor(this.leftPanelPopup); 
         this.displayFavorites();

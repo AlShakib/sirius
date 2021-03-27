@@ -97,7 +97,7 @@ var createMenu = class extends BaseMenuLayout.BaseLayout{
             x_expand: true, 
             y_expand: true,
             y_align: Clutter.ActorAlign.START,
-            style_class: 'vfade',
+            style_class: 'small-vfade',
             overlay_scrollbars: true,
             reactive:true,
             style: "width:450px;"
