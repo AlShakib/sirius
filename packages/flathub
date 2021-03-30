@@ -7,7 +7,7 @@ com.skype.Client
 # Zoom - Video Conferencing, Web Conferencing, Webinars, Screen Sharing
 us.zoom.Zoom
 
-# A permissions manager for Flatpak
+# Flatseal - A permissions manager for Flatpak
 com.github.tchx84.Flatseal
 
 # Blanket - Listen to different sounds
@@ -15,3 +15,6 @@ com.rafaelmardojai.Blanket
 
 # Typora - A minimal Markdown reading & writing app
 io.typora.Typora
+
+# Anydesk - Connect to a computer remotely
+com.anydesk.Anydesk

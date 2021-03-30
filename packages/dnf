@@ -229,9 +229,6 @@ mediainfo
 # Command line utilities for inotify
 inotify-tools
 
-# Remote control and meeting solution.
-teamviewer
-
 # Google Chrome
 google-chrome-stable
 
