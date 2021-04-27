@@ -140,14 +140,25 @@ backup_ssh() {
 }
 
 create_backup() {
+  local IS_ROOT_USER=0
+  if [[ "$(id -u)" -ne 0 ]]; then
+    SUDO_HOME="$HOME"
+  else
+    SUDO_HOME=$(grep ${SUDO_USER} "/etc/passwd" | cut -d: -f6)
+    IS_ROOT_USER=1
+  fi
+
   backup_vnstat_database
   backup_rclone_config
   backup_csync_config
   backup_gx_config
   backup_ssh
-  # make available for non root user
-  if [[ -d "${SRC_DIR}/backup" ]]; then
-    chown "${SUDO_USER}":"${SUDO_USER}" -R "${SRC_DIR}/backup"
+
+  if [[ "$IS_ROOT_USER" -eq 1 ]]; then
+    # make available for non root user
+    if [[ -d "${SRC_DIR}/backup" ]]; then
+      chown "${SUDO_USER}":"${SUDO_USER}" -R "${SRC_DIR}/backup"
+    fi
   fi
 }
 
@@ -253,6 +264,7 @@ add_repos() {
 
 # install bash scripts
 install_bash_scripts() {
+  check_root_access
   for script in $(find "${SRC_DIR}/scripts/" -name "*.sh"); do
     filename="${script##*/}"
     name="${filename%.*}"
@@ -634,6 +646,7 @@ restore_gx_config() {
 }
 
 restore_backup() {
+  check_root_access
   restore_csync_config
   restore_rclone_config
   restore_vnstat_database
@@ -737,6 +750,7 @@ set_misc_flags() {
 }
 
 setup_operating_system() {
+  check_root_access
   copy_to_system
   install_hugo_extended_cli
   install_heroku_cli
@@ -762,7 +776,6 @@ setup_operating_system() {
 }
 
 start() {
-  check_root_access
   echo "+----------------------------------------------------------------------------+"
   echo "|                                                                            |"
   echo "|                                                                            |"
