@@ -15,10 +15,12 @@ TMP_DIR=$(dirname $(mktemp -u))
 RANDOM_DIR=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 16 ; echo '')
 TMP_DIR="${TMP_DIR}/${RANDOM_DIR}"
 LOG_DIR="${SRC_DIR}/log"
-LOG_FILE="${LOG_DIR}/sirius-$(date +%d%m%y-%H%M).log";
+LOG_FILE="${LOG_DIR}/sirius.log";
 mkdir -p "${LOG_DIR}"
 touch "${LOG_FILE}"
 chown "${SUDO_USER}":"${SUDO_USER}" -R "${LOG_DIR}"
+
+echo "LOG DATE: $(date +%d.%m.%y\ -\ %H:%M)" >> "$LOG_FILE"
 
 # print <arg>
 print() {
