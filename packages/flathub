@@ -16,5 +16,8 @@ com.rafaelmardojai.Blanket
 # Typora - A minimal Markdown reading & writing app
 io.typora.Typora
 
-# Anydesk - Connect to a computer remotely
-com.anydesk.Anydesk
+# Edit audio file metadata
+org.kde.kid3
+
+# Sophisticated text editor for code, markup and prose
+com.sublimetext.three

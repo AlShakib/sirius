@@ -22,6 +22,9 @@ google-noto-sans-fonts google-noto-sans-mono-fonts google-noto-sans-bengali-font
 # Impallari Raleway fonts
 impallari-raleway-fonts
 
+# Manage GNOME Shell extensions
+gnome-extensions-app
+
 # Various compilers (C, C++, Objective-C, ...) 
 gcc gcc-c++
 
@@ -46,35 +49,8 @@ automake
 # A GNU tool which simplifies the build process for users
 make
 
-# An image loading library and development files
-gdk-pixbuf2 gdk-pixbuf2-devel
-
-# A library of handy utility functions
-glib2-devel
-
-# Library providing XML and HTML support
-libxml2 libxml2-devel
-
-# Murrine GTK2 engine
-gtk-murrine-engine
-
-# Theme engines for GTK+ 2.0
-gtk2-engines
-
-# pkgconf shim to provide /usr/bin/pkg-config
-pkgconf-pkg-config
-
-# Wrapper around libsass to compile CSS stylesheet
-sassc
-
-# Shell tool for executing jobs in parallel
-parallel
-
 # Ncurses-Based Music Player
 cmus
-
-# DuckDuckGo from the terminal
-ddgr
 
 # Python bindings for Nautilus
 nautilus-python
@@ -106,17 +82,14 @@ java-latest-openjdk java-latest-openjdk-devel
 # Java 8
 java-1.8.0-openjdk java-1.8.0-openjdk-devel
 
-# Efficient Qt ID3 tag editor
-kid3-qt
-
 # Hardware lister
 lshw
 
 # File change monitoring and synchronization daemon
 lsyncd
 
-# PHP FastCGI Process Manager
-php-fpm
+# PHP scripting language for creating dynamic web sites
+php
 
 # A web interface for MySQL and MariaDB
 phpMyAdmin
@@ -190,32 +163,11 @@ zsh
 # libuser based util-linux utilities
 util-linux-user
 
-# Sublime Text is a sophisticated text editor for code, markup and prose
-sublime-text
-
-# Sublime Merge is a most excellent git client
-sublime-merge
-
-# Papirus icon theme
-papirus-icon-theme
-
 # Open Broadcaster Software Studio
 obs-studio
 
 # Personal task manager for GNOME
 gnome-todo
-
-# Development package for building kernel modules to match the kernel
-kernel-devel
-
-# Development support for libelf
-elfutils-libelf elfutils-libelf-devel
-
-# High productivity build system
-meson
-
-# Download manager using GTK+ and libcurl
-uget
 
 # Plymouth "Charge" plugin
 plymouth-theme-charge
@@ -238,17 +190,11 @@ shotcut
 # Configuration editor for dconf
 dconf-editor
 
-# On-screen display library for X
-xosd
-
 # Command line tool for updating bootloader configs
 grubby
 
 # The open-source application container engine
 moby-engine
-
-# A time management utility for GNOME
-gnome-shell-extension-pomodoro
 
 # QEMU is a FAST! processor emulator
 qemu
@@ -264,9 +210,6 @@ scrcpy
 
 # Visual Studio Code
 code
-
-# cat(1) clone with wings
-bat
 
 # GNU Image Manipulation Program
 gimp

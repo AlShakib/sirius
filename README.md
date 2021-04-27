@@ -41,19 +41,6 @@
    - Flathub Packages ([List Here](packages/flathub))
    - NPM Packages ([List Here](packages/npm))
    - PIP Packages ([List Here](packages/pip))
-- Gnome Shell extensions:
-   - [Arc Menu](https://extensions.gnome.org/extension/1228/arc-menu)
-   - [Dash to Panel](https://extensions.gnome.org/extension/1160/dash-to-panel)
-   - [GSConnect](https://extensions.gnome.org/extension/1319/gsconnect)
-   - [Internet Speed Meter](https://extensions.gnome.org/extension/2980/internet-speed-meter)
-   - [OpenWeather](https://extensions.gnome.org/extension/750/openweather)
-   - [Panel OSD](https://extensions.gnome.org/extension/708/panel-osd)
-   - [Remove Dropdown Arrows](https://extensions.gnome.org/extension/800/remove-dropdown-arrows/)
-   - [Status Area Horizontal Spacing](https://extensions.gnome.org/extension/355/status-area-horizontal-spacing)
-   - [system-monitor](https://extensions.gnome.org/extension/120/system-monitor)
-   - [TopIcons Plus Git](https://extensions.gnome.org/extension/2311/topicons-plus)
-   - [User Themes](https://extensions.gnome.org/extension/19/user-themes)
-   - [Window Is Ready - Notification Remover](https://extensions.gnome.org/extension/1007/window-is-ready-notification-remover)
 - Fonts:
    - Adorsho Lipi
    - Akaash
@@ -98,8 +85,6 @@
    - Ubuntu Font
    - Verdana
    - And many more from RPM Packages ([List Here](packages/dnf))
-- Themes:
-   - [Plata Theme](https://gitlab.com/tista500/plata-theme)
 - Wrapper scripts:
    - csync ([Read Here](csync.md))
    - ssdl ([Read Here](ssdl.md))
@@ -123,7 +108,7 @@
 
 To run this script, you will need
 
-- Fedora 32 Workstation (x86_64)
+- Fedora 34 Workstation (x86_64)
 
 ### Running the script
 
@@ -217,4 +202,4 @@ Pull requests are welcome. As it is my personal setup, I may or may not accept t
 
 [GNU General Public License v3.0](LICENSE)
 
-Copyright © 2020 [Al Shakib](https://alshakib.dev)
+Copyright © 2021 [Al Shakib](https://alshakib.dev)

@@ -1,5 +1,0 @@
-[
-  { "keys": ["shift+space"], "command": "move_to", "args": {"to": "eol", "extend": false} },
-  { "keys": ["shift+enter"], "command": "run_macro_file", "args": {"file": "res://Packages/Default/Add Line.sublime-macro"} },
-  { "keys": ["ctrl+alt+enter"], "command": "run_macro_file", "args": {"file": "res://Packages/Default/Add Line Before.sublime-macro"} },
-]
