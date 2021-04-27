@@ -39,17 +39,8 @@ org.gnome.desktop.wm.preferences focus-new-windows 'strict'
 
 ## Gnome Tweak Tools ##
 
-# Enable all extensions
-org.gnome.shell enabled-extensions ['arcmenu@arcmenu.com', 'dash-to-panel@jderose9.github.com', 'InternetSpeedMeter@alshakib.dev', 'openweather-extension@jenslody.de', 'pomodoro@arun.codito.in', 'remove-dropdown-arrows@mpdeimos.com', 'status-area-horizontal-spacing@mathematical.coffee.gmail.com', 'TopIcons-git@phocean.net', 'user-theme@gnome-shell-extensions.gcampax.github.com', 'windowIsReady_Remover@nunofarruca@gmail.com', 'system-monitor@paradoxxx.zero.gmail.com', 'gsconnect@andyholmes.github.io', 'panel-osd@berend.de.schouwer.gmail.com']
-
-# Set application theme to 'Plata-Lumine-Compact'
-org.gnome.desktop.interface gtk-theme 'Plata-Lumine-Compact'
-
-# Set user theme (shell) to 'Plata-Compact'
-org.gnome.shell.extensions.user-theme name 'Plata-Compact'
-
-# Set icon theme to 'Papirus'
-org.gnome.desktop.interface icon-theme 'Papirus'
+# Enable extensions
+org.gnome.shell disable-user-extensions false
 
 # Set interface text font to 'Roboto 11'
 org.gnome.desktop.interface font-name 'Roboto 11'
@@ -138,9 +129,6 @@ org.gnome.gedit.preferences.editor insert-spaces true
 
 # Enable automatic indentaton
 org.gnome.gedit.preferences.editor auto-indent true
-
-# Set default color scheme to 'plata-light'
-org.gnome.gedit.preferences.editor scheme 'plata-light'
 
 
 ## Weather ##
