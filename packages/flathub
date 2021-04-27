@@ -18,6 +18,3 @@ io.typora.Typora
 
 # Edit audio file metadata
 org.kde.kid3
-
-# Sophisticated text editor for code, markup and prose
-com.sublimetext.three
