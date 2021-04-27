@@ -20,7 +20,9 @@ mkdir -p "${LOG_DIR}"
 touch "${LOG_FILE}"
 chown "${SUDO_USER}":"${SUDO_USER}" -R "${LOG_DIR}"
 
-echo "LOG DATE: $(date +%d.%m.%y\ -\ %H:%M)" >> "$LOG_FILE"
+grep -q '[^[:space:]]' < "$LOG_FILE" && echo -e "\n\n" >> "$LOG_FILE"
+
+echo -e "LOG DATE: $(date +%d.%m.%y\ -\ %H:%M)\n" >> "$LOG_FILE"
 
 # print <arg>
 print() {
