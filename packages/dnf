@@ -22,9 +22,6 @@ google-noto-sans-fonts google-noto-sans-mono-fonts google-noto-sans-bengali-font
 # Impallari Raleway fonts
 impallari-raleway-fonts
 
-# Manage GNOME Shell extensions
-gnome-extensions-app
-
 # Various compilers (C, C++, Objective-C, ...) 
 gcc gcc-c++
 
