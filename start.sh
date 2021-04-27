@@ -18,10 +18,14 @@ LOG_DIR="${SRC_DIR}/log"
 LOG_FILE="${LOG_DIR}/sirius.log";
 mkdir -p "${LOG_DIR}"
 touch "${LOG_FILE}"
-chown "${SUDO_USER}":"${SUDO_USER}" -R "${LOG_DIR}"
+
+if [[ "$(id -u)" -ne 0 ]]; then
+  chown "${USER}":"${USER}" -R "${LOG_DIR}"
+else
+  chown "${SUDO_USER}":"${SUDO_USER}" -R "${LOG_DIR}"
+fi
 
 grep -q '[^[:space:]]' < "$LOG_FILE" && echo -e "\n\n" >> "$LOG_FILE"
-
 echo -e "LOG DATE: $(date +%d.%m.%y\ -\ %H:%M)\n" >> "$LOG_FILE"
 
 # print <arg>
