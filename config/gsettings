@@ -104,11 +104,6 @@ org.gnome.nautilus.icon-view default-zoom-level 'standard'
 # Set sort folders before files
 org.gtk.Settings.FileChooser sort-directories-first true
 
-## Archive Manager ##
-
-# Turn sidebar on
-org.gnome.FileRoller.UI view-sidebar true
-
 
 ## GEdit ##
 
