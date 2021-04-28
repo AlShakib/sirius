@@ -707,7 +707,7 @@ set_misc_flags() {
 
   # Symlink vim as vi
   print "Symlink vim as vi"
-  rm -rf "/usr/bin/vi"
+  rm -rf "/usr/bin/vi" &>> "${LOG_FILE}"
   ln -s "/usr/bin/vim" "/usr/bin/vi" &>> "${LOG_FILE}"
   is_failed "Done" "Skipping: Symlinking vim as vi is failed. See log for more info."
 
@@ -730,27 +730,32 @@ set_misc_flags() {
   fi
   is_failed "Done" "Skipping: Setting owner of some directory and files to ${SUDO_USER} is failed. See log for more info."
   
+  # create users and groups
+  systemd-sysusers
+
   # add non root user to adbusers
-  print "Creating the adbusers group"
-  if [ $(getent group adbusers) ]; then
-    print_success "Skipping: The adbusers group already exists"
-  else
-    groupadd adbusers &>> "${LOG_FILE}"
-    is_failed "Done" "Skipping: Can not create the adbusers group. See log for more info."
-  fi
   print "Add non root user to group adbusers"
-  usermod -a -G adbusers "${SUDO_USER}" &>> "${LOG_FILE}"
+  gpasswd -a "${SUDO_USER}" adbusers &>> "${LOG_FILE}"
   is_failed "Done" "Skipping: Adding non root user to group adbusers is failed. See log for more info."
+
+  # add non root user to qemu group
   print "Add non root user to group qemu"
   usermod -a -G qemu "${SUDO_USER}" &>> "${LOG_FILE}"
   is_failed "Done" "Skipping: Adding non root user to group qemu is failed. See log for more info."
+
+  # add non root user to libvirt group
   print "Add non root user to group libvirt"
   usermod -a -G libvirt "${SUDO_USER}" &>> "${LOG_FILE}"
   is_failed "Done" "Skipping: Adding non root user to group libvirt is failed. See log for more info."
+
+  # add non root user to kvm group
   print "Add non root user to group kvm"
   usermod -a -G kvm "${SUDO_USER}" &>> "${LOG_FILE}"
   is_failed "Done" "Skipping: Adding non root user to group kvm is failed. See log for more info."
+
   print "Restarting systemd-udevd.service"
+  # Restart UDEV
+  udevadm control --reload-rules &>> "${LOG_FILE}"
   systemctl restart systemd-udevd.service &>> "${LOG_FILE}"
   is_failed "Done" "Skipping: Restarting systemd-udevd.service is failed. See log for more info."
 }
