@@ -70,6 +70,12 @@ gnome-subtitles
 # Customize advanced GNOME 3 options
 gnome-tweaks
 
+# Material Design theme for GNOME/GTK based desktop environments
+materia-gtk-theme
+
+# Free and open source SVG icon theme based on Paper Icon Set
+papirus-icon-theme
+
 # Gnome Partition Editor
 gparted
 
