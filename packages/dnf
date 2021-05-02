@@ -151,11 +151,8 @@ vim-enhanced
 # Console-based network traffic monitor
 vnstat
 
-# A compatibility layer for windows applications
-wine
-
-# Work around common problems in Wine
-winetricks
+# On-screen display library for X
+xosd
 
 # Command line clipboard grabber
 xclip
