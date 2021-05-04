@@ -169,9 +169,6 @@ obs-studio
 # Personal task manager for GNOME
 gnome-todo
 
-# Plymouth "Charge" plugin
-plymouth-theme-charge
-
 # Digital VCR and streaming server
 ffmpeg
 
