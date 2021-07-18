@@ -670,29 +670,10 @@ set_misc_flags() {
   echo "${HOSTNAME}" | tee "/etc/hostname" 1>/dev/null
   is_failed "Done" "Skipping: Setting up hostname is failed. See log for more info."
 
-  # add cgroups exception
-  print "Add cgroups exception"
-  grubby --update-kernel=ALL --args="systemd.unified_cgroup_hierarchy=0" &>> "${LOG_FILE}"
-  is_failed "Done" "Skipping: Adding cgroups exception for Fedora ${RELEASE_VER} is failed. See log for more info."
-
   # enable some apps to run on boot
-  print "Enabling httpd, mariadb, php-fpm, vnstat, docker and libvirtd to run on boot"
-  systemctl enable httpd mariadb php-fpm vnstat docker libvirtd &>> "${LOG_FILE}"
+  print "Enabling httpd, mariadb, php-fpm, vnstat and libvirtd to run on boot"
+  systemctl enable httpd mariadb php-fpm vnstat libvirtd &>> "${LOG_FILE}"
   is_failed "Done" "Skipping: Enabling is failed. See log for more info."
-
-  # creating the docker group
-  print "Creating the docker group"
-  if [ $(getent group docker) ]; then
-    print_success "Skipping: The docker group already exists"
-  else
-    groupadd docker &>> "${LOG_FILE}"
-    is_failed "Done" "Skipping: Can not create the docker group. See log for more info."
-  fi
-
-  # adding non root user to the docker group
-  print "Adding user to the docker group"
-  usermod -aG docker "${SUDO_USER}" &>> "${LOG_FILE}"
-  is_failed "Done" "Skipping: Adding user to the docker group is failed. See log for more info."
 
   # allow httpd to make network connections
   print "Allowing httpd to make network connections"

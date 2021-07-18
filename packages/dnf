@@ -187,12 +187,6 @@ shotcut
 # Configuration editor for dconf
 dconf-editor
 
-# Command line tool for updating bootloader configs
-grubby
-
-# The open-source application container engine
-moby-engine
-
 # QEMU is a FAST! processor emulator
 qemu
 
@@ -217,8 +211,8 @@ ddclient
 # Yum-utils CLI compatibility layer
 dnf-utils
 
-# .NET Core 3.1 Software Development Kit
-dotnet-sdk-3.1
+# .NET Core 5.0 Software Development Kit
+dotnet-sdk-5.0
 
 # Development tools for Mono
 mono-devel
