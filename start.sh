@@ -840,7 +840,7 @@ configure_setup() {
   print "Install Heroku CLI:          ${INSTALL_HEROKU_CLI}"
   echo "+----------------------------------------------------------------------------+"
   echo # move to a new line
-  read -p "$(print 'Are you sure? (Y/n): ')"
+  read -p "$(print 'Are you sure? (y/n): ')"
   if [[ $REPLY =~ ^[Yy]$ ]]; then
     IS_READY="true"
   else
