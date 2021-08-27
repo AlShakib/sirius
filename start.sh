@@ -135,6 +135,20 @@ backup_gx_config() {
   fi
 }
 
+backup_web_doc() {
+  if [[ -d "/var/www/html" ]]; then
+    if find "/var/www/html" -mindepth 1 -maxdepth 1 | read; then
+      mkdir -p "${SRC_DIR}/backup/web_doc"
+      rsync -av --delete --chown="${SUDO_USER}":"${SUDO_USER}" "/var/www/html/" "${SRC_DIR}/backup/web_doc" &>> "${LOG_FILE}"
+      is_failed "/var/www/html backup completed successfully" "Skipping: /var/www/html backup did not complete successfully. See log for more info."
+    else
+       print_warning "Skipping: /var/www/html directory is empty."
+    fi
+  else
+    print_warning "Skipping: /var/www/html directory is not found."
+  fi
+}
+
 backup_ssh() {
   if [[ -d "${SUDO_HOME}/.ssh" ]]; then
     mkdir -p "${SRC_DIR}/backup/ssh"
@@ -158,6 +172,7 @@ create_backup() {
   backup_rclone_config
   backup_csync_config
   backup_gx_config
+  backup_web_doc
   backup_ssh
 
   if [[ "$IS_ROOT_USER" -eq 1 ]]; then
@@ -647,7 +662,19 @@ restore_gx_config() {
     rsync -av --chown="${SUDO_USER}":"${SUDO_USER}" "${SRC_DIR}/backup/gx/" "${SUDO_HOME}/.config/gx" &>> "${LOG_FILE}"
     is_failed "Done" "Skipping: Restoring gx configuration is failed. See log for more info."
   else
-    print_warning "Skipping: gx configuration backup is not found"
+    print_warning "Skipping: gx configuration backup is not found."
+  fi
+}
+
+restore_web_doc() {
+  if [[ -d "${SRC_DIR}/backup/web_doc" ]]; then
+    if [[ -d "/var/www/html" ]]; then
+      print "Restoring /var/www/html"
+      rsync -av --chown=root:root "${SRC_DIR}/backup/web_doc/" "/var/www/html" &>> "${LOG_FILE}"
+      is_failed "Done" "Skipping: Restoring /var/www/html directory is failed. See log for more info."
+    fi
+  else
+    print_warning "Skipping: /var/www/html directory backup is not found."
   fi
 }
 
@@ -657,6 +684,7 @@ restore_backup() {
   restore_rclone_config
   restore_vnstat_database
   restore_gx_config
+  restore_web_doc
 }
 
 cleanup() {
