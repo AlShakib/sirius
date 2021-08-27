@@ -867,9 +867,7 @@ setup_operating_system() {
     install_pip_packages
     remove_pip_packages
     install_ibus_avro
-    restore_rclone_config
-    restore_csync_config
-    restore_vnstat_database
+    restore_backup
     install_oh_my_zsh
     edit_root_configurations
     edit_home_configurations
