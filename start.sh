@@ -30,8 +30,9 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 IS_READY="false"
-HOSTNAME="fedora"
-HIDE_GRUB_BOOT_MENU="true"
+HOSTNAME="sirius"
+HIDE_GRUB_BOOT_MENU="false"
+DISABLE_WAYLAND="true"
 INSTALL_HUGO_EXTENDED="true"
 INSTALL_HEROKU_CLI="true"
 INSTALL_TELEGRAM_DESKTOP="true"
@@ -633,6 +634,11 @@ edit_root_configurations() {
           fi
           is_failed "Done" "Skipping: Updating grub is failed"
         fi
+      elif [[ "${line}" == "/etc/gdm/custom.conf" ]]; then
+        if [[ "${DISABLE_WAYLAND}" == "true" ]]; then
+          edit "${SRC_DIR}/root/etc/gdm/custom.conf" "${line}" &>> "${LOG_FILE}"
+          is_failed "${line} modified successfully" "Skipping: ${line} modification is failed. See log for more info."
+        fi
       else
         edit "${SRC_DIR}/root${line}" "${line}" &>> "${LOG_FILE}"
         is_failed "${line} modified successfully" "Skipping: ${line} modification is failed. See log for more info."
@@ -799,47 +805,66 @@ set_misc_flags() {
 }
 
 configure_setup() {
-  read -p "$(print 'Enter the hostname (Default: fedora): ')"
-  if [[ "${REPLY}" != "" ]]; then
-    HOSTNAME="${REPLY}"
+  read -p "$(print 'Do you want to use default configuration? (Y/n): ')"
+  if [[ $REPLY =~ ^[Nn]$ ]]; then
+    IS_READY="false"
+  else
+    IS_READY="true"
+  fi
+
+  if [[ "${IS_READY}" == "false" ]]; then
+    read -p "$(print 'Enter the hostname (Default: sirius): ')"
+    if [[ "${REPLY}" != "" ]]; then
+      HOSTNAME="${REPLY}"
+    fi
+    
+    read -p "$(print 'Do you want to hide grub boot menu? (y/N): ')"
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+      HIDE_GRUB_BOOT_MENU="true"
+    else
+      HIDE_GRUB_BOOT_MENU="false"
+    fi
+
+    read -p "$(print 'Do you want to disable wayland? (Y/n): ')"
+    if [[ $REPLY =~ ^[Nn]$ ]]; then
+      DISABLE_WAYLAND="false"
+    else
+      DISABLE_WAYLAND="true"
+    fi
+
+    read -p "$(print 'Do you want to install Telegram Desktop? (Y/n): ')"
+    if [[ $REPLY =~ ^[Nn]$ ]]; then
+      INSTALL_TELEGRAM_DESKTOP="false"
+    else
+      INSTALL_TELEGRAM_DESKTOP="true"
+    fi
+
+    read -p "$(print 'Do you want to install Hugo Extended? (Y/n): ')"
+    if [[ $REPLY =~ ^[Nn]$ ]]; then
+      INSTALL_HUGO_EXTENDED="false"
+    else
+      INSTALL_HUGO_EXTENDED="true"
+    fi
+
+    read -p "$(print 'Do you want to install Heroku CLI? (Y/n): ')"
+    if [[ $REPLY =~ ^[Nn]$ ]]; then
+      INSTALL_HEROKU_CLI="false"
+    else
+      INSTALL_HEROKU_CLI="true"
+    fi
   fi
   
-  read -p "$(print 'Do you want to hide grub boot menu? (y/N): ')"
-  if [[ $REPLY =~ ^[Yy]$ ]]; then
-    HIDE_GRUB_BOOT_MENU="true"
-  else
-    HIDE_GRUB_BOOT_MENU="false"
-  fi
-
-  read -p "$(print 'Do you want to install Telegram Desktop? (Y/n): ')"
-  if [[ $REPLY =~ ^[Nn]$ ]]; then
-    INSTALL_TELEGRAM_DESKTOP="false"
-  else
-    INSTALL_TELEGRAM_DESKTOP="true"
-  fi
-
-  read -p "$(print 'Do you want to install Hugo Extended? (Y/n): ')"
-  if [[ $REPLY =~ ^[Nn]$ ]]; then
-    INSTALL_HUGO_EXTENDED="false"
-  else
-    INSTALL_HUGO_EXTENDED="true"
-  fi
-
-  read -p "$(print 'Do you want to install Heroku CLI? (Y/n): ')"
-  if [[ $REPLY =~ ^[Nn]$ ]]; then
-    INSTALL_HEROKU_CLI="false"
-  else
-    INSTALL_HEROKU_CLI="true"
-  fi
   echo # move to a new line
   echo "+----------------------------------------------------------------------------+"
   print "Hostname:                    ${HOSTNAME}"
   print "Hide Grub Boot Menu:         ${HIDE_GRUB_BOOT_MENU}"
+  print "Disable wayland:             ${DISABLE_WAYLAND}"
   print "Install Telegram Desktop:    ${INSTALL_TELEGRAM_DESKTOP}"
   print "Install Hugo Extended:       ${INSTALL_HUGO_EXTENDED}"
   print "Install Heroku CLI:          ${INSTALL_HEROKU_CLI}"
   echo "+----------------------------------------------------------------------------+"
   echo # move to a new line
+  IS_READY="false"
   read -p "$(print 'Are you sure? (y/n): ')"
   if [[ $REPLY =~ ^[Yy]$ ]]; then
     IS_READY="true"
