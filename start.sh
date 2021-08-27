@@ -17,7 +17,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Sirius.  If not, see <https://www.gnu.org/licenses/>.
 
-HOSTNAME="sirius"
+trap "exit" INT
+
 OS_ID="fedora"
 RELEASE_VER="34"
 RELEASE_VAR="workstation"
@@ -27,6 +28,14 @@ GREEN='\033[0;32m'
 YELLOW='\033[0;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
+
+IS_READY="false"
+HOSTNAME="fedora"
+HIDE_GRUB_BOOT_MENU="true"
+INSTALL_HUGO_EXTENDED="true"
+INSTALL_HEROKU_CLI="true"
+INSTALL_TELEGRAM_DESKTOP="true"
+
 SRC_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )";
 TMP_DIR=$(dirname $(mktemp -u))
 RANDOM_DIR=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 16 ; echo '')
@@ -492,28 +501,30 @@ remove_pip_packages() {
 }
 
 install_hugo_extended_cli() {
-  print "Installing hugo extended cli"
-  if [[ -x "$(command -v hugo)" ]]; then
-    print_success "Skipping: hugo is already installed"
-  else
-    mkdir -p "${TMP_DIR}/hugo"
-    print "Downloading hugo extended pre compiled binary"
-    curl --silent "https://api.github.com/repos/gohugoio/hugo/releases/latest" \
-        | grep "browser_download_url.*hugo_extended_.*Linux.*64bit.*tar.gz" \
-        | cut -d '"' -f 4 | wget -i - -O "${TMP_DIR}/hugo/hugo.tar.gz" &>> "${LOG_FILE}"
-    if [[ "$?" -ne 0 ]]; then
-      print_failed "Skipping: hugo downloading did not complete successfully. See log for more info."
+  if [[ "${INSTALL_HUGO_EXTENDED}" == "true" ]]; then
+    print "Installing Hugo Extended CLI"
+    if [[ -x "$(command -v hugo)" ]]; then
+      print_success "Skipping: Hugo is already installed"
     else
-      print_success "Done"
-      cd "${TMP_DIR}/hugo"
-      print "Extracting hugo bundle"
-      tar xf "hugo.tar.gz" &>> "${LOG_FILE}"
-      is_failed "Done" "Skipping. Extracting hugo bundle is failed. See log for more info."
-      print "Installing hugo extended binary"
-      rsync -av --chown=root:root "${TMP_DIR}/hugo/hugo" "/usr/local/bin" &>> "${LOG_FILE}"
-      chmod +x "/usr/local/bin/hugo" &>> "${LOG_FILE}"
-      is_failed "Done" "Skipping: hugo installation did not complete successfully. See log for more info."
-      cd "${OLDPWD}"
+      mkdir -p "${TMP_DIR}/hugo"
+      print "Downloading hugo extended pre compiled binary"
+      curl --silent "https://api.github.com/repos/gohugoio/hugo/releases/latest" \
+          | grep "browser_download_url.*hugo_extended_.*Linux.*64bit.*tar.gz" \
+          | cut -d '"' -f 4 | wget -i - -O "${TMP_DIR}/hugo/hugo.tar.gz" &>> "${LOG_FILE}"
+      if [[ "$?" -ne 0 ]]; then
+        print_failed "Skipping: hugo downloading did not complete successfully. See log for more info."
+      else
+        print_success "Done"
+        cd "${TMP_DIR}/hugo"
+        print "Extracting hugo bundle"
+        tar xf "hugo.tar.gz" &>> "${LOG_FILE}"
+        is_failed "Done" "Skipping. Extracting hugo bundle is failed. See log for more info."
+        print "Installing hugo extended binary"
+        rsync -av --chown=root:root "${TMP_DIR}/hugo/hugo" "/usr/local/bin" &>> "${LOG_FILE}"
+        chmod +x "/usr/local/bin/hugo" &>> "${LOG_FILE}"
+        is_failed "Done" "Skipping: hugo installation did not complete successfully. See log for more info."
+        cd "${OLDPWD}"
+      fi
     fi
   fi
 }
@@ -538,50 +549,54 @@ install_ibus_avro() {
 }
 
 install_telegram_desktop() {
-  print "Installing Telegram Desktop"
-  if [[ -d "${SUDO_HOME}/.opt/Telegram" ]]; then
-    print_warning "Skipping: Telegram Desktop is already installed"
-  else
-    print "Downloading binary"
-    mkdir -p "${TMP_DIR}/telegram" &>> "${LOG_FILE}"
-    wget "https://telegram.org/dl/desktop/linux" -O "${TMP_DIR}/telegram/tsetup.tar.xz" &>> "${LOG_FILE}"
-    if [[ "$?" -eq 0 ]]; then
-      print_success "Done"
-      print "Extracting to temporary directory"
-      cd "${TMP_DIR}/telegram" &>> "${LOG_FILE}"
-      tar xf "tsetup.tar.xz" &>> "${LOG_FILE}"
-      if [[ "$?" -eq 0 ]]; then
-        print "Done"
-        mkdir -p "${SUDO_HOME}/.opt/" &>> "${LOG_FILE}"
-        print "Copying Telegram binary to ${SUDO_HOME}/.opt"
-        rsync -av --chown="${SUDO_USER}":"${SUDO_USER}" "${TMP_DIR}/telegram/Telegram" "${SUDO_HOME}/.opt" &>> "${LOG_FILE}"
-        is_failed "Done" "Skipping: Copying binary is failed"
-      else
-        print_failed "Skipping: Could not extract telegram.tar.xz"
-      fi
+  if [[ "${INSTALL_TELEGRAM_DESKTOP}" == "true" ]]; then
+    print "Installing Telegram Desktop"
+    if [[ -d "${SUDO_HOME}/.opt/Telegram" ]]; then
+      print_warning "Skipping: Telegram Desktop is already installed"
     else
-      print_failed "Skipping: Telegram binary download did not completed successfully. See log for more info."
+      print "Downloading binary"
+      mkdir -p "${TMP_DIR}/telegram" &>> "${LOG_FILE}"
+      wget "https://telegram.org/dl/desktop/linux" -O "${TMP_DIR}/telegram/tsetup.tar.xz" &>> "${LOG_FILE}"
+      if [[ "$?" -eq 0 ]]; then
+        print_success "Done"
+        print "Extracting to temporary directory"
+        cd "${TMP_DIR}/telegram" &>> "${LOG_FILE}"
+        tar xf "tsetup.tar.xz" &>> "${LOG_FILE}"
+        if [[ "$?" -eq 0 ]]; then
+          print "Done"
+          mkdir -p "${SUDO_HOME}/.opt/" &>> "${LOG_FILE}"
+          print "Copying Telegram binary to ${SUDO_HOME}/.opt"
+          rsync -av --chown="${SUDO_USER}":"${SUDO_USER}" "${TMP_DIR}/telegram/Telegram" "${SUDO_HOME}/.opt" &>> "${LOG_FILE}"
+          is_failed "Done. Telegram is installed on ${SUDO_HOME}/.opt/Telegram. You need to manually run ${SUDO_HOME}/.opt/Telegram/Telegram to create a desktop file." "Skipping: Copying binary is failed"
+        else
+          print_failed "Skipping: Could not extract telegram.tar.xz"
+        fi
+      else
+        print_failed "Skipping: Telegram binary download did not completed successfully. See log for more info."
+      fi
+      print_success "Telegram Desktop successfully installed"
     fi
-    print_success "Telegram Desktop successfully installed"
   fi
 }
 
 install_heroku_cli() {
-  print "Installing Heroku CLI"
-  if [[ -x "$(command -v heroku)" ]]; then
-    print_success "Skipping: Heroku CLI is already installed"
-  else
-    mkdir -p "${TMP_DIR}/heroku"
-    print "Downloading Heroku CLI installer script"
-    wget "https://cli-assets.heroku.com/install.sh" -O "${TMP_DIR}/heroku/install.sh" &>> "${LOG_FILE}"
-    if [[ "$?" -ne 0 ]]; then
-      print_failed "Skipping: Heroku CLI installer downloading did not complete successfully. See log for more info."
+  if [[ "${INSTALL_HEROKU_CLI}" == "true" ]]; then
+    print "Installing Heroku CLI"
+    if [[ -x "$(command -v heroku)" ]]; then
+      print_success "Skipping: Heroku CLI is already installed"
     else
-      print_success "Done"
-      print "Installing now"
-      chmod +x "${TMP_DIR}/heroku/install.sh" &>> "${LOG_FILE}"
-      sh -c "${TMP_DIR}/heroku/install.sh" &>> "${LOG_FILE}"
-      is_failed "Done" "Skipping: Heroku CLI installation did not complete successfully. See log for more info."
+      mkdir -p "${TMP_DIR}/heroku"
+      print "Downloading Heroku CLI installer script"
+      wget "https://cli-assets.heroku.com/install.sh" -O "${TMP_DIR}/heroku/install.sh" &>> "${LOG_FILE}"
+      if [[ "$?" -ne 0 ]]; then
+        print_failed "Skipping: Heroku CLI installer downloading did not complete successfully. See log for more info."
+      else
+        print_success "Done"
+        print "Installing now"
+        chmod +x "${TMP_DIR}/heroku/install.sh" &>> "${LOG_FILE}"
+        sh -c "${TMP_DIR}/heroku/install.sh" &>> "${LOG_FILE}"
+        is_failed "Done" "Skipping: Heroku CLI installation did not complete successfully. See log for more info."
+      fi
     fi
   fi
 }
@@ -607,15 +622,17 @@ edit_root_configurations() {
     if [[ -f "${line}" ]]; then
       print "Editing ${line}"
       if [[ "${line}" == "/etc/default/grub" ]]; then
-        edit "${SRC_DIR}/root/etc/default/grub" "${line}" &>> "${LOG_FILE}"
-        is_failed "${line} modified successfully" "Skipping: ${line} modification is failed. See log for more info."
-        print "Updating grub"
-        if [[ -e "/sys/firmware/efi" ]]; then
-          grub2-mkconfig -o /boot/efi/EFI/fedora/grub.cfg &>> "${LOG_FILE}"
-        else
-          grub2-mkconfig -o /boot/grub2/grub.cfg &>> "${LOG_FILE}"
+        if [[ "${HIDE_GRUB_BOOT_MENU}" == "true" ]]; then
+          edit "${SRC_DIR}/root/etc/default/grub" "${line}" &>> "${LOG_FILE}"
+          is_failed "${line} modified successfully" "Skipping: ${line} modification is failed. See log for more info."
+          print "Updating grub"
+          if [[ -e "/sys/firmware/efi" ]]; then
+            grub2-mkconfig -o /boot/efi/EFI/fedora/grub.cfg &>> "${LOG_FILE}"
+          else
+            grub2-mkconfig -o /boot/grub2/grub.cfg &>> "${LOG_FILE}"
+          fi
+          is_failed "Done" "Skipping: Updating grub is failed"
         fi
-        is_failed "Done" "Skipping: Updating grub is failed"
       else
         edit "${SRC_DIR}/root${line}" "${line}" &>> "${LOG_FILE}"
         is_failed "${line} modified successfully" "Skipping: ${line} modification is failed. See log for more info."
@@ -781,30 +798,85 @@ set_misc_flags() {
   is_failed "Done" "Skipping: Restarting systemd-udevd.service is failed. See log for more info."
 }
 
+configure_setup() {
+  read -p "$(print 'Enter the hostname (Default: fedora): ')"
+  if [[ "${REPLY}" != "" ]]; then
+    HOSTNAME="${REPLY}"
+  fi
+  
+  read -p "$(print 'Do you want to hide grub boot menu? (y/N): ')"
+  if [[ $REPLY =~ ^[Yy]$ ]]; then
+    HIDE_GRUB_BOOT_MENU="true"
+  else
+    HIDE_GRUB_BOOT_MENU="false"
+  fi
+
+  read -p "$(print 'Do you want to install Telegram Desktop? (Y/n): ')"
+  if [[ $REPLY =~ ^[Nn]$ ]]; then
+    INSTALL_TELEGRAM_DESKTOP="false"
+  else
+    INSTALL_TELEGRAM_DESKTOP="true"
+  fi
+
+  read -p "$(print 'Do you want to install Hugo Extended? (Y/n): ')"
+  if [[ $REPLY =~ ^[Nn]$ ]]; then
+    INSTALL_HUGO_EXTENDED="false"
+  else
+    INSTALL_HUGO_EXTENDED="true"
+  fi
+
+  read -p "$(print 'Do you want to install Heroku CLI? (Y/n): ')"
+  if [[ $REPLY =~ ^[Nn]$ ]]; then
+    INSTALL_HEROKU_CLI="false"
+  else
+    INSTALL_HEROKU_CLI="true"
+  fi
+  echo # move to a new line
+  echo "+----------------------------------------------------------------------------+"
+  print "Hostname:                    ${HOSTNAME}"
+  print "Hide Grub Boot Menu:         ${HIDE_GRUB_BOOT_MENU}"
+  print "Install Telegram Desktop:    ${INSTALL_TELEGRAM_DESKTOP}"
+  print "Install Hugo Extended:       ${INSTALL_HUGO_EXTENDED}"
+  print "Install Heroku CLI:          ${INSTALL_HEROKU_CLI}"
+  echo "+----------------------------------------------------------------------------+"
+  echo # move to a new line
+  read -p "$(print 'Are you sure? (Y/n): ')"
+  if [[ $REPLY =~ ^[Yy]$ ]]; then
+    IS_READY="true"
+  else
+    IS_READY="false"
+  fi
+}
+
 setup_operating_system() {
   check_root_access
-  copy_to_system
-  install_hugo_extended_cli
-  install_heroku_cli
-  install_telegram_desktop
-  install_bash_scripts
-  add_repos
-  install_flathub_packages
-  remove_flathub_packages
-  install_dnf_packages
-  remove_dnf_packages
-  install_npm_packages
-  remove_npm_packages
-  install_pip_packages
-  remove_pip_packages
-  install_ibus_avro
-  restore_rclone_config
-  restore_csync_config
-  restore_vnstat_database
-  install_oh_my_zsh
-  edit_root_configurations
-  edit_home_configurations
-  set_misc_flags
+  configure_setup
+  if [[ "${IS_READY}" == "true" ]]; then
+    copy_to_system
+    install_telegram_desktop
+    install_hugo_extended_cli
+    install_heroku_cli
+    install_bash_scripts
+    add_repos
+    install_flathub_packages
+    remove_flathub_packages
+    install_dnf_packages
+    remove_dnf_packages
+    install_npm_packages
+    remove_npm_packages
+    install_pip_packages
+    remove_pip_packages
+    install_ibus_avro
+    restore_rclone_config
+    restore_csync_config
+    restore_vnstat_database
+    install_oh_my_zsh
+    edit_root_configurations
+    edit_home_configurations
+    set_misc_flags
+  else
+    print_failed "Setup is canceled"
+  fi
 }
 
 start() {
