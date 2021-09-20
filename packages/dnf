@@ -85,8 +85,8 @@ java-latest-openjdk java-latest-openjdk-devel
 # Java 8
 java-1.8.0-openjdk java-1.8.0-openjdk-devel
 
-# Java 11
-java-11-openjdk java-11-openjdk-devel
+# Java 17
+java-17-openjdk java-17-openjdk-devel
 
 # Hardware lister
 lshw
