@@ -10,9 +10,6 @@ us.zoom.Zoom
 # Flatseal - A permissions manager for Flatpak
 com.github.tchx84.Flatseal
 
-# Blanket - Listen to different sounds
-com.rafaelmardojai.Blanket
-
 # Typora - A minimal Markdown reading & writing app
 io.typora.Typora
 
