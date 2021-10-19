@@ -60,7 +60,7 @@ org.gnome.desktop.wm.preferences focus-new-windows 'strict'
 org.gnome.shell disable-user-extensions false
 
 # Enable all extensions
-org.gnome.shell enabled-extensions ['InternetSpeedMeter@alshakib.dev', 'topiconsfix@aleskva@devnullmail.com', 'user-theme@gnome-shell-extensions.gcampax.github.com', 'windowIsReady_Remover@nunofarruca@gmail.com']
+org.gnome.shell enabled-extensions ['InternetSpeedMeter@alshakib.dev', 'system-monitor-next@paradoxxx.zero.gmail.com', 'topiconsfix@aleskva@devnullmail.com', 'user-theme@gnome-shell-extensions.gcampax.github.com', 'windowIsReady_Remover@nunofarruca@gmail.com']
 
 
 ## Gnome Tweak Tools ##
