@@ -739,8 +739,8 @@ set_misc_flags() {
   is_failed "Done" "Skipping: Setting up hostname is failed. See log for more info."
 
   # enable some apps to run on boot
-  print "Enabling httpd, mariadb, php-fpm, vnstat and libvirtd to run on boot"
-  systemctl enable httpd mariadb php-fpm vnstat libvirtd &>> "${LOG_FILE}"
+  print "Enabling httpd, vnstat and libvirtd to run on boot"
+  systemctl enable httpd vnstat libvirtd &>> "${LOG_FILE}"
   is_failed "Done" "Skipping: Enabling is failed. See log for more info."
 
   # allow httpd to make network connections
@@ -796,6 +796,11 @@ set_misc_flags() {
   print "Add non root user to group kvm"
   usermod -a -G kvm "${SUDO_USER}" &>> "${LOG_FILE}"
   is_failed "Done" "Skipping: Adding non root user to group kvm is failed. See log for more info."
+
+  # add non root user to vboxusers group
+  print "Add non root user to group vboxusers"
+  usermod -a -G vboxusers "${SUDO_USER}" &>> "${LOG_FILE}"
+  is_failed "Done" "Skipping: Adding non root user to group vboxusers is failed. See log for more info."
 
   print "Restarting systemd-udevd.service"
   # Restart UDEV
