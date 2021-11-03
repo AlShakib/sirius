@@ -55,23 +55,23 @@ nautilus-python
 # Powerful and simple to use screenshot software
 flameshot
 
-# Free exFAT file system implementation
-fuse-exfat
-
-# Utilities for exFAT file system
-exfat-utils
-
 # FUSE-Filesystem to access remote filesystems via SSH
 fuse-sshfs
+
+# A tool for installing and managing Python3 packages
+python3-pip
+
+# Libraries and include files for developing with libgtop (Required for gnome-system-monitor extension)
+libgtop2-devel
+
+# Header files for adding NetworkManager support to applications (Required for gnome-system-monitor extension)
+NetworkManager-libnm-devel
 
 # Subtitle editor for Gnome
 gnome-subtitles
 
 # Customize advanced GNOME 3 options
 gnome-tweaks
-
-# Material Design theme for GNOME/GTK based desktop environments
-materia-gtk-theme
 
 # Free and open source SVG icon theme based on Paper Icon Set
 papirus-icon-theme
@@ -96,15 +96,6 @@ lshw
 
 # File change monitoring and synchronization daemon
 lsyncd
-
-# PHP scripting language for creating dynamic web sites
-php
-
-# A web interface for MySQL and MariaDB
-phpMyAdmin
-
-# The MariaDB server and related files
-mariadb-server
 
 # Fedora Media Writer
 mediawriter

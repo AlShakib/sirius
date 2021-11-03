@@ -1,30 +1,30 @@
 .sm-title {
-    color: #333;
+    color: #fff;
     font-size: 1em;
     padding: 0px 25px 0px 0px;
 }
 
 .sm-label {
-    color: #333;
+    color: #fff;
     font-size: 0.75em;
     padding-top: 5px;
 }
 
 .sm-label-left {
-    color: #333;
+    color: #fff;
     font-size: 0.75em;
     padding: 5px 5px 0 0;
 }
 
 .sm-value {
-    color: #333;
+    color: #fff;
     text-align: right;
     min-width: 40px;
     padding: 2px 5px 0 0;
 }
 
 .sm-status-label {
-    color: #333;
+    color: #fff;
     font-size: 0.625em;
     padding: 0 2px 0 5px;
 }
@@ -107,23 +107,23 @@
 /* style definition when 'compact-display' option is activated */
 
 .sm-title-compact {
-    color: #333;
+    color: #fff;
     font-size: 0.75em;
 }
 
 .sm-label-compact {
-    color: #333;
+    color: #fff;
     font-size: 0.6875em;
 } /* Bat, Net... units in menu items */
 
 .sm-value-compact {
-    color: #333;
+    color: #fff;
     font-size: 0.6875em;
     text-align: right;
 } /* Values in menu items */
 
 .sm-status-label-compact {
-    color: #333;
+    color: #fff;
     font-size: 0.5em;
     padding: 2px 0px 0 0px;
 } /* names and Disk R and W signs in text items */

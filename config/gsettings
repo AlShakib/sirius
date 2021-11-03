@@ -65,12 +65,6 @@ org.gnome.shell enabled-extensions ['InternetSpeedMeter@alshakib.dev', 'system-m
 
 ## Gnome Tweak Tools ##
 
-# Set application theme to 'Materia-light-compact'
-org.gnome.desktop.interface gtk-theme 'Materia-light-compact'
-
-# Set user theme (shell) to 'Materia-compact'
-org.gnome.shell.extensions.user-theme name 'Materia-compact'
-
 # Set icon theme to 'Papirus'
 org.gnome.desktop.interface icon-theme 'Papirus'
 
