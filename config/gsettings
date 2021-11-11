@@ -53,6 +53,9 @@ org.gnome.desktop.interface clock-format '12h'
 # Control how new windows get focus
 org.gnome.desktop.wm.preferences focus-new-windows 'strict'
 
+# Switch application from the current workspace only
+org.gnome.shell.app-switcher current-workspace-only true
+
 
 ## Extensions
 
