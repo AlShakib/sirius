@@ -207,10 +207,10 @@ const smStyleManager = class SystemMonitor_smStyleManager {
     constructor() {
         this._extension = '';
         this._iconsize = 1;
-        this._diskunits = _('MB/s');
-        this._netunits_kbytes = _('KB/s');
-        this._netunits_mbytes = _('MB/s');
-        this._netunits_gbytes = _('GB/s');
+        this._diskunits = _('MiB/s');
+        this._netunits_kbytes = _('KiB/s');
+        this._netunits_mbytes = _('MiB/s');
+        this._netunits_gbytes = _('GiB/s');
         this._netunits_kbits = _('kbit/s');
         this._netunits_mbits = _('Mbit/s');
         this._netunits_gbits = _('Gbit/s');
@@ -1495,7 +1495,7 @@ const Disk = class SystemMonitor_Disk extends ElementBase {
         this.last = [0, 0];
         this.usage = [0, 0];
         this.last_time = 0;
-        this.tip_format(_('MB/s'));
+        this.tip_format(_('MiB/s'));
         this.update();
     }
     update_mounts(mounts) {
@@ -1678,12 +1678,12 @@ const Mem = class SystemMonitor_Mem extends ElementBase {
 
         GTop.glibtop_get_mem(this.gtop);
         this.total = Math.round(this.gtop.total / 1024 / 1024);
-        let threshold = 4 * 1024; // In MB
-        this.useGB = false;
+        let threshold = 4 * 1024; // In MiB
+        this.useGiB = false;
         this._unitConversion = 1024 * 1024;
         this._decimals = 100;
         if (this.total > threshold) {
-            this.useGB = true;
+            this.useGiB = true;
             this._unitConversion *= 1024 / this._decimals;
         }
 
@@ -1692,7 +1692,7 @@ const Mem = class SystemMonitor_Mem extends ElementBase {
     }
     refresh() {
         GTop.glibtop_get_mem(this.gtop);
-        if (this.useGB) {
+        if (this.useGiB) {
             this.mem[0] = Math.round(this.gtop.user / this._unitConversion);
             this.mem[0] /= this._decimals;
             this.mem[1] = Math.round(this.gtop.buffer / this._unitConversion);
@@ -1709,7 +1709,7 @@ const Mem = class SystemMonitor_Mem extends ElementBase {
         }
     }
     _pad(number) {
-        if (this.useGB) {
+        if (this.useGiB) {
             if (number < 1) {
                 // examples: 0.01, 0.10, 0.88
                 return number.toLocaleString(Locale, {minimumFractionDigits: 2, maximumFractionDigits: 2});
@@ -1751,9 +1751,9 @@ const Mem = class SystemMonitor_Mem extends ElementBase {
         ];
     }
     create_menu_items() {
-        let unit = _('MB');
-        if (this.useGB) {
-            unit = _('GB');
+        let unit = _('MiB');
+        if (this.useGiB) {
+            unit = _('GiB');
         }
         return [
             new St.Label({
@@ -1802,7 +1802,7 @@ const Net = class SystemMonitor_Net extends ElementBase {
         this.last = [0, 0, 0, 0, 0];
         this.usage = [0, 0, 0, 0, 0];
         this.last_time = 0;
-        this.tip_format([_('KB/s'), '/s', _('KB/s'), '/s', '/s']);
+        this.tip_format([_('KiB/s'), '/s', _('KiB/s'), '/s', '/s']);
         this.update_units();
         Schema.connect('changed::' + this.elt + '-speed-in-bits', this.update_units.bind(this));
         try {
@@ -1897,26 +1897,26 @@ const Net = class SystemMonitor_Net extends ElementBase {
         } else {
             if (this.tip_vals[0] < 1024) {
                 this.text_items[2].text = Style.netunits_kbytes();
-                this.menu_items[1].text = this.tip_unit_labels[0].text = _('KB/s');
+                this.menu_items[1].text = this.tip_unit_labels[0].text = _('KiB/s');
             } else if (this.tip_vals[0] < 1048576) {
                 this.text_items[2].text = Style.netunits_mbytes();
-                this.menu_items[1].text = this.tip_unit_labels[0].text = _('MB/s');
+                this.menu_items[1].text = this.tip_unit_labels[0].text = _('MiB/s');
                 this.tip_vals[0] = (this.tip_vals[0] / 1024).toPrecision(3);
             } else {
                 this.text_items[2].text = Style.netunits_gbytes();
-                this.menu_items[1].text = this.tip_unit_labels[0].text = _('GB/s');
+                this.menu_items[1].text = this.tip_unit_labels[0].text = _('GiB/s');
                 this.tip_vals[0] = (this.tip_vals[0] / 1048576).toPrecision(3);
             }
             if (this.tip_vals[2] < 1024) {
                 this.text_items[5].text = Style.netunits_kbytes();
-                this.menu_items[4].text = this.tip_unit_labels[2].text = _('KB/s');
+                this.menu_items[4].text = this.tip_unit_labels[2].text = _('KiB/s');
             } else if (this.tip_vals[2] < 1048576) {
                 this.text_items[5].text = Style.netunits_mbytes();
-                this.menu_items[4].text = this.tip_unit_labels[2].text = _('MB/s');
+                this.menu_items[4].text = this.tip_unit_labels[2].text = _('MiB/s');
                 this.tip_vals[2] = (this.tip_vals[2] / 1024).toPrecision(3);
             } else {
                 this.text_items[5].text = Style.netunits_gbytes();
-                this.menu_items[4].text = this.tip_unit_labels[2].text = _('GB/s');
+                this.menu_items[4].text = this.tip_unit_labels[2].text = _('GiB/s');
                 this.tip_vals[2] = (this.tip_vals[2] / 1048576).toPrecision(3);
             }
         }
@@ -1939,7 +1939,7 @@ const Net = class SystemMonitor_Net extends ElementBase {
                 style_class: Style.get('sm-net-value'),
                 y_align: Clutter.ActorAlign.CENTER}),
             new St.Label({
-                text: _('KB/s'),
+                text: _('KiB/s'),
                 style_class: Style.get('sm-net-unit-label'),
                 y_align: Clutter.ActorAlign.CENTER}),
             new St.Icon({
@@ -1950,7 +1950,7 @@ const Net = class SystemMonitor_Net extends ElementBase {
                 style_class: Style.get('sm-net-value'),
                 y_align: Clutter.ActorAlign.CENTER}),
             new St.Label({
-                text: _('KB/s'),
+                text: _('KiB/s'),
                 style_class: Style.get('sm-net-unit-label'),
                 y_align: Clutter.ActorAlign.CENTER})
         ];
@@ -1961,7 +1961,7 @@ const Net = class SystemMonitor_Net extends ElementBase {
                 text: '',
                 style_class: Style.get('sm-value')}),
             new St.Label({
-                text: _('KB/s'),
+                text: _('KiB/s'),
                 style_class: Style.get('sm-label')}),
             new St.Label({
                 text: _(' ↓'),
@@ -1970,7 +1970,7 @@ const Net = class SystemMonitor_Net extends ElementBase {
                 text: '',
                 style_class: Style.get('sm-value')}),
             new St.Label({
-                text: _(' KB/s'),
+                text: _(' KiB/s'),
                 style_class: Style.get('sm-label')}),
             new St.Label({
                 text: _(' ↑'),
@@ -1991,12 +1991,12 @@ const Swap = class SystemMonitor_Swap extends ElementBase {
 
         GTop.glibtop_get_swap(this.gtop);
         this.total = Math.round(this.gtop.total / 1024 / 1024);
-        let threshold = 4 * 1024; // In MB
-        this.useGB = false;
+        let threshold = 4 * 1024; // In MiB
+        this.useGiB = false;
         this._unitConversion = 1024 * 1024;
         this._decimals = 100;
         if (this.total > threshold) {
-            this.useGB = true;
+            this.useGiB = true;
             this._unitConversion *= 1024 / this._decimals;
         }
 
@@ -2005,7 +2005,7 @@ const Swap = class SystemMonitor_Swap extends ElementBase {
     }
     refresh() {
         GTop.glibtop_get_swap(this.gtop);
-        if (this.useGB) {
+        if (this.useGiB) {
             this.swap = Math.round(this.gtop.used / this._unitConversion);
             this.swap /= this._decimals;
             this.total = Math.round(this.gtop.total / this._unitConversion);
@@ -2016,7 +2016,7 @@ const Swap = class SystemMonitor_Swap extends ElementBase {
         }
     }
     _pad(number) {
-        if (this.useGB) {
+        if (this.useGiB) {
             if (number < 1) {
                 // examples: 0.01, 0.10, 0.88
                 return number.toLocaleString(Locale, {minimumFractionDigits: 2, maximumFractionDigits: 2});
@@ -2058,9 +2058,9 @@ const Swap = class SystemMonitor_Swap extends ElementBase {
         ];
     }
     create_menu_items() {
-        let unit = 'MB';
-        if (this.useGB) {
-            unit = 'GB';
+        let unit = 'MiB';
+        if (this.useGiB) {
+            unit = 'GiB';
         }
         return [
             new St.Label({
@@ -2228,12 +2228,12 @@ const Gpu = class SystemMonitor_Gpu extends ElementBase {
     }
     _unit(total) {
         this.total = total;
-        let threshold = 4 * 1024; // In MB
-        this.useGB = false;
+        let threshold = 4 * 1024; // In MiB
+        this.useGiB = false;
         this._unitConversion = 1;
         this._decimals = 100;
         if (this.total > threshold) {
-            this.useGB = true;
+            this.useGiB = true;
             this._unitConversion *= 1024 / this._decimals;
         }
     }
@@ -2272,12 +2272,12 @@ const Gpu = class SystemMonitor_Gpu extends ElementBase {
         let memTotal = this._sanitizeUsageValue(usage[0]);
         let memUsed = this._sanitizeUsageValue(usage[1]);
         this.percentage = this._sanitizeUsageValue(usage[2]);
-        if (typeof this.useGB === 'undefined') {
+        if (typeof this.useGiB === 'undefined') {
             this._unit(memTotal);
             this._update_unit();
         }
 
-        if (this.useGB) {
+        if (this.useGiB) {
             this.mem = Math.round(memUsed / this._unitConversion);
             this.mem /= this._decimals;
             this.total = Math.round(memTotal / this._unitConversion);
@@ -2288,7 +2288,7 @@ const Gpu = class SystemMonitor_Gpu extends ElementBase {
         }
     }
     _pad(number) {
-        if (this.useGB) {
+        if (this.useGiB) {
             if (number < 1) {
                 // examples: 0.01, 0.10, 0.88
                 return number.toFixed(2);
@@ -2300,9 +2300,9 @@ const Gpu = class SystemMonitor_Gpu extends ElementBase {
         return number;
     }
     _update_unit() {
-        let unit = _('MB');
-        if (this.useGB) {
-            unit = _('GB');
+        let unit = _('MiB');
+        if (this.useGiB) {
+            unit = _('GiB');
         }
         this.menu_items[4].text = unit;
     }
@@ -2342,9 +2342,9 @@ const Gpu = class SystemMonitor_Gpu extends ElementBase {
         ];
     }
     create_menu_items() {
-        let unit = _('MB');
-        if (this.useGB) {
-            unit = _('GB');
+        let unit = _('MiB');
+        if (this.useGiB) {
+            unit = _('GiB');
         }
         return [
             new St.Label({
