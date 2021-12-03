@@ -33,7 +33,6 @@ IS_READY="false"
 HOSTNAME="sirius"
 HIDE_GRUB_BOOT_MENU="false"
 DISABLE_WAYLAND="true"
-INSTALL_HUGO_EXTENDED="true"
 INSTALL_HEROKU_CLI="true"
 INSTALL_TELEGRAM_DESKTOP="true"
 
@@ -501,35 +500,6 @@ remove_pip_packages() {
   fi
 }
 
-install_hugo_extended_cli() {
-  if [[ "${INSTALL_HUGO_EXTENDED}" == "true" ]]; then
-    print "Installing Hugo Extended CLI"
-    if [[ -x "$(command -v hugo)" ]]; then
-      print_success "Skipping: Hugo is already installed"
-    else
-      mkdir -p "${TMP_DIR}/hugo"
-      print "Downloading hugo extended pre compiled binary"
-      curl --silent "https://api.github.com/repos/gohugoio/hugo/releases/latest" \
-          | grep "browser_download_url.*hugo_extended_.*Linux.*64bit.*tar.gz" \
-          | cut -d '"' -f 4 | wget -i - -O "${TMP_DIR}/hugo/hugo.tar.gz" &>> "${LOG_FILE}"
-      if [[ "$?" -ne 0 ]]; then
-        print_failed "Skipping: hugo downloading did not complete successfully. See log for more info."
-      else
-        print_success "Done"
-        cd "${TMP_DIR}/hugo"
-        print "Extracting hugo bundle"
-        tar xf "hugo.tar.gz" &>> "${LOG_FILE}"
-        is_failed "Done" "Skipping. Extracting hugo bundle is failed. See log for more info."
-        print "Installing hugo extended binary"
-        rsync -av --chown=root:root "${TMP_DIR}/hugo/hugo" "/usr/local/bin" &>> "${LOG_FILE}"
-        chmod +x "/usr/local/bin/hugo" &>> "${LOG_FILE}"
-        is_failed "Done" "Skipping: hugo installation did not complete successfully. See log for more info."
-        cd "${OLDPWD}"
-      fi
-    fi
-  fi
-}
-
 install_ibus_avro() {
   print "Installing ibus-avro"
   if [[ -d "${SRC_DIR}/apps/ibus-avro" ]]; then
@@ -844,13 +814,6 @@ configure_setup() {
       INSTALL_TELEGRAM_DESKTOP="true"
     fi
 
-    read -p "$(print 'Do you want to install Hugo Extended? (Y/n): ')"
-    if [[ $REPLY =~ ^[Nn]$ ]]; then
-      INSTALL_HUGO_EXTENDED="false"
-    else
-      INSTALL_HUGO_EXTENDED="true"
-    fi
-
     read -p "$(print 'Do you want to install Heroku CLI? (Y/n): ')"
     if [[ $REPLY =~ ^[Nn]$ ]]; then
       INSTALL_HEROKU_CLI="false"
@@ -865,7 +828,6 @@ configure_setup() {
   print "Hide Grub Boot Menu:         ${HIDE_GRUB_BOOT_MENU}"
   print "Disable wayland:             ${DISABLE_WAYLAND}"
   print "Install Telegram Desktop:    ${INSTALL_TELEGRAM_DESKTOP}"
-  print "Install Hugo Extended:       ${INSTALL_HUGO_EXTENDED}"
   print "Install Heroku CLI:          ${INSTALL_HEROKU_CLI}"
   echo "+----------------------------------------------------------------------------+"
   echo # move to a new line
@@ -884,7 +846,6 @@ setup_operating_system() {
   if [[ "${IS_READY}" == "true" ]]; then
     copy_to_system
     install_telegram_desktop
-    install_hugo_extended_cli
     install_heroku_cli
     install_bash_scripts
     add_repos

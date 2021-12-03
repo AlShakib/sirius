@@ -243,3 +243,6 @@ sublime-text
 
 # Sublime Merge is a most excellent git client
 sublime-merge
+
+# The world’s fastest framework for building websites
+hugo
