@@ -3,7 +3,6 @@
   "close_find_after_find_all": false,
   "close_find_after_replace_all": false,
   "bold_folder_labels": true,
-  "hardware_acceleration": "opengl",
   "remember_full_screen": true,
   "animation_enabled": false,
   "caret_extra_bottom": 1,
