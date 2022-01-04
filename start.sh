@@ -30,7 +30,7 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 IS_READY="false"
-HOSTNAME="sirius"
+HOSTNAME="$(hostname)"
 HIDE_GRUB_BOOT_MENU="false"
 DISABLE_WAYLAND="true"
 INSTALL_HEROKU_CLI="true"
@@ -788,7 +788,7 @@ configure_setup() {
   fi
 
   if [[ "${IS_READY}" == "false" ]]; then
-    read -p "$(print 'Enter the hostname (Default: sirius): ')"
+    read -p "$(print "Enter the hostname (Default: ${HOSTNAME}): ")"
     if [[ "${REPLY}" != "" ]]; then
       HOSTNAME="${REPLY}"
     fi
