@@ -45,7 +45,17 @@ var middleClick = function (icon, event) {
 			});
 			trayApp.request_quit();
 		}
+	} else {
+		icon.click(event);
 	}
+};
+
+var getAppSetting = function (icon, setting) {
+	const iconApp = getTrayApp(icon);
+	const appsSettings = JSON.parse(getSettings().get_string("applications"));
+	const appSettings = appsSettings.find((app) => app.id == iconApp.get_id());
+
+	return appSettings?.[setting];
 };
 
 function getTrayApp(icon) {

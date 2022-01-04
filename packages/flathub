@@ -19,8 +19,5 @@ org.kde.kid3
 # Connect to a computer remotely
 com.anydesk.Anydesk
 
-# Run Windows software
-com.usebottles.bottles
-
 # Info on your IP
 org.gabmus.whatip

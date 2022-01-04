@@ -235,6 +235,12 @@ quodlibet
 # A general-purpose full virtualizer for PC hardware
 VirtualBox
 
+# A compatibility layer for windows applications
+wine
+
+# Easily manage Wine prefix in a new way
+bottles
+
 # Cross-Platform RTS Game of Ancient Warfare
 0ad
 
