@@ -19,5 +19,5 @@ org.kde.kid3
 # Connect to a computer remotely
 com.anydesk.Anydesk
 
-# Info on your IP
-org.gabmus.whatip
+# A utility for browsing and installing GNOME Shell Extensions
+com.mattjakeman.ExtensionManager

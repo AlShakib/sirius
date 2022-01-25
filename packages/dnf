@@ -214,9 +214,6 @@ dotnet-sdk-5.0
 # Development tools for Mono
 mono-devel
 
-# A small command-line program to download online videos
-youtube-dl
-
 # SSL/TLS module for the Apache HTTP Server
 mod_ssl
 
@@ -234,9 +231,6 @@ quodlibet
 
 # A general-purpose full virtualizer for PC hardware
 VirtualBox
-
-# A compatibility layer for windows applications
-wine
 
 # Easily manage Wine prefix in a new way
 bottles
