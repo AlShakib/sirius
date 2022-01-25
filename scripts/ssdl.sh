@@ -89,8 +89,8 @@ convertLowQuality() {
   isSuccessful "Done."
 }
 
-if ! [ -x "$(command -v youtube-dl)" ]; then
-  echo -e "${RED}[x]${NC} youtube-dl is not found." >&2
+if ! [ -x "$(command -v yt-dlp)" ]; then
+  echo -e "${RED}[x]${NC} yt-dlp is not found." >&2
   exit 1
 fi
 
@@ -127,12 +127,12 @@ done
 
 extractAudio() {
   print "Getting metadata: $1"
-  videoTitle=$(youtube-dl --get-title "$1") >/dev/null 2>&1
+  videoTitle=$(yt-dlp --get-title "$1") >/dev/null 2>&1
   isFailed "Can't get metadata from: $1"
   print "Name: $videoTitle"
   print "Format: mp3"
   print "Extracting audio.."
-  youtube-dl --quiet --output "$TEMP_DIR/%(title)s.%(ext)s" \
+  yt-dlp --quiet --output "$TEMP_DIR/%(title)s.%(ext)s" \
              --extract-audio --audio-format mp3 "$1" >/dev/null 2>&1
   isFailed "Can't downlaod audio from: $1"
   isSuccessful "Done."

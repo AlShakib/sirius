@@ -572,6 +572,21 @@ install_heroku_cli() {
   fi
 }
 
+install_yt_dlp() {
+  print "Installing yt-dlp"
+  if [[ -x "$(command -v yt-dlp)" ]]; then
+    print_success "Skipping: yt-dlp is already installed"
+  else
+    curl -L "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp" -o "/usr/local/bin/yt-dlp" &>> "${LOG_FILE}"
+    if [[ "$?" -ne 0 ]]; then
+      print_failed "Skipping: yt-dlp downloading did not complete successfully. See log for more info."
+    else
+      chmod a+rx "/usr/local/bin/yt-dlp"
+      is_failed "Done" "Skipping: yt-dlp installation did not complete successfully. See log for more info."
+    fi
+  fi
+}
+
 install_oh_my_zsh() {
   print "Installing oh-my-zsh for user ${SUDO_USER}"
   usermod --shell "$(which zsh)" "${SUDO_USER}" &>> "${LOG_FILE}"
@@ -847,6 +862,7 @@ setup_operating_system() {
     copy_to_system
     install_telegram_desktop
     install_heroku_cli
+    install_yt_dlp
     install_bash_scripts
     add_repos
     install_flathub_packages
