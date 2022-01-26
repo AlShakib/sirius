@@ -582,6 +582,7 @@ install_yt_dlp() {
       print_failed "Skipping: yt-dlp downloading did not complete successfully. See log for more info."
     else
       chmod a+rx "/usr/local/bin/yt-dlp"
+      ln -s "/usr/local/bin/yt-dlp" "/usr/local/bin/youtube-dl"
       is_failed "Done" "Skipping: yt-dlp installation did not complete successfully. See log for more info."
     fi
   fi
