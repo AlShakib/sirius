@@ -226,6 +226,9 @@ python-certbot-apache
 # Rsync for cloud storage
 rclone
 
+# A command-line program to download videos from online video platforms
+yt-dlp
+
 # A music management program
 quodlibet
 
