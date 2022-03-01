@@ -95,9 +95,6 @@ org.gnome.desktop.interface clock-show-seconds true
 # Set minimize, maximize and close button
 org.gnome.desktop.wm.preferences button-layout 'appmenu:minimize,maximize,close'
 
-# Disable attach modal dialogs
-org.gnome.mutter attach-modal-dialogs false
-
 # Set center new window
 org.gnome.mutter center-new-windows true
 
