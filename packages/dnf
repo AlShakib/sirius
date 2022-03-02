@@ -232,9 +232,6 @@ yt-dlp
 # A music management program
 quodlibet
 
-# Easily manage Wine prefix in a new way
-bottles
-
 # Cross-Platform RTS Game of Ancient Warfare
 0ad
 

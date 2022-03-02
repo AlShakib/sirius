@@ -21,3 +21,6 @@ com.anydesk.Anydesk
 
 # A utility for browsing and installing GNOME Shell Extensions
 com.mattjakeman.ExtensionManager
+
+# Run Windows software
+com.usebottles.bottles
