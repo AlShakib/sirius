@@ -10,9 +10,6 @@ us.zoom.Zoom
 # Flatseal - A permissions manager for Flatpak
 com.github.tchx84.Flatseal
 
-# Typora - A minimal Markdown reading & writing app
-io.typora.Typora
-
 # Edit audio file metadata
 org.kde.kid3
 
@@ -24,3 +21,6 @@ com.mattjakeman.ExtensionManager
 
 # Run Windows software
 com.usebottles.bottles
+
+# Powerful markdown editor for the GNOME desktop
+com.github.fabiocolacio.marker
