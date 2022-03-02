@@ -1,14 +1,16 @@
 const { GObject, Clutter, St, GLib } = imports.gi;
 const { panelMenu, popupMenu } = imports.ui;
-const { getCurrentExtension, getSettings } = imports.misc.extensionUtils;
+const { getCurrentExtension } = imports.misc.extensionUtils;
 const AppManager = getCurrentExtension().imports.AppManager;
 
 var TrayIndicator = GObject.registerClass(
 	class TrayIndicator extends panelMenu.Button {
-		_init() {
+		_init(settings) {
 			this._icons = [];
 
 			super._init(0.0, null, false);
+			this._settings = settings;
+			this._appManager = new AppManager.AppManager(this._settings);
 			this._overflow = false;
 
 			this._indicators = new St.BoxLayout();
@@ -48,7 +50,7 @@ var TrayIndicator = GObject.registerClass(
 		}
 
 		addIcon(icon) {
-			const isHidden = AppManager.getAppSetting(icon, "hidden");
+			const isHidden = this._appManager.getAppSetting(icon, "hidden");
 			if (isHidden) return;
 
 			const button = new St.Button({
@@ -79,16 +81,16 @@ var TrayIndicator = GObject.registerClass(
 			button.connect("button-release-event", (actor, event) => {
 				switch (event.get_button()) {
 					case 1:
-						AppManager.leftClick(icon, event);
+						this._appManager.leftClick(icon, event);
 						break;
 					case 2:
-						AppManager.middleClick(icon, event);
+						this._appManager.middleClick(icon, event);
 						break;
 					case 3:
 						icon.click(event);
 						break;
 				}
-				if (AppManager.isWine(icon)) {
+				if (this._appManager.isWine(icon)) {
 					GLib.timeout_add(GLib.PRIORITY_DEFAULT, 1, () => {
 						this.menu.close();
 						return GLib.SOURCE_REMOVE;
@@ -123,7 +125,7 @@ var TrayIndicator = GObject.registerClass(
 		}
 
 		checkOverflow() {
-			if (this._icons.length >= getSettings().get_int("icons-limit")) {
+			if (this._icons.length >= this._settings.get_int("icons-limit")) {
 				this._overflow = true;
 				this._icon.visible = true;
 				this.reactive = true;
@@ -164,16 +166,16 @@ var TrayIndicator = GObject.registerClass(
 		_addEffectIcon(icon) {
 			let brightnessContrast = new Clutter.BrightnessContrastEffect({});
 			brightnessContrast.set_contrast(
-				getSettings().get_int("icon-contrast") / 100
+				this._settings.get_int("icon-contrast") / 100
 			);
 			brightnessContrast.set_brightness(
-				getSettings().get_int("icon-brightness") / 100
+				this._settings.get_int("icon-brightness") / 100
 			);
 			icon.add_effect_with_name("brightnessContrast", brightnessContrast);
 			icon.add_effect_with_name(
 				"desaturate",
 				new Clutter.DesaturateEffect({
-					factor: getSettings().get_int("icon-saturation") / 100,
+					factor: this._settings.get_int("icon-saturation") / 100,
 				})
 			);
 		}

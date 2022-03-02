@@ -1,15 +1,14 @@
 const { GObject, Gtk } = imports.gi;
 const ExtensionUtils = imports.misc.extensionUtils;
-const getSettings = ExtensionUtils.getSettings;
 
 var AppChooser = GObject.registerClass(
 	class AppChooser extends Gtk.AppChooserDialog {
-		_init(parent) {
+		_init(parent, settings) {
 			super._init({
 				transient_for: parent,
 				modal: true,
 			});
-
+			this._settings = settings;
 			this._widget = this.get_widget();
 			this._widget.set({
 				show_all: true,
@@ -25,7 +24,7 @@ var AppChooser = GObject.registerClass(
 		}
 
 		_updateSensitivity() {
-			const apps = JSON.parse(getSettings().get_string("applications"));
+			const apps = JSON.parse(this._settings.get_string("applications"));
 			const appInfo = this._widget.get_app_info();
 
 			this.set_response_sensitive(
@@ -39,7 +38,7 @@ var AppChooser = GObject.registerClass(
 				id === Gtk.ResponseType.OK ? this._widget.get_app_info() : null;
 
 			if (appInfo) {
-				let apps = JSON.parse(getSettings().get_string("applications"));
+				let apps = JSON.parse(this._settings.get_string("applications"));
 				apps = [
 					...apps,
 					{
@@ -47,7 +46,7 @@ var AppChooser = GObject.registerClass(
 					},
 				];
 
-				getSettings().set_string("applications", JSON.stringify(apps));
+				this._settings.set_string("applications", JSON.stringify(apps));
 			}
 
 			this.destroy();

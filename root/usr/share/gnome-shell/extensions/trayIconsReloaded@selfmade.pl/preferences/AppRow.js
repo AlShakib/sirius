@@ -1,6 +1,5 @@
 const { GObject, Gtk, Gio } = imports.gi;
 const ExtensionUtils = imports.misc.extensionUtils;
-const getSettings = ExtensionUtils.getSettings;
 const Me = ExtensionUtils.getCurrentExtension();
 
 var AppRow = GObject.registerClass(
@@ -10,17 +9,23 @@ var AppRow = GObject.registerClass(
 		InternalChildren: ["icon", "label", "revealButton", "revealer", "hidden"],
 	},
 	class AppRow extends Gtk.ListBoxRow {
-		_init(app) {
+		_init(app, settings) {
 			super._init();
+			this._settings = settings;
+			this.appId = app.id;
+
 			this._appInfo = Gio.DesktopAppInfo.new(app.id);
-			this._settings = getSettings();
-			this._icon.gicon = this._appInfo.get_icon();
-			this._label.label = this._appInfo.get_display_name();
+			if (this._appInfo) {
+				this._icon.gicon = this._appInfo.get_icon();
+				this._label.label = this._appInfo.get_display_name();
+			} else {
+				this._label.label = app.id;
+			}
+
 			this._hidden.set_active(app.hidden);
 			this._hidden.connect("state-set", () => {
 				this._updateApp();
 			});
-			this.appId = this._appInfo.get_id();
 		}
 
 		toggleSettingsVisibility() {
