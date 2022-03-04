@@ -202,4 +202,4 @@ Pull requests are welcome. As it is my personal setup, I may or may not accept t
 
 [GNU General Public License v3.0](LICENSE)
 
-Copyright © 2021 [Al Shakib](https://alshakib.dev)
+Copyright © 2020 - 2022 [Al Shakib](https://alshakib.dev)
