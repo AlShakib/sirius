@@ -1,25 +1,129 @@
 {
+  // If true, the copy and cut commands will operate on the current line
+  // when the selection is empty, rather than doing nothing.
   "copy_with_empty_selection": false,
+
+  // This determines whether the find panel is closed when the "Find All"
+  // or "Replace All" buttons are pressed. Note this does not change the
+  // keybinding behavior.
   "close_find_after_find_all": false,
   "close_find_after_replace_all": false,
+
+  // Show folders in the side bar in bold
   "bold_folder_labels": true,
+
+  // remember_full_screen will allow Sublime Text to start in full screen
+  // mode if it was exited in full screen mode. When set to false, Sublime
+  // Text will never start in full screen mode.
   "remember_full_screen": true,
-  "animation_enabled": false,
-  "caret_extra_bottom": 1,
+
+  // These settings control the size of the caret
+  "caret_extra_bottom": 2,
   "caret_extra_top": 2,
   "caret_extra_width": 1,
+
+  // Valid values are "smooth", "phase", "blink" and "solid". Previous
+  // versions of Sublime Text used "smooth" by default.
   "caret_style": "blink",
+
+  // Set to true to ensure the last line of the file ends in a newline
+  // character when saving
   "ensure_newline_at_eof_on_save": true,
+
+  // Controls where trailing white space is removed on save.
+  // - "none": Do not remove any trailing white space on save.
+  // - "all": Remove all trailing white space on save.
+  // - "not_on_caret": Only remove white space that won't affect the caret.
+  //                   When used in conjunction with "save_on_focus_lost" and
+  //                   certain desktop environments that frequently make the
+  //                   application lose focus this avoids the caret jumping
+  //                   around a lot.
+  "trim_trailing_white_space_on_save": "all",
+
+  // Note that the font_face and font_size are overridden in the platform
+  // specific settings file, for example, "Preferences (Linux).sublime-settings".
+  // Because of this, setting them here will have no effect: you must set them
+  // in your User File Preferences.
   "font_face": "JetBrains Mono Medium",
   "font_size": 11,
+
+  // If enabled, will highlight any line with a caret
   "highlight_line": true,
-  "line_padding_bottom": 1,
+
+  // Additional spacing at the top of each line, in pixels
   "line_padding_top": 2,
+
+  // Additional spacing at the bottom of each line, in pixels
+  "line_padding_bottom": 2,
+
+  // Spacing between the gutter and the text
   "margin": 0,
-  "match_selection": false,
-  "show_definitions": false,
-  "show_tab_close_buttons": true,
+
+  // The number of spaces a tab is considered equal to
   "tab_size": 2,
+
+  // Set to true to insert spaces when tab is pressed
   "translate_tabs_to_spaces": true,
-  "tree_animation_enabled": false
+
+  // Adds whitespace up to the first open bracket when indenting. Requires
+  // auto_indent to be enabled.
+  "indent_to_bracket": true,
+
+  // Set to true to draw a border around the visible rectangle on the minimap.
+  // The color of the border will be determined by the "minimap_border" key
+  // in the color scheme
+  "draw_minimap_border": true,
+
+  // Always visualise the viewport on the minimap, as opposed to only
+  // showing it on mouse over
+  "always_show_minimap_viewport": true,
+
+  // Makes tabs with modified files more visible
+  "highlight_modified_tabs": true,
+
+  // Draw divider lines between sections of the UI when using the Adaptive theme
+  "adaptive_dividers": true,
+
+  // Display file encoding in the status bar
+  "show_encoding": true,
+
+  // Display line endings in the status bar
+  "show_line_endings": true,
+
+  // This controls if an empty window is created at startup or not.
+  "create_window_at_startup": false,
+
+  // Add trailing symbols (e.g., '.', '()') if the auto complete engine
+  // thinks they're likely enough
+  "auto_complete_trailing_symbols": true,
+
+  // Determines what character(s) are used to terminate each line in new files.
+  // Valid values are 'system' (whatever the OS uses), 'windows' (CRLF) and
+  // 'unix' (LF only).
+  "default_line_ending": "unix",
+
+  // Set to false to disable scrolling past the end of the buffer.
+  // On Mac, this value is overridden in the platform specific settings, so
+  // you'll need to place this line in your user settings to override it.
+  //
+  // This setting may also be set to a number between 0.0 and 1.0 to specify
+  // how much scrolling past the end of the buffer should be allowed. 0.5
+  // scrolls halfway and 0.0 is the same as false.
+  "scroll_past_end": 0.5,
+
+  // Show the relative path to files in the title bar. This overrides
+  // show_full_path for files that are listed in the side bar, however
+  // show_full_path is still used for other files.
+  "show_rel_path": true,
+
+  // The theme controls the look of Sublime Text's UI (buttons, tabs, scroll
+  // bars, etc)
+  // The value "auto" will switch between the "light_theme" and "dark_theme"
+  // based on the operating system appearance.
+  "theme": "Adaptive.sublime-theme",
+
+  // Sets the colors used within the text area.
+  // The value "auto" will switch between the "light_color_scheme" and
+  // "dark_color_scheme" based on the operating system appearance.
+  "color_scheme": "Mariana.sublime-color-scheme",
 }
