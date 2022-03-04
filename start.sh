@@ -767,11 +767,6 @@ set_misc_flags() {
   usermod -a -G kvm "${SUDO_USER}" &>> "${LOG_FILE}"
   is_failed "Done" "Skipping: Adding non root user to group kvm is failed. See log for more info."
 
-  # add non root user to vboxusers group
-  print "Add non root user to group vboxusers"
-  usermod -a -G vboxusers "${SUDO_USER}" &>> "${LOG_FILE}"
-  is_failed "Done" "Skipping: Adding non root user to group vboxusers is failed. See log for more info."
-
   print "Restarting systemd-udevd.service"
   # Restart UDEV
   udevadm control --reload-rules &>> "${LOG_FILE}"
