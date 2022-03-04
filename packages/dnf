@@ -243,3 +243,6 @@ sublime-merge
 
 # The world’s fastest framework for building websites
 hugo
+
+# GTK 3 markdown editor
+marker
