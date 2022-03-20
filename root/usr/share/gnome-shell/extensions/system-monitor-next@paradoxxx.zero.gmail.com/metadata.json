@@ -12,9 +12,10 @@
     "3.32",
     "3.36",
     "40",
-    "41"
+    "41",
+    "42"
   ],
   "url": "https://github.com/mgalgs/gnome-shell-system-monitor-applet",
   "uuid": "system-monitor-next@paradoxxx.zero.gmail.com",
-  "version": 38
+  "version": 39
 }
