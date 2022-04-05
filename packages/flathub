@@ -21,3 +21,12 @@ com.mattjakeman.ExtensionManager
 
 # Run Windows software
 com.usebottles.bottles
+
+# Identify any songs in seconds
+io.github.seadve.Mousai
+
+# Transform text without using random websites
+com.github.liferooter.textpieces
+
+# Compress your images
+com.github.huluti.Curtail
