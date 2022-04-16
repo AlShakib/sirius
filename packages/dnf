@@ -80,16 +80,16 @@ papirus-icon-theme
 gparted
 
 # Latest OpenJDK Runtime Environment
-java-latest-openjdk java-latest-openjdk-devel
+java-latest-openjdk java-latest-openjdk-devel java-latest-openjdk-javadoc java-latest-openjdk-src
 
 # Java 8
-java-1.8.0-openjdk java-1.8.0-openjdk-devel
+java-1.8.0-openjdk java-1.8.0-openjdk-devel java-1.8.0-openjdk-javadoc java-1.8.0-openjdk-src
 
 # Java 11
-java-11-openjdk java-11-openjdk-devel
+java-11-openjdk java-11-openjdk-devel java-11-openjdk-javadoc java-11-openjdk-src
 
 # Java 17
-java-17-openjdk java-17-openjdk-devel
+java-17-openjdk java-17-openjdk-devel java-17-openjdk-javadoc java-17-openjdk-src
 
 # Hardware lister
 lshw
