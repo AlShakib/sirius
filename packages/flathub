@@ -42,6 +42,3 @@ com.belmoussaoui.Decoder
 
 # QR code scanner for Linux desktop
 vn.hoabinh.quan.CoBang
-
-# Extract text from anywhere, even QR code
-com.github.tenderowl.frog
