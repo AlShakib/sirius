@@ -247,5 +247,5 @@ hugo
 # GTK 3 markdown editor
 marker
 
-# A Gtk+ front-end to tesseract-ocr
-gimagereader-gtk
+# A chess game that supports several chess engines.
+gnome-chess
