@@ -19,9 +19,6 @@ powerline powerline-fonts powerline-docs powerline-go
 # Google Noto Sans fonts
 google-noto-sans-fonts google-noto-sans-mono-fonts google-noto-sans-bengali-fonts google-noto-serif-bengali-fonts google-noto-sans-bengali-ui-vf-fonts google-noto-sans-bengali-vf-fonts google-noto-sans-bengali-ui-fonts
 
-# Impallari Raleway fonts
-impallari-raleway-fonts
-
 # Various compilers (C, C++, Objective-C, ...) 
 gcc gcc-c++
 
@@ -208,8 +205,8 @@ ddclient
 # Yum-utils CLI compatibility layer
 dnf-utils
 
-# .NET Core 5.0 Software Development Kit
-dotnet-sdk-5.0
+# .NET Core 6.0 Software Development Kit
+dotnet-sdk-6.0
 
 # Development tools for Mono
 mono-devel
