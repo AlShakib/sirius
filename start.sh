@@ -273,6 +273,7 @@ add_repos() {
   # add flathub repo
   print "Installing FlatHub repo"
   yes | flatpak remote-add --if-not-exists flathub "https://flathub.org/repo/flathub.flatpakrepo" &>> "${LOG_FILE}"
+  flatpak remote-modify --enable flathub &>> "${LOG_FILE}"
   is_failed "Done" "Skipping: FlatHub repo did not install successfully. See log for more info."
 
   # add sublime text repo
