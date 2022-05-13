@@ -1,26 +1,26 @@
 .sm-title {
+    color: #FFFFFF;
     font-size: 1em;
     padding: 0px 25px 0px 0px;
 }
 
 .sm-label {
-    color: #bbb;
+    color: #FFFFFF;
     font-size: 0.75em;
     padding-top: 5px;
-    font-family: monospace;
 }
 
 .sm-label-left {
-    color: #bbb;
+    color: #FFFFFF;
     font-size: 0.75em;
     padding: 5px 5px 0 0;
 }
 
 .sm-value {
+    color: #FFFFFF;
     text-align: right;
     min-width: 40px;
     padding: 2px 5px 0 0;
-    font-family: monospace;
 }
 
 .sm-status-label {
