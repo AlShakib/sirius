@@ -20,7 +20,7 @@
 trap "exit" INT
 
 OS_ID="fedora"
-RELEASE_VER="35"
+RELEASE_VER="36"
 RELEASE_VAR="workstation"
 CPU_ARCH="x86_64"
 RED='\033[0;31m'
