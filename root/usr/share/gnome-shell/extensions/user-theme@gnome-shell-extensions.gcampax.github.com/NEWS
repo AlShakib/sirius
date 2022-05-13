@@ -1,14 +1,34 @@
-41.1
-====
-* native-window-placement: Fix distorted layout in app grid [Sebastian; !189]
-* window-list: Fix on-screen keyboard [Florian; !199]
-* Misc. bug fixes [Neal; !195]
+42.beta
+=======
+* workspace-indicator: Fix cancelling editing with Esc [Florian; !208]
+* window-list: Update window tracking to avoid missing icons [Florian; !207]
+* Use libadwaita for preferences [Florian; !209, !213]
+* Adapt to Clutter grab API changes [Florian; !212]
+* Misc. bug fixes and cleanups [Jan, Florian; !210, !214]
 
 Contributors:
-  Neal Gompa, Sebastian Keller, Florian Müllner
+  Jan Beich, Florian Müllner, Naala Nanba
 
 Translators:
-  Goran Vidović [hr], Sveinn í Felli [is]
+  Boyuan Yang [zh_CN], Matej Urbančič [sl], Naala Nanba [ab],
+  Alexander Shopov [bg], Emin Tufan Çetin [tr]
+
+42.alpha
+========
+* native-window-placement: Fix distorted layout in app grid [Sebastian; !189]
+* window-list: Fix on-screen keyboard [Florian; !199]
+* Misc. bug fixes and cleanups [Neal; Just; !195, !197]
+
+Contributors:
+  Piotr Drąg, Neal Gompa, Sebastian Keller, Florian Müllner, Just Perfection
+
+Translators:
+  Goran Vidović [hr], Sveinn í Felli [is], Yuri Chornoivan [uk],
+  Fabio Tomat [fur], Quentin PAGÈS [oc], Hugo Carvalho [pt],
+  Yaron Shahrabani [he], Jordi Mas i Hernandez [ca], MohammadSaleh Kamyab [fa],
+  Fran Dieguez [gl], Daniel Mustieles [es], Aleksandr Melman [ru],
+  Aurimas Černius [lt], Asier Sarasua Garmendia [eu], Kukuh Syafaat [id],
+  Rafael Fontenelle [pt_BR]
 
 41.0
 ====

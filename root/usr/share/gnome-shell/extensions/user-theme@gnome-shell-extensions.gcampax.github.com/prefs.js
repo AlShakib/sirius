@@ -4,46 +4,27 @@
 // we use async/await here to not block the mainloop, not to parallelize
 /* eslint-disable no-await-in-loop */
 
-const { Gio, GLib, GObject, Gtk } = imports.gi;
+const { Adw, Gio, GLib, GObject, Gtk } = imports.gi;
 
 const ExtensionUtils = imports.misc.extensionUtils;
 
 const Me = ExtensionUtils.getCurrentExtension();
 const Util = Me.imports.util;
 
-Gio._promisify(Gio._LocalFilePrototype,
-    'enumerate_children_async', 'enumerate_children_finish');
-Gio._promisify(Gio._LocalFilePrototype,
-    'query_info_async', 'query_info_finish');
-Gio._promisify(Gio.FileEnumerator.prototype,
-    'next_files_async', 'next_files_finish');
+Gio._promisify(Gio.File.prototype, 'enumerate_children_async');
+Gio._promisify(Gio.File.prototype, 'query_info_async');
+Gio._promisify(Gio.FileEnumerator.prototype, 'next_files_async');
 
-const UserThemePrefsWidget = GObject.registerClass(
-class UserThemePrefsWidget extends Gtk.ScrolledWindow {
-    _init() {
-        super._init({
-            hscrollbar_policy: Gtk.PolicyType.NEVER,
-        });
+class UserThemePrefsWidget extends Adw.PreferencesGroup {
+    static {
+        GObject.registerClass(this);
+    }
 
-        const box = new Gtk.Box();
-        this.set_child(box);
-
-        this._list = new Gtk.ListBox({
-            selection_mode: Gtk.SelectionMode.NONE,
-            show_separators: true,
-            halign: Gtk.Align.CENTER,
-            valign: Gtk.Align.START,
-            hexpand: true,
-            margin_start: 60,
-            margin_end: 60,
-            margin_top: 60,
-            margin_bottom: 60,
-        });
-        this._list.get_style_context().add_class('frame');
-        box.append(this._list);
+    constructor() {
+        super({ title: 'Themes' });
 
         this._actionGroup = new Gio.SimpleActionGroup();
-        this._list.insert_action_group('theme', this._actionGroup);
+        this.insert_action_group('theme', this._actionGroup);
 
         this._settings = ExtensionUtils.getSettings();
         this._actionGroup.add_action(
@@ -93,10 +74,10 @@ class UserThemePrefsWidget extends Gtk.ScrolledWindow {
     }
 
     _addTheme(name) {
-        const row = new ThemeRow(name, this._settings);
+        const row = new ThemeRow(name);
         this._rows.set(name, row);
 
-        this._list.append(row);
+        this.add(row);
     }
 
     async _enumerateDir(dir) {
@@ -123,56 +104,26 @@ class UserThemePrefsWidget extends Gtk.ScrolledWindow {
 
         return fileInfos.map(info => info.get_name());
     }
-});
+}
 
-const ThemeRow = GObject.registerClass(
-class ThemeRow extends Gtk.ListBoxRow {
-    _init(name, settings) {
-        this._name = name;
-        this._settings = settings;
+class ThemeRow extends Adw.ActionRow {
+    static {
+        GObject.registerClass(this);
+    }
 
-        const box = new Gtk.Box({
-            spacing: 12,
-            margin_start: 12,
-            margin_end: 12,
-            margin_top: 12,
-            margin_bottom: 12,
-        });
-        super._init({
+    constructor(name) {
+        const check = new Gtk.CheckButton({
             action_name: 'theme.name',
             action_target: new GLib.Variant('s', name),
-            child: box,
         });
 
-        box.append(new Gtk.Label({
-            label: name || 'Default',
-            hexpand: true,
-            xalign: 0,
-            max_width_chars: 25,
-            width_chars: 25,
-        }));
-
-        this._checkmark = new Gtk.Image({
-            icon_name: 'emblem-ok-symbolic',
-            pixel_size: 16,
+        super({
+            title: name || 'Default',
+            activatable_widget: check,
         });
-        box.append(this._checkmark);
-
-        const id = this._settings.connect('changed::name',
-            this._syncCheckmark.bind(this));
-        this._syncCheckmark();
-
-        this.connect('destroy', () => {
-            this._settings.disconnect(id);
-            this._settings = null;
-        });
+        this.add_prefix(check);
     }
-
-    _syncCheckmark() {
-        const visible = this._name === this._settings.get_string('name');
-        this._checkmark.opacity = visible ? 1. : 0;
-    }
-});
+}
 
 /** */
 function init() {
