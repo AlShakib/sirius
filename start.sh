@@ -706,7 +706,7 @@ cleanup() {
 
 set_misc_flags() {
   print "Set hostname to ${HOSTNAME}"
-  echo "${HOSTNAME}" | tee "/etc/hostname" 1>/dev/null
+  hostnamectl set-hostname "${HOSTNAME}" &>> "${LOG_FILE}"
   is_failed "Done" "Skipping: Setting up hostname is failed. See log for more info."
 
   # enable some apps to run on boot
