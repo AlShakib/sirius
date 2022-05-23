@@ -719,6 +719,9 @@ set_misc_flags() {
   setsebool -P httpd_can_network_connect 1 &>> "${LOG_FILE}"
   is_failed "Done" "Skipping: Allowing httpd to make network connections is failed. See log for more info."
 
+  # allow nethogs to run as non root user
+  setcap cap_net_raw+ep "$(which nethogs)"
+
   # modifying firewall rules
   print "Modifying firewall rules"
   firewall-cmd --quiet --add-service=http --add-service=https --permanent &>> "${LOG_FILE}"
