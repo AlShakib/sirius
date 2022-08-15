@@ -252,3 +252,6 @@ gpick
 
 # Tool for containerized command line environments on Linux
 toolbox
+
+# Another tool for containerized command line environments on Linux
+distrobox

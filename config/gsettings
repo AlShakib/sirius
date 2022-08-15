@@ -68,6 +68,9 @@ org.gnome.shell enabled-extensions ['InternetSpeedMeter@alshakib.dev', 'trayIcon
 
 ## Gnome Tweak Tools ##
 
+# Set GTK3 theme to 'adw-gtk3'
+org.gnome.desktop.interface gtk-theme 'adw-gtk3'
+
 # Set icon theme to 'Papirus'
 org.gnome.desktop.interface icon-theme 'Papirus'
 
@@ -152,20 +155,6 @@ org.gnome.TextEditor highlight-current-line true
 # Show minimap
 org.gnome.TextEditor show-map true
 
-
-## Weather ##
-
-# Set default temperature unit to 'centigrade'
-org.gnome.GWeather temperature-unit 'centigrade'
-org.gnome.GWeather4 temperature-unit 'centigrade'
-
-# Disable automatic location
-org.gnome.shell.weather automatic-location false
-
-# Set default location to 'Dhaka'
-org.gnome.Weather locations [<(uint32 2, <('Dhaka', 'VGHS', true, [(0.41626102660064762, 1.5777776438028739)], [(0.41404543583499592, 1.5779279341047632)])>)>]
-
-
 ## Rhythmbox ##
 
 # Set Rhythmbox window maximized by default
@@ -194,3 +183,12 @@ org.gnome.software download-updates false
 
 # Watch for new mail when closed
 org.gnome.Geary startup-notifications true
+
+
+## Marker
+
+# Disable right margin
+com.github.fabiocolacio.marker.preferences.editor show-right-margin false
+
+# Set CSS theme to GitHub2
+com.github.fabiocolacio.marker.preferences.preview css-theme 'GitHub2.css'
