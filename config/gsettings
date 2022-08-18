@@ -63,7 +63,7 @@ org.gnome.shell.app-switcher current-workspace-only true
 org.gnome.shell disable-user-extensions false
 
 # Enable all extensions
-org.gnome.shell enabled-extensions ['InternetSpeedMeter@alshakib.dev', 'trayIconsReloaded@selfmade.pl', 'windowIsReady_Remover@nunofarruca@gmail.com', 'system-monitor-next@paradoxxx.zero.gmail.com', 'user-theme@gnome-shell-extensions.gcampax.github.com']
+org.gnome.shell enabled-extensions ['InternetSpeedMeter@alshakib.dev', 'trayIconsReloaded@selfmade.pl', 'windowIsReady_Remover@nunofarruca@gmail.com', 'system-monitor-next@paradoxxx.zero.gmail.com']
 
 
 ## Gnome Tweak Tools ##
