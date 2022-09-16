@@ -136,6 +136,12 @@ org.gtk.Settings.FileChooser sort-directories-first true
 
 ## Text Editor
 
+# Show line numbers
+org.gnome.TextEditor show-line-numbers true
+
+# Wrap long text
+org.gnome.TextEditor wrap-text false
+
 # Set indent style to space
 org.gnome.TextEditor indent-style 'space'
 
@@ -154,6 +160,7 @@ org.gnome.TextEditor highlight-current-line true
 
 # Show minimap
 org.gnome.TextEditor show-map true
+
 
 ## Rhythmbox ##
 
@@ -192,3 +199,31 @@ com.github.fabiocolacio.marker.preferences.editor show-right-margin false
 
 # Set CSS theme to GitHub2
 com.github.fabiocolacio.marker.preferences.preview css-theme 'GitHub2.css'
+
+## Organize Apps
+
+org.gnome.desktop.app-folders folder-children "['Game', 'Graphics', 'Internet', 'Office', 'Programming', 'SoundVideo', 'Utilities', 'Virtualization', 'YaST']"
+
+org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Game/ name "Game"
+org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Game/ categories "['Game']"
+
+org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Graphics/ name "Graphics"
+org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Graphics/ categories "['Graphics']"
+
+org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Internet/ name "Internet"
+org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Internet/ categories "['Network', 'WebBrowser', 'Email']"
+
+org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Office/ name "Office"
+org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Office/ categories "['Office', 'Calculator', 'Clock']"
+
+org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Programming/ name "Programming"
+org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Programming/ categories "['Development', 'IDE', 'TextEditor']"
+
+org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/SoundVideo/ name "Sound & Video"
+org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/SoundVideo/ categories "['AudioVideo', 'AudioVideoEditing', 'Audio', 'Video', 'Player', 'Recorder']"
+
+org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Utilities/ name "Utilities"
+org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Utilities/ categories "['Utilities', 'Utility', 'System', 'TerminalEmulator', 'FileManager', 'Settings']"
+
+org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Virtualization/ name "Virtualization"
+org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Virtualization/ categories "['Emulator', 'Emulators', 'Virtualization', 'KVM']"
