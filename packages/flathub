@@ -42,3 +42,6 @@ com.belmoussaoui.Decoder
 
 # QR code scanner for Linux desktop
 vn.hoabinh.quan.CoBang
+
+# Gradience - Change the look of Adwaita, with ease.
+com.github.GradienceTeam.Gradience
