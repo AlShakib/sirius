@@ -40,8 +40,8 @@ org.gnome.desktop.session idle-delay uint32 0
 org.gnome.settings-daemon.plugins.power power-button-action 'interactive'
 
 # Set switch input source shortcut
-org.gnome.desktop.wm.keybindings switch-input-source ['<Primary>space']
-org.gnome.desktop.wm.keybindings switch-input-source-backward ['<Primary><Shift>space']
+org.gnome.desktop.wm.keybindings switch-input-source ['<Control><Alt>space']
+org.gnome.desktop.wm.keybindings switch-input-source-backward ['<Shift><Control><Alt>space']
 
 # Set automatice timezone
 org.gnome.desktop.datetime automatic-timezone true
