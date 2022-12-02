@@ -40,8 +40,8 @@ org.gnome.desktop.session idle-delay uint32 0
 org.gnome.settings-daemon.plugins.power power-button-action 'interactive'
 
 # Set switch input source shortcut
-org.gnome.desktop.wm.keybindings switch-input-source ['<Control><Alt>space']
-org.gnome.desktop.wm.keybindings switch-input-source-backward ['<Shift><Control><Alt>space']
+org.gnome.desktop.wm.keybindings switch-input-source ['<Alt>space']
+org.gnome.desktop.wm.keybindings switch-input-source-backward ['<Shift><Alt>space']
 
 # Set automatice timezone
 org.gnome.desktop.datetime automatic-timezone true
@@ -56,6 +56,11 @@ org.gnome.desktop.wm.preferences focus-new-windows 'strict'
 # Switch application from the current workspace only
 org.gnome.shell.app-switcher current-workspace-only true
 
+# Show the week date in the calendar
+org.gnome.desktop.calendar show-weekdate true
+
+# Set this to TRUE to be able to send mouse clicks by tapping on the touchpad.
+org.gnome.desktop.peripherals.touchpad tap-to-click true
 
 ## Extensions
 
@@ -127,12 +132,23 @@ com.gexperts.Tilix.Settings terminal-title-show-when-single false
 ## Files ##
 
 # Set default zoom level to 'small'
-org.gnome.nautilus.list-view default-zoom-level 'standard'
-org.gnome.nautilus.icon-view default-zoom-level 'standard'
+org.gnome.nautilus.list-view default-zoom-level 'medium'
+org.gnome.nautilus.icon-view default-zoom-level 'medium'
 
 # Set sort folders before files
 org.gtk.Settings.FileChooser sort-directories-first true
 
+# Whether the time is shown in 24h or 12h format.
+org.gtk.gtk4.Settings.FileChooser clock-format '12h'
+
+# If set to true, then folders are shown before files in the list.
+org.gtk.gtk4.Settings.FileChooser sort-directories-first true
+
+# Either "recent" or "cwd"; controls whether the file chooser starts up showing the list of recently-used files, or the contents of the current working directory.
+org.gtk.Settings.FileChooser startup-mode 'cwd'
+
+# Either "recent" or "cwd"; controls whether the file chooser starts up showing the list of recently-used files, or the contents of the current working directory.
+org.gtk.gtk4.Settings.FileChooser startup-mode 'cwd'
 
 ## Text Editor
 
@@ -167,14 +183,14 @@ org.gnome.TextEditor show-map true
 # Set Rhythmbox window maximized by default
 org.gnome.rhythmbox maximized true
 
-# Set position of main window pane
-org.gnome.rhythmbox paned-position 165
-
 # Set watch my library for new files
 org.gnome.rhythmbox.rhythmdb monitor-library true
 
 # Set check for new podcast episodes to manual
 org.gnome.rhythmbox.podcast download-interval 'manual'
+
+# If true, the elapsed time will be shown in song duration displays. Otherwise the remaining time will be shown.
+org.gnome.rhythmbox time-display false
 
 
 ## Software ##
@@ -186,12 +202,6 @@ org.gnome.software download-updates-notify false
 org.gnome.software download-updates false
 
 
-## Geary
-
-# Watch for new mail when closed
-org.gnome.Geary startup-notifications true
-
-
 ## Marker
 
 # Disable right margin
@@ -200,30 +210,32 @@ com.github.fabiocolacio.marker.preferences.editor show-right-margin false
 # Set CSS theme to GitHub2
 com.github.fabiocolacio.marker.preferences.preview css-theme 'GitHub2.css'
 
-## Organize Apps
 
-org.gnome.desktop.app-folders folder-children "['Game', 'Graphics', 'Internet', 'Office', 'Programming', 'SoundVideo', 'Utilities', 'Virtualization', 'YaST']"
+## Virt Manager
 
-org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Game/ name "Game"
-org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Game/ categories "['Game']"
+# Show system tray icon while app is running
+org.virt-manager.virt-manager system-tray true
 
-org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Graphics/ name "Graphics"
-org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Graphics/ categories "['Graphics']"
 
-org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Internet/ name "Internet"
-org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Internet/ categories "['Network', 'WebBrowser', 'Email']"
+## Gnome System Monitor
 
-org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Office/ name "Office"
-org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Office/ categories "['Office', 'Calculator', 'Clock']"
+# Main Window should open maximized
+org.gnome.gnome-system-monitor maximized true
 
-org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Programming/ name "Programming"
-org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Programming/ categories "['Development', 'IDE', 'TextEditor']"
+# Show process dependencies in tree form
+org.gnome.gnome-system-monitor show-dependencies true
 
-org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/SoundVideo/ name "Sound & Video"
-org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/SoundVideo/ categories "['AudioVideo', 'AudioVideoEditing', 'Audio', 'Video', 'Player', 'Recorder']"
 
-org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Utilities/ name "Utilities"
-org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Utilities/ categories "['Utilities', 'Utility', 'System', 'TerminalEmulator', 'FileManager', 'Settings']"
+## Weather
 
-org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Virtualization/ name "Virtualization"
-org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/Virtualization/ categories "['Emulator', 'Emulators', 'Virtualization', 'KVM']"
+# The unit of temperature used for showing weather. Valid values are “kelvin”, “centigrade” and “fahrenheit”.
+org.gnome.GWeather4 temperature-unit 'centigrade'
+
+# Whether to fetch the current location or not
+org.gnome.shell.weather automatic-location true
+
+# The location for which to show a forecast
+org.gnome.shell.weather locations [<(uint32 2, <('Dhaka', 'VGHS', true, [(0.41626102660064762, 1.5777776438028739)], [(0.41404543583499592, 1.5779279341047632)])>)>]
+
+# The locations shown in the world view of gnome-weather. Each value is a GVariant returned by gweather_location_serialize().
+org.gnome.Weather locations [<(uint32 2, <('Dhaka', 'VGHS', false, [(0.41626102660064762, 1.5777776438028739)], [(0.41626102660064762, 1.5777776438028739)])>)>]

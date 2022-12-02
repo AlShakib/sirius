@@ -108,7 +108,7 @@
 
 To run this script, you will need
 
-- Fedora 36 Workstation (x86_64)
+- Fedora 37 Workstation (x86_64)
 
 ### Running the script
 

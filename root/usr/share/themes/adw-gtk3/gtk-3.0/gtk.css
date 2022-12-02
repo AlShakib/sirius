@@ -61,7 +61,7 @@
 @define-color window_bg_color #fafafa;
 @define-color window_fg_color #323232;
 @define-color view_bg_color #ffffff;
-@define-color view_fg_color #000000;
+@define-color view_fg_color #333333;
 @define-color headerbar_bg_color #ebebeb;
 @define-color headerbar_fg_color #2f2f2f;
 @define-color headerbar_border_color rgba(0, 0, 0, 0.8);
@@ -795,7 +795,7 @@ treeview.view header button:disabled { border-color: @window_bg_color; backgroun
 
 treeview.view header button:last-child { border-right-style: none; }
 
-menubar, .menubar { -GtkWidget-window-dragging: true; padding: 0px; box-shadow: inset 0 -1px alpha(currentColor,0.15); }
+menubar, .menubar { -GtkWidget-window-dragging: true; padding: 0px; }
 
 menubar:backdrop, .menubar:backdrop { background-color: @window_bg_color; }
 
@@ -814,6 +814,8 @@ menubar .csd.popup decoration, .menubar .csd.popup decoration { border-radius: 8
 .background.popup { background-color: transparent; }
 
 menu, .menu, .context-menu { margin: 4px; padding: 6px; background-color: @popover_bg_color; border: 1px solid mix(currentColor,@window_bg_color,0.853); }
+
+menu separator, .menu separator, .context-menu separator { margin: 6px 0; }
 
 .csd menu, .csd .menu, .csd .context-menu { border: none; border-radius: 8px; }
 
@@ -859,7 +861,7 @@ popover.background > list, popover.background > .view, popover.background > icon
 
 .csd popover.background.touch-selection, .csd popover.background.magnifier, popover.background.touch-selection, popover.background.magnifier { border: 1px solid rgba(255, 255, 255, 0.1); }
 
-popover.background separator { margin: 3px; }
+popover.background separator { margin: 6px 0; }
 
 popover.background list separator { margin: 0px; }
 
@@ -947,7 +949,7 @@ notebook > header tab.reorderable-page { background-color: mix(currentColor,@win
 
 notebook > header tab:hover { color: @window_fg_color; }
 
-notebook > header tab:hover.reorderable-page { border-color: alpha(currentColor,0.15); background-color: mix(currentColor,@window_bg_color,0.853); box-shadow: inset -1px -1px alpha(currentColor,0.15); transition: background-color 150ms ease-in-out; }
+notebook > header tab:hover.reorderable-page { border-color: alpha(currentColor,0.15); background-color: mix(currentColor,@window_bg_color,0.853); box-shadow: inset -1px -1px alpha(currentColor,0.15), inset 0 -4px alpha(currentColor,0.15); transition: background-color 150ms ease-in-out; }
 
 notebook > header tab:hover.reorderable-page:backdrop { background-color: mix(currentColor,@window_bg_color,0.84); }
 
@@ -955,11 +957,11 @@ notebook > header tab:backdrop.reorderable-page { color: mix(mix(@window_fg_colo
 
 notebook > header tab:checked { color: @window_fg_color; }
 
-notebook > header tab:checked.reorderable-page { border-width: 0; border-color: alpha(currentColor,0.15); background-color: mix(currentColor,@window_bg_color,0.923); box-shadow: inset -1px -1px alpha(currentColor,0.15); }
+notebook > header tab:checked.reorderable-page { border-width: 0; border-color: alpha(currentColor,0.15); background-color: mix(currentColor,@window_bg_color,0.923); box-shadow: inset -1px -1px alpha(currentColor,0.15), inset 0 -4px @accent_bg_color; }
 
 notebook > header tab:checked.reorderable-page:hover { background-color: shade(mix(currentColor,@window_bg_color,0.923),0.971); }
 
-notebook > header tab:backdrop:checked.reorderable-page { color: mix(@window_fg_color,@window_bg_color,0.5); border-color: alpha(currentColor,0.15); box-shadow: inset -1px -1px alpha(currentColor,0.15); background-color: @window_bg_color; }
+notebook > header tab:backdrop:checked.reorderable-page { color: mix(@window_fg_color,@window_bg_color,0.5); border-color: alpha(currentColor,0.15); box-shadow: inset -1px -1px alpha(currentColor,0.15), inset 0 -4px alpha(@accent_bg_color,0.5); background-color: @window_bg_color; }
 
 notebook > header tab button.flat { padding: 0; margin-top: 4px; margin-bottom: 4px; min-width: 20px; min-height: 20px; border-radius: 100%; }
 

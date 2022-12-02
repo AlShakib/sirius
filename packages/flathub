@@ -25,23 +25,11 @@ com.usebottles.bottles
 # Identify any songs in seconds
 io.github.seadve.Mousai
 
-# Transform text without using random websites
-com.github.liferooter.textpieces
-
-# Compress your images
-com.github.huluti.Curtail
-
 # Matrix group messaging app
 org.gnome.Fractal
 
 # Messaging, Voice, and Video Client
 com.discordapp.Discord
-
-# Scan and Generate QR Codes
-com.belmoussaoui.Decoder
-
-# QR code scanner for Linux desktop
-vn.hoabinh.quan.CoBang
 
 # Gradience - Change the look of Adwaita, with ease.
 com.github.GradienceTeam.Gradience

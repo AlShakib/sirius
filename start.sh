@@ -20,7 +20,7 @@
 trap "exit" INT
 
 OS_ID="fedora"
-RELEASE_VER="36"
+RELEASE_VER="37"
 RELEASE_VAR="workstation"
 CPU_ARCH="x86_64"
 RED='\033[0;31m'
@@ -303,11 +303,6 @@ add_repos() {
   dnf install -y "https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-${RELEASE_VER}.noarch.rpm" \
               "https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-${RELEASE_VER}.noarch.rpm" &>> "${LOG_FILE}"
   is_failed "Done" "Skipping: RPM Fusion repo did not install successfully. See log for more info."
-
-  # clean dnf cache
-  print "Cleaning up DNF cache"
-  dnf clean all &>> "${LOG_FILE}"
-  is_failed "Done" "Skipping: DNF cache cleanup failed. See log for more info."
 }
 
 # install bash scripts
