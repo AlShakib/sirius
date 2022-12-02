@@ -160,9 +160,6 @@ util-linux-user
 # Open Broadcaster Software Studio
 obs-studio
 
-# Personal task manager for GNOME
-gnome-todo
-
 # Digital VCR and streaming server
 ffmpeg
 
@@ -255,3 +252,6 @@ toolbox
 
 # Another tool for containerized command line environments on Linux
 distrobox
+
+# Utilities from the general purpose cryptography library with TLS implementation
+openssl
