@@ -33,3 +33,6 @@ com.discordapp.Discord
 
 # Gradience - Change the look of Adwaita, with ease.
 com.github.GradienceTeam.Gradience
+
+# Simple UML and SysML modeling tool
+org.gaphor.Gaphor
