@@ -25,9 +25,6 @@ com.usebottles.bottles
 # Identify any songs in seconds
 io.github.seadve.Mousai
 
-# Matrix group messaging app
-org.gnome.Fractal
-
 # Messaging, Voice, and Video Client
 com.discordapp.Discord
 
