@@ -33,3 +33,6 @@ com.github.GradienceTeam.Gradience
 
 # Simple UML and SysML modeling tool
 org.gaphor.Gaphor
+
+# Eyedropper - A powerful color picker and formatter
+com.github.finefindus.eyedropper

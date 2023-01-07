@@ -244,9 +244,6 @@ marker
 # A chess game that supports several chess engines.
 gnome-chess
 
-# Advanced color picker
-gpick
-
 # Tool for containerized command line environments on Linux
 toolbox
 
