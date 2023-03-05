@@ -1,4 +1,4 @@
-ZSH_THEME="robbyrussell"
+ZSH_THEME="agnoster"
 plugins=(git zsh-autosuggestions)
 ~ENABLE_CORRECTION="true"
 ZSH_DISABLE_COMPFIX="true"
