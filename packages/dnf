@@ -252,3 +252,6 @@ distrobox
 
 # Utilities from the general purpose cryptography library with TLS implementation
 openssl
+
+# C++ standard library targeting C++11
+libcxx
