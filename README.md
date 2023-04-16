@@ -108,7 +108,7 @@
 
 To run this script, you will need
 
-- Fedora 37 Workstation (x86_64)
+- Fedora 38 Workstation (x86_64)
 
 ### Running the script
 
@@ -202,4 +202,4 @@ Pull requests are welcome. As it is my personal setup, I may or may not accept t
 
 [GNU General Public License v3.0](LICENSE)
 
-Copyright © 2020 - 2022 [Al Shakib](https://alshakib.dev)
+Copyright © 2020 - 2023 [Al Shakib](https://alshakib.dev)
