@@ -43,6 +43,9 @@ ATTR{idVendor}=="0a5c", ATTR{idProduct}=="e681", ENV{adb_adb}="yes"
 # Amazon Lab126
 #   Amazon Kindle Fire
 ATTR{idVendor}=="1949", ATTR{idProduct}=="0006", ENV{adb_adbfast}="yes"
+#   Amazon Fire TV Stick Lite (3rd gen)
+ATTR{idVendor}=="1949", ATTR{idProduct}=="03a8", ENV{adb_adbfast}="yes"
+
 
 # Archos
 ATTR{idVendor}!="0e79", GOTO="not_Archos"
@@ -158,7 +161,7 @@ ATTR{idProduct}=="4ee6", ENV{adb_adb}="yes"
 ATTR{idProduct}=="4ee7", ENV{adb_adb}="yes"
 ATTR{idProduct}=="4ee9", ENV{adb_adb}="yes"
 
-#   Tensor Pixel phones (Pixel 6/6A/6 Pro) 4eeb=cdc-ncm; 4eec=cdc-ncm,adb
+#   Tensor Pixel phones (Pixel 7/7 pro/6/6A/6 Pro) 4eeb=cdc-ncm; 4eec=cdc-ncm,adb
 ATTR{idProduct}=="4eec", ENV{adb_adb}="yes"
 
 #   Pixel C Tablet
@@ -382,6 +385,9 @@ LABEL="not_Micromax"
 
 # Microsoft
 ATTR{idVendor}!="045e", GOTO="not_Microsoft"
+#   False positive xbox controllers 028e, 02ea, 0719
+ATTR{idProduct}=="02??", GOTO="android_usb_rules_end"
+ATTR{idProduct}=="07??", GOTO="android_usb_rules_end"
 ENV{adb_user}="yes"
 #   Surface Duo
 ATTR{idProduct}=="0c26", ENV{adb_adbfast}="yes"
@@ -521,6 +527,15 @@ ATTR{idProduct}=="5101", ENV{adb_user}="yes"
 GOTO="android_usb_rule_match"
 LABEL="not_Point_Mobile"
 
+# Polar
+ATTR{idVendor}!="0da4", GOTO="not_Polar"
+ENV{adb_user}="yes"
+#   Polar M600 (0010=adb,000b=fastboot)
+ATTR{idProduct}=="0010", SYMLINK+="android_adb"
+ATTR{idProduct}=="000b", SYMLINK+="android_fastboot"
+GOTO="android_usb_rule_match"
+LABEL="not_Polar"
+
 # Qualcomm (Wearners also 05c6)
 ATTR{idVendor}!="05c6", GOTO="not_Qualcomm"
 ENV{adb_user}="yes"
@@ -543,6 +558,8 @@ ATTR{idProduct}=="9011", SYMLINK+="android_adb"
 ATTR{idProduct}=="f003", SYMLINK+="android_adb"
 #   Yongnuo YN450m (identified in lsusb as Intex Aqua Fish & Jolla C Diagnostic Mode)
 ATTR{idProduct}=="9091", SYMLINK+="android_adb"
+#   Wileyfox Swift 2 Plus
+ATTR{idProduct}=="0001", ENV{adb_user}="yes"
 GOTO="android_usb_rule_match"
 LABEL="not_Qualcomm"
 
@@ -605,7 +622,16 @@ ATTR{idVendor}=="1f53", ENV{adb_user}="yes"
 ATTR{idVendor}=="1d9c", ENV{adb_user}="yes"
 
 # Sony
-ATTR{idVendor}=="054c", ENV{adb_user}="yes"
+ATTR{idVendor}!="054c", GOTO="not_Sony"
+#   False positives dualshock 0268,05c4,05c5, adapters 0ba0, bluetooth 09cc, 0ce6, VR 09af
+ATTR{idProduct}=="02??", GOTO="android_usb_rules_end"
+ATTR{idProduct}=="05??", GOTO="android_usb_rules_end"
+ATTR{idProduct}=="09??", GOTO="android_usb_rules_end"
+ATTR{idProduct}=="0b??", GOTO="android_usb_rules_end"
+ATTR{idProduct}=="0c??", GOTO="android_usb_rules_end"
+ENV{adb_user}="yes"
+GOTO="android_usb_rule_match"
+LABEL="not_Sony"
 
 # Sony Ericsson
 ATTR{idVendor}!="0fce", GOTO="not_Sony_Ericsson"
