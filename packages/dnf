@@ -255,3 +255,12 @@ openssl
 
 # C++ standard library targeting C++11
 libcxx
+
+# A simple gstreamer plugin to use espeak
+gstreamer-plugins-espeak
+
+# GStreamer 1.0 streaming media framework "ugly" plug-ins
+gstreamer1-plugins-ugly
+
+# GStreamer 1.0 streaming media framework "bad" plug-ins
+gstreamer1-plugins-bad-freeworld
