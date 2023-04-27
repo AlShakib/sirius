@@ -264,3 +264,6 @@ gstreamer1-plugins-ugly
 
 # GStreamer 1.0 streaming media framework "bad" plug-ins
 gstreamer1-plugins-bad-freeworld
+
+# AppIndicator/KStatusNotifierItem support for GNOME Shell
+gnome-shell-extension-appindicator
