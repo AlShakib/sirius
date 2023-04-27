@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+##################################
+# Keep max dirty pages to 64MB
+##################################
+
+if [ -z "$(df --output=source '/' | grep $1)" ]; then
+    echo 1 > /sys/block/$1/bdi/strict_limit
+    echo 67108864 > /sys/block/$1/bdi/max_bytes
+fi
