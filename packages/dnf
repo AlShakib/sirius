@@ -255,3 +255,6 @@ openssl
 
 # C++ standard library targeting C++11
 libcxx
+
+# AppIndicator/KStatusNotifierItem support for GNOME Shell
+gnome-shell-extension-appindicator
