@@ -380,7 +380,7 @@ install_dnf_packages() {
     print "Installing packages using DNF"
     print_suggestion "It might take a while... DO NOT PANIC!"
     if [[ "${DNF_LIST}" != "" ]]; then
-      dnf install -y ${DNF_LIST} &>> "${LOG_FILE}"
+      dnf install --allowerasing -y ${DNF_LIST} &>> "${LOG_FILE}"
       is_failed "Done" "Skipping: Package installation from DNF did not complete successfully. See log for more info."
     else
       print_warning "Skipping: No package to be installed"
