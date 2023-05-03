@@ -101,7 +101,7 @@
 
 .view:disabled, iconview:disabled, .nautilus-window notebook:disabled, .nautilus-window notebook > stack:disabled:not(:only-child), .nautilus-window notebook > stack:not(:only-child) searchbar:disabled, .view text:disabled, iconview text:disabled, textview text:disabled { color: mix(@window_fg_color,@window_bg_color,0.5); background-color: mix(@window_bg_color,@view_bg_color,0.4); }
 
-.view:selected:focus, iconview:selected:focus, .view:selected, iconview:selected, .nautilus-window notebook:selected:focus, .view text:selected:focus, iconview text:selected:focus, textview text:selected:focus, .nautilus-window notebook:selected, .nautilus-window notebook > stack:selected:not(:only-child), .nautilus-window notebook > stack:not(:only-child) searchbar:selected, .view text:selected, iconview text:selected, textview text:selected { border-radius: 6px; }
+.view:selected:focus, .view:selected, iconview:selected, .nautilus-window notebook:selected, .nautilus-window notebook > stack:selected:not(:only-child), .nautilus-window notebook > stack:not(:only-child) searchbar:selected, .view text:selected, iconview text:selected, textview text:selected { background-color: alpha(@accent_bg_color,0.25); border-radius: 6px; }
 
 textview border { background-color: mix(@window_bg_color,@view_bg_color,0.5); }
 
@@ -468,7 +468,9 @@ stacksidebar row.needs-attention > label:dir(rtl), .stack-switcher > button.need
 
 modelbutton.flat, .menuitem.button.flat { min-height: 32px; padding-left: 5px; padding-right: 5px; border-radius: 6px; outline-offset: -2px; }
 
-modelbutton.flat:hover, .menuitem.button.flat:hover { background-color: alpha(currentColor,0.1); }
+modelbutton.flat:hover, .menuitem.button.flat:hover { background-color: alpha(currentColor,0.07); }
+
+modelbutton.flat:selected, .menuitem.button.flat:selected { background-color: alpha(currentColor,0.1); }
 
 modelbutton.flat arrow { background: none; }
 
@@ -754,12 +756,6 @@ treeview.view.expander:dir(rtl) { -gtk-icon-source: -gtk-icontheme("pan-end-symb
 
 treeview.view.expander:hover { color: @view_fg_color; }
 
-treeview.view.expander:selected { color: mix(@accent_fg_color,@accent_bg_color,0.3); }
-
-treeview.view.expander:selected:hover { color: @accent_fg_color; }
-
-treeview.view.expander:selected:backdrop { color: mix(mix(@view_fg_color,@window_bg_color,0.5),@accent_bg_color,0.3); }
-
 treeview.view.expander:checked { -gtk-icon-source: -gtk-icontheme("pan-down-symbolic"); }
 
 treeview.view.progressbar { background-color: @accent_bg_color; background-image: image(@accent_bg_color); box-shadow: none; }
@@ -816,7 +812,7 @@ menu separator, .menu separator, .context-menu separator { margin: 6px 0; }
 
 menu menuitem, .menu menuitem, .context-menu menuitem { min-height: 16px; min-width: 40px; padding: 4px 6px; text-shadow: none; font-weight: normal; border-radius: 6px; }
 
-menu menuitem:hover, .menu menuitem:hover, .context-menu menuitem:hover { color: @window_fg_color; background-color: alpha(currentColor,0.13); }
+menu menuitem:hover, .menu menuitem:hover, .context-menu menuitem:hover { color: @window_fg_color; background-color: alpha(currentColor,0.07); }
 
 menu menuitem:disabled, .menu menuitem:disabled, .context-menu menuitem:disabled { color: mix(@window_fg_color,@window_bg_color,0.5); }
 
@@ -878,7 +874,7 @@ notebook > header.top > tabs { margin-bottom: 0px; }
 
 notebook > header.top > tabs > tab:not(.reorderable-page):hover { box-shadow: inset 0 -4px alpha(currentColor,0.15); }
 
-notebook > header.top > tabs > tab:not(.reorderable-page):hover:not(:checked) { background-color: alpha(currentColor,0.07); }
+notebook > header.top > tabs > tab:not(.reorderable-page):hover:not(:checked) { background-color: alpha(currentColor,0.04); }
 
 notebook > header.top > tabs > tab:not(.reorderable-page):checked { box-shadow: inset 0 -4px @accent_bg_color; }
 
@@ -888,7 +884,7 @@ notebook > header.bottom > tabs { margin-top: 0px; }
 
 notebook > header.bottom > tabs > tab:not(.reorderable-page):hover { box-shadow: inset 0 4px alpha(currentColor,0.15); }
 
-notebook > header.bottom > tabs > tab:not(.reorderable-page):hover:not(:checked) { background-color: alpha(currentColor,0.07); }
+notebook > header.bottom > tabs > tab:not(.reorderable-page):hover:not(:checked) { background-color: alpha(currentColor,0.04); }
 
 notebook > header.bottom > tabs > tab:not(.reorderable-page):checked { box-shadow: inset 0 4px @accent_bg_color; }
 
@@ -898,7 +894,7 @@ notebook > header.left > tabs { margin-right: 0px; }
 
 notebook > header.left > tabs > tab:not(.reorderable-page):hover { box-shadow: inset -4px 0 alpha(currentColor,0.15); }
 
-notebook > header.left > tabs > tab:not(.reorderable-page):hover:not(:checked) { background-color: alpha(currentColor,0.07); }
+notebook > header.left > tabs > tab:not(.reorderable-page):hover:not(:checked) { background-color: alpha(currentColor,0.04); }
 
 notebook > header.left > tabs > tab:not(.reorderable-page):checked { box-shadow: inset -4px 0 @accent_bg_color; }
 
@@ -908,7 +904,7 @@ notebook > header.right > tabs { margin-left: 0px; }
 
 notebook > header.right > tabs > tab:not(.reorderable-page):hover { box-shadow: inset 4px 0 alpha(currentColor,0.15); }
 
-notebook > header.right > tabs > tab:not(.reorderable-page):hover:not(:checked) { background-color: alpha(currentColor,0.07); }
+notebook > header.right > tabs > tab:not(.reorderable-page):hover:not(:checked) { background-color: alpha(currentColor,0.04); }
 
 notebook > header.right > tabs > tab:not(.reorderable-page):checked { box-shadow: inset 4px 0 @accent_bg_color; }
 
@@ -1600,19 +1596,19 @@ messagedialog.csd.background { border-bottom-left-radius: 12px; border-bottom-ri
 
 messagedialog.csd .dialog-action-area button { padding: 10px 14px; border-right-style: none; border-bottom-style: none; border-radius: 0; -gtk-outline-radius: 0; background-color: @dialog_bg_color; color: @dialog_fg_color; border-top: 1px solid alpha(currentColor,0.15); border-left: 1px solid alpha(currentColor,0.15); }
 
-messagedialog.csd .dialog-action-area button:hover { background: alpha(currentColor,0.07); }
+messagedialog.csd .dialog-action-area button:hover { background: alpha(currentColor,0.04); }
 
-messagedialog.csd .dialog-action-area button:active { background: alpha(currentColor,0.16); }
+messagedialog.csd .dialog-action-area button:active { background: alpha(currentColor,0.08); }
 
 messagedialog.csd .dialog-action-area button.suggested-action { color: @accent_color; }
 
 messagedialog.csd .dialog-action-area button.destructive-action { color: @destructive_color; }
 
-messagedialog.csd .dialog-action-area button:checked { background: alpha(currentColor,0.1); }
+messagedialog.csd .dialog-action-area button:checked { background: alpha(@accent_bg_color,0.25); }
 
-messagedialog.csd .dialog-action-area button:checked:hover { background: alpha(currentColor,0.13); }
+messagedialog.csd .dialog-action-area button:checked:hover { background: alpha(@accent_bg_color,0.32); }
 
-messagedialog.csd .dialog-action-area button:checked:active { background: alpha(currentColor,0.19); }
+messagedialog.csd .dialog-action-area button:checked:active { background: alpha(@accent_bg_color,0.39); }
 
 messagedialog.csd .dialog-action-area button:first-child { border-left-style: none; border-bottom-left-radius: 11px; -gtk-outline-bottom-left-radius: 11px; }
 
@@ -1920,15 +1916,9 @@ button.titlebutton:backdrop { -gtk-icon-shadow: none; }
 
 .selection-mode headerbar button.titlebutton:backdrop, .selection-mode .titlebar button.titlebutton:backdrop, headerbar.selection-mode button.titlebutton:backdrop, .titlebar.selection-mode button.titlebutton:backdrop { -gtk-icon-shadow: none; }
 
-headerbar entry selection, .titlebar entry selection, .view:selected:focus, .view:selected, .nautilus-window notebook:selected:focus, .nautilus-window notebook:selected, .nautilus-window notebook > stack:selected:not(:only-child), .nautilus-window notebook > stack:not(:only-child) searchbar:selected, .view text:selected:focus, textview text:selected:focus, .view text:selected, textview text:selected, .view text selection:focus, .view text selection, textview text selection:focus, textview text selection, iconview:selected:focus, iconview:selected, iconview text selection:focus, iconview text selection, flowbox flowboxchild:selected, entry selection, modelbutton.flat:selected, .menuitem.button.flat:selected, spinbutton:not(.vertical) selection, treeview.view:selected:focus, treeview.view:selected, calendar:selected { background-color: @accent_bg_color; }
+headerbar entry selection, .titlebar entry selection, .view text selection:focus, .view text selection, textview text selection:focus, textview text selection, iconview text selection:focus, iconview text selection, flowbox flowboxchild:selected, entry selection, spinbutton:not(.vertical) selection, treeview.view:selected:focus, treeview.view:selected, calendar:selected { background-color: alpha(@accent_bg_color,0.25); }
 
-label:selected, .selection-mode button.titlebutton, headerbar entry selection, .titlebar entry selection, .view:selected:focus, .view:selected, .nautilus-window notebook:selected:focus, .nautilus-window notebook:selected, .nautilus-window notebook > stack:selected:not(:only-child), .nautilus-window notebook > stack:not(:only-child) searchbar:selected, .view text:selected:focus, textview text:selected:focus, .view text:selected, textview text:selected, .view text selection:focus, .view text selection, textview text selection:focus, textview text selection, iconview:selected:focus, iconview:selected, iconview text selection:focus, iconview text selection, flowbox flowboxchild:selected, entry selection, modelbutton.flat:selected, .menuitem.button.flat:selected, spinbutton:not(.vertical) selection, treeview.view:selected:focus, treeview.view:selected, calendar:selected { color: @accent_fg_color; }
-
-label:disabled selection, label:disabled:selected, .selection-mode button.titlebutton:disabled, .titlebar entry selection:disabled, .view:disabled:selected, .nautilus-window notebook:disabled:selected, .nautilus-window notebook > stack:disabled:selected:not(:only-child), .nautilus-window notebook > stack:not(:only-child) searchbar:disabled:selected, textview text:disabled:selected:focus, .view text:disabled:selected, textview text:disabled:selected, .view text selection:disabled, textview text selection:disabled:focus, textview text selection:disabled, iconview:disabled:selected:focus, iconview:disabled:selected, iconview text selection:disabled:focus, iconview text selection:disabled, flowbox flowboxchild:disabled:selected, entry selection:disabled, modelbutton.flat:disabled:selected, .menuitem.button.flat:disabled:selected, spinbutton:not(.vertical) selection:disabled, treeview.view:disabled:selected, calendar:disabled:selected { color: mix(@accent_fg_color,@accent_bg_color,0.5); }
-
-label:backdrop selection, label:backdrop:selected, .selection-mode button.titlebutton:backdrop, .titlebar entry selection:backdrop, .view:backdrop:selected, .nautilus-window notebook:backdrop:selected, .nautilus-window notebook > stack:backdrop:selected:not(:only-child), .nautilus-window notebook > stack:not(:only-child) searchbar:backdrop:selected, textview text:backdrop:selected:focus, .view text:backdrop:selected, textview text:backdrop:selected, .view text selection:backdrop, textview text selection:backdrop:focus, textview text selection:backdrop, iconview:backdrop:selected:focus, iconview:backdrop:selected, iconview text selection:backdrop:focus, iconview text selection:backdrop, flowbox flowboxchild:backdrop:selected, entry selection:backdrop, modelbutton.flat:backdrop:selected, .menuitem.button.flat:backdrop:selected, spinbutton:not(.vertical) selection:backdrop, treeview.view:backdrop:selected, calendar:backdrop:selected { color: @accent_fg_color; }
-
-label:backdrop selection:disabled, label:backdrop:disabled:selected, .selection-mode button.titlebutton:backdrop:disabled, .view:backdrop:disabled:selected, .nautilus-window notebook:backdrop:disabled:selected, .nautilus-window notebook > stack:backdrop:disabled:selected:not(:only-child), .nautilus-window notebook > stack:not(:only-child) searchbar:backdrop:disabled:selected, .view text:backdrop:disabled:selected, textview text:backdrop:disabled:selected, .view text selection:backdrop:disabled, textview text selection:backdrop:disabled, iconview:backdrop:disabled:selected, iconview text selection:backdrop:disabled, flowbox flowboxchild:backdrop:disabled:selected, entry selection:backdrop:disabled, modelbutton.flat:backdrop:disabled:selected, .menuitem.button.flat:backdrop:disabled:selected, spinbutton:not(.vertical) selection:backdrop:disabled, calendar:backdrop:disabled:selected { color: mix(mix(@view_fg_color,@window_bg_color,0.5),@accent_bg_color,0.7); }
+label:selected, .selection-mode button.titlebutton, headerbar entry selection, .titlebar entry selection, .view text selection:focus, .view text selection, textview text selection:focus, textview text selection, iconview text selection:focus, iconview text selection, flowbox flowboxchild:selected, entry selection, spinbutton:not(.vertical) selection, treeview.view:selected:focus, treeview.view:selected, calendar:selected { color: @window_fg_color; }
 
 .monospace { font-family: monospace; }
 
@@ -1994,7 +1984,7 @@ popover.emoji-completion arrow { border: none; background: none; }
 
 popover.emoji-completion contents row box { padding: 2px 10px; }
 
-popover.emoji-completion .emoji:hover { background: alpha(currentColor,0.07); }
+popover.emoji-completion .emoji:hover { background: alpha(currentColor,0.04); }
 
 @define-color theme_fg_color @window_fg_color;
 @define-color theme_text_color @view_fg_color;
@@ -2270,7 +2260,7 @@ list.view.frame, list.view.frame:backdrop { background-color: @card_bg_color; }
 
 .default-decoration .title:backdrop { color: mix(@headerbar_fg_color,@headerbar_backdrop_color,0.5); }
 
-treeview.view:not(:backdrop):not(:selected):hover { background-color: alpha(currentColor,0.07); }
+treeview.view:not(:backdrop):not(:selected):hover { background-color: alpha(currentColor,0.04); }
 
 .preferences scrolledwindow > .frame > clamp.large, .preferences scrolledwindow > .frame > clamp.medium, .preferences scrolledwindow > .frame > clamp.small { padding-bottom: 30px; }
 
@@ -2286,7 +2276,7 @@ popover.background modelbutton.flat, popover.background .menuitem.button.flat { 
 
 popover.background modelbutton.flat:disabled label, popover.background .menuitem.button.flat:disabled label { color: mix(@popover_fg_color,@popover_bg_color,0.5); }
 
-popover.background modelbutton.flat:backdrop:hover, popover.background .menuitem.button.flat:backdrop:hover { background-color: alpha(currentColor,0.07); }
+popover.background modelbutton.flat:backdrop:hover, popover.background .menuitem.button.flat:backdrop:hover { background-color: alpha(currentColor,0.04); }
 
 popover.menu > stack { margin: -6px; }
 
@@ -2508,15 +2498,15 @@ tabbar tab { margin: 4px 3px; border-style: none; border-radius: 6px; transition
 
 tabbar tab:first-child { background-image: none; }
 
-tabbar tab:hover { background-color: alpha(currentColor,0.07); }
+tabbar tab:hover { background-color: alpha(currentColor,0.04); }
 
 tabbar tab:hover, tabbar tab:hover + tab { background-image: none; }
 
-tabbar tab:checked { background-color: alpha(currentColor,0.1); }
+tabbar tab:checked { background-color: alpha(@accent_bg_color,0.25); }
 
 tabbar tab:checked, tabbar tab:checked + tab { background-image: none; }
 
-tabbar tab:checked:hover { background-color: alpha(currentColor,0.13); }
+tabbar tab:checked:hover { background-color: alpha(@accent_bg_color,0.32); }
 
 tabbar .start-action, tabbar .end-action { background-color: @headerbar_bg_color; border-color: transparent; border-style: solid; transition: background-color 150ms ease-in-out; }
 
@@ -2814,7 +2804,7 @@ button.back-button:dir(rtl), button.back-button.text-button:dir(rtl) { padding: 
 
 .org-gnome-gedit notebook tab:hover.reorderable-page, .gedit-side-panel-paned notebook tab:hover.reorderable-page, .nautilus-window notebook tab:hover.reorderable-page { color: @headerbar_fg_color; background-color: transparent; box-shadow: none; border: none; }
 
-.org-gnome-gedit notebook tab:hover.reorderable-page > box, .gedit-side-panel-paned notebook tab:hover.reorderable-page > box, .nautilus-window notebook tab:hover.reorderable-page > box { background-color: alpha(currentColor,0.07); transition: background-color 150ms ease-in-out; }
+.org-gnome-gedit notebook tab:hover.reorderable-page > box, .gedit-side-panel-paned notebook tab:hover.reorderable-page > box, .nautilus-window notebook tab:hover.reorderable-page > box { background-color: alpha(currentColor,0.04); transition: background-color 150ms ease-in-out; }
 
 .org-gnome-gedit notebook tab:hover.reorderable-page, .gedit-side-panel-paned notebook tab:hover.reorderable-page, .nautilus-window notebook tab:hover.reorderable-page, .org-gnome-gedit notebook tab:hover.reorderable-page + tab, .gedit-side-panel-paned notebook tab:hover.reorderable-page + tab, .nautilus-window notebook tab:hover.reorderable-page + tab { background-image: none; }
 
@@ -2824,11 +2814,11 @@ button.back-button:dir(rtl), button.back-button.text-button:dir(rtl) { padding: 
 
 .org-gnome-gedit notebook tab:checked.reorderable-page, .gedit-side-panel-paned notebook tab:checked.reorderable-page, .nautilus-window notebook tab:checked.reorderable-page { color: @headerbar_fg_color; background-color: transparent; box-shadow: none; border: none; }
 
-.org-gnome-gedit notebook tab:checked.reorderable-page > box, .gedit-side-panel-paned notebook tab:checked.reorderable-page > box, .nautilus-window notebook tab:checked.reorderable-page > box { background-color: alpha(currentColor,0.1); transition: background-color 150ms ease-in-out; }
+.org-gnome-gedit notebook tab:checked.reorderable-page > box, .gedit-side-panel-paned notebook tab:checked.reorderable-page > box, .nautilus-window notebook tab:checked.reorderable-page > box { background-color: alpha(@accent_bg_color,0.25); transition: background-color 150ms ease-in-out; }
 
 .org-gnome-gedit notebook tab:checked.reorderable-page:hover, .gedit-side-panel-paned notebook tab:checked.reorderable-page:hover, .nautilus-window notebook tab:checked.reorderable-page:hover, .org-gnome-gedit notebook tab:checked.reorderable-page:active, .gedit-side-panel-paned notebook tab:checked.reorderable-page:active, .nautilus-window notebook tab:checked.reorderable-page:active { box-shadow: none; background-color: transparent; }
 
-.org-gnome-gedit notebook tab:checked.reorderable-page:hover > box, .gedit-side-panel-paned notebook tab:checked.reorderable-page:hover > box, .nautilus-window notebook tab:checked.reorderable-page:hover > box, .org-gnome-gedit notebook tab:checked.reorderable-page:active > box, .gedit-side-panel-paned notebook tab:checked.reorderable-page:active > box, .nautilus-window notebook tab:checked.reorderable-page:active > box { background-color: alpha(currentColor,0.13); }
+.org-gnome-gedit notebook tab:checked.reorderable-page:hover > box, .gedit-side-panel-paned notebook tab:checked.reorderable-page:hover > box, .nautilus-window notebook tab:checked.reorderable-page:hover > box, .org-gnome-gedit notebook tab:checked.reorderable-page:active > box, .gedit-side-panel-paned notebook tab:checked.reorderable-page:active > box, .nautilus-window notebook tab:checked.reorderable-page:active > box { background-color: alpha(@accent_bg_color,0.32); }
 
 .org-gnome-gedit notebook tab:checked.reorderable-page:hover:backdrop, .gedit-side-panel-paned notebook tab:checked.reorderable-page:hover:backdrop, .nautilus-window notebook tab:checked.reorderable-page:hover:backdrop, .org-gnome-gedit notebook tab:checked.reorderable-page:active:backdrop, .gedit-side-panel-paned notebook tab:checked.reorderable-page:active:backdrop, .nautilus-window notebook tab:checked.reorderable-page:active:backdrop { box-shadow: none; }
 
@@ -2892,11 +2882,11 @@ button.back-button:dir(rtl), button.back-button.text-button:dir(rtl) { padding: 
 
 .nautilus-window .nautilus-canvas-item.label-text { border-radius: 6px; }
 
-.nautilus-window .nautilus-list-view .view:selected, .nautilus-window .nautilus-list-view iconview:selected { background-color: alpha(currentColor,0.1); color: @view_fg_color; }
+.nautilus-window .nautilus-list-view .view:selected, .nautilus-window .nautilus-list-view iconview:selected { background-color: alpha(@accent_bg_color,0.25); color: @view_fg_color; }
 
-.nautilus-window .nautilus-list-view .view:selected:hover, .nautilus-window .nautilus-list-view iconview:selected:hover { background-color: alpha(currentColor,0.13); }
+.nautilus-window .nautilus-list-view .view:selected:hover, .nautilus-window .nautilus-list-view iconview:selected:hover { background-color: alpha(@accent_bg_color,0.32); }
 
-.nautilus-window .nautilus-list-view .view:hover, .nautilus-window .nautilus-list-view iconview:hover { background-color: alpha(currentColor,0.07); }
+.nautilus-window .nautilus-list-view .view:hover, .nautilus-window .nautilus-list-view iconview:hover { background-color: alpha(currentColor,0.04); }
 
 .nautilus-window entry.search > :not(.csd) { margin: 5px; }
 
