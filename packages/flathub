@@ -1,3 +1,9 @@
+# adw-gtk3 Gtk Theme - The theme from libadwaita ported to GTK-3
+org.gtk.Gtk3theme.adw-gtk3
+
+# adw-gtk3-dark Gtk Theme - The theme from libadwaita ported to GTK-3
+org.gtk.Gtk3theme.adw-gtk3-dark
+
 # Spotify - Online music streaming service
 com.spotify.Client
 
