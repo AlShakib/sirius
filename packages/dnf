@@ -202,12 +202,6 @@ ddclient
 # Yum-utils CLI compatibility layer
 dnf-utils
 
-# .NET Core 6.0 Software Development Kit
-dotnet-sdk-6.0
-
-# Development tools for Mono
-mono-devel
-
 # SSL/TLS module for the Apache HTTP Server
 mod_ssl
 

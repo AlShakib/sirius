@@ -19,9 +19,6 @@ com.github.tchx84.Flatseal
 # Edit audio file metadata
 org.kde.kid3
 
-# Connect to a computer remotely
-com.anydesk.Anydesk
-
 # A utility for browsing and installing GNOME Shell Extensions
 com.mattjakeman.ExtensionManager
 
