@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Copyright 2021 Al Shakib (shakib@alshakib.dev)
+# Copyright 2023 Al Shakib (shakib@alshakib.dev)
 
 # This file is part of Sirius.
 
@@ -20,7 +20,7 @@
 trap "exit" INT
 
 OS_ID="fedora"
-RELEASE_VER="38"
+RELEASE_VER="39"
 RELEASE_VAR="workstation"
 CPU_ARCH="x86_64"
 RED='\033[0;31m'
