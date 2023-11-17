@@ -51,7 +51,7 @@ org.gtk.Settings.FileChooser clock-format '12h'
 org.gnome.desktop.interface clock-format '12h'
 
 # Control how new windows get focus
-org.gnome.desktop.wm.preferences focus-new-windows 'strict'
+org.gnome.desktop.wm.preferences focus-new-windows 'smart'
 
 # Switch application from the current workspace only
 org.gnome.shell.app-switcher current-workspace-only true
