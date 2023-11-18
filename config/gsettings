@@ -39,6 +39,10 @@ org.gnome.desktop.session idle-delay uint32 0
 # Set power button action to Power Off
 org.gnome.settings-daemon.plugins.power power-button-action 'interactive'
 
+# Whether to hibernate, suspend or do nothing when inactive
+org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
+org.gnome.settings-daemon.plugins.power sleep-inactive-battery-type 'nothing'
+
 # Set switch input source shortcut
 org.gnome.desktop.wm.keybindings switch-input-source ['<Alt>space']
 org.gnome.desktop.wm.keybindings switch-input-source-backward ['<Shift><Alt>space']
