@@ -72,7 +72,7 @@ org.gnome.desktop.peripherals.touchpad tap-to-click true
 org.gnome.shell disable-user-extensions false
 
 # Enable all extensions
-org.gnome.shell enabled-extensions ['InternetSpeedMeter@alshakib.dev', 'appindicatorsupport@rgcjonas.gmail.com', 'system-monitor-next@paradoxxx.zero.gmail.com']
+org.gnome.shell enabled-extensions ['InternetSpeedMeter@alshakib.dev', 'appindicatorsupport@rgcjonas.gmail.com', 'system-monitor-next@paradoxxx.zero.gmail.com', 'alt-tab-scroll-workaround@lucasresck.github.io']
 
 
 ## Gnome Tweak Tools ##
