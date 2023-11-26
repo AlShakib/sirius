@@ -29,30 +29,23 @@ import * as AltTab from "resource:///org/gnome/shell/ui/altTab.js";
 
 import * as Overview from "resource:///org/gnome/shell/ui/overview.js";
 
-const seat = Clutter.get_default_backend().get_default_seat();
-const vdevice = seat.create_virtual_device(
-    Clutter.InputDeviceType.POINTER_DEVICE
-);
-
-function movePointer() {
-    const [x, y] = global.get_pointer();
-    vdevice.notify_absolute_motion(global.get_current_time(), x, y);
-}
 
 export default class AltTabScrollWorkaroundExtension extends Extension {
-    constructor(metadata) {
-        super(metadata);
-        this._injectionManager = new InjectionManager();
-    }
-
     enable() {
+        this._injectionManager = new InjectionManager();
+        const seat = Clutter.get_default_backend().get_default_seat();
+        this.vdevice = seat.create_virtual_device(
+            Clutter.InputDeviceType.POINTER_DEVICE
+        );
+
         // Fix for Alt+Tab (switch windows)
         this._injectionManager.overrideMethod(
             AltTab.WindowSwitcherPopup.prototype,
             "_finish",
             (originalMethod) => {
+                let that = this;
                 return function () {
-                    movePointer();
+                    that.movePointer();
                     originalMethod.call(this);
                 };
             }
@@ -63,9 +56,10 @@ export default class AltTabScrollWorkaroundExtension extends Extension {
             AltTab.AppSwitcherPopup.prototype,
             "_finish",
             (originalMethod) => {
+                let that = this;
                 return function (timestamp) {
                     if (this._currentWindow < 0) {
-                        movePointer();
+                        that.movePointer();
                     }
                     originalMethod.call(this, timestamp);
                 };
@@ -77,8 +71,9 @@ export default class AltTabScrollWorkaroundExtension extends Extension {
             AltTab.WindowCyclerPopup.prototype,
             "_finish",
             (originalMethod) => {
+                let that = this;
                 return function () {
-                    movePointer();
+                    that.movePointer();
                     originalMethod.call(this);
                 };
             }
@@ -89,15 +84,23 @@ export default class AltTabScrollWorkaroundExtension extends Extension {
             Overview.Overview.prototype,
             '_showDone',
             (originalMethod) => {
+                let that = this;
                 return function () {
-                    movePointer();
+                    that.movePointer();
                     originalMethod.call(this);
                 };
             }
         );
     }
 
+    movePointer() {
+        const [x, y] = global.get_pointer();
+        this.vdevice.notify_absolute_motion(global.get_current_time(), x, y);
+    }
+
     disable() {
         this._injectionManager.clear();
+        this._injectionManager = null;
+        this.vdevice = null;
     }
 }
