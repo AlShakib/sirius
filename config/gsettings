@@ -43,10 +43,6 @@ org.gnome.settings-daemon.plugins.power power-button-action 'interactive'
 org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
 org.gnome.settings-daemon.plugins.power sleep-inactive-battery-type 'nothing'
 
-# Set switch input source shortcut
-org.gnome.desktop.wm.keybindings switch-input-source ['<Alt>space']
-org.gnome.desktop.wm.keybindings switch-input-source-backward ['<Shift><Alt>space']
-
 # Set automatice timezone
 org.gnome.desktop.datetime automatic-timezone true
 
