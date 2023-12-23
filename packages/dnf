@@ -220,9 +220,6 @@ hugo
 # GTK 3 markdown editor
 marker
 
-# A chess game that supports several chess engines.
-gnome-chess
-
 # Tool for containerized command line environments on Linux
 toolbox
 
