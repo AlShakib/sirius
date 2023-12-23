@@ -64,9 +64,6 @@ libgtop2-devel
 # Header files for adding NetworkManager support to applications (Required for gnome-system-monitor extension)
 NetworkManager-libnm-devel
 
-# Subtitle editor for Gnome
-gnome-subtitles
-
 # Customize advanced GNOME 3 options
 gnome-tweaks
 
