@@ -94,9 +94,6 @@ lsyncd
 # Fedora Media Writer
 mediawriter
 
-# Windows USB installation media creator
-WoeUSB
-
 # Movie player playing most video formats and DVDs
 mpv
 
