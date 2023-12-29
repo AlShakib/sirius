@@ -70,6 +70,9 @@ gnome-tweaks
 # Free and open source SVG icon theme based on Paper Icon Set
 papirus-icon-theme
 
+# The theme from libadwaita ported to GTK-3
+adw-gtk3-theme
+
 # Gnome Partition Editor
 gparted
 
